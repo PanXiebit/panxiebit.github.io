@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>论文笔记 memory networks - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Memory Networks 相关论文笔记。  Memory Network with strong supervision  End-to-End Memory Network  Dynamic Memory Network   Paper reading 1: Memory Networks, Jason WestonMotivationRNNs 将信息压缩到final state中的机制，"><meta property="og:type" content="blog"><meta property="og:title" content="论文笔记 memory networks"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="Memory Networks 相关论文笔记。  Memory Network with strong supervision  End-to-End Memory Network  Dynamic Memory Network   Paper reading 1: Memory Networks, Jason WestonMotivationRNNs 将信息压缩到final state中的机制，"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/01.png"><meta property="og:image" content="http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/memory_networks1.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/02.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/03.png"><meta property="og:image" content="http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_struc.png"><meta property="og:image" content="http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_struc2.png"><meta property="og:image" content="http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_multi_hop.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/08.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/09.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/05.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/06.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/07.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/10.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/11.png"><meta property="article:published_time" content="2018-06-10T03:02:48.000Z"><meta property="article:modified_time" content="2021-06-29T08:12:09.158Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="MRC and QA"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/01.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/"},"headline":"论文笔记 memory networks","image":["http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/01.png","http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/memory_networks1.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/02.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/03.png","http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_struc.png","http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_struc2.png","http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_multi_hop.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/08.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/09.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/05.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/06.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/07.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/10.png","http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/11.png"],"datePublished":"2018-06-10T03:02:48.000Z","dateModified":"2021-06-29T08:12:09.158Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"Memory Networks 相关论文笔记。  Memory Network with strong supervision  End-to-End Memory Network  Dynamic Memory Network   Paper reading 1: Memory Networks, Jason WestonMotivationRNNs 将信息压缩到final state中的机制，"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2018-06-10T03:02:48.000Z" title="2018/6/10 上午11:02:48">2018-06-10</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:09.158Z" title="2021/6/29 下午4:12:09">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/">MRC and QA</a></span><span class="level-item">39 minutes read (About 5846 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">论文笔记 memory networks</h1><div class="content"><p>Memory Networks 相关论文笔记。</p>
+<ul>
+<li><p>Memory Network with strong supervision</p>
+</li>
+<li><p>End-to-End Memory Network</p>
+</li>
+<li><p>Dynamic Memory Network</p>
+</li>
+</ul>
+<h2 id="Paper-reading-1-Memory-Networks-Jason-Weston"><a href="#Paper-reading-1-Memory-Networks-Jason-Weston" class="headerlink" title="Paper reading 1: Memory Networks, Jason Weston"></a>Paper reading 1: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1410.3916">Memory Networks, Jason Weston</a></h2><h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h3><p>RNNs 将信息压缩到final state中的机制，使得其对信息的记忆能力很有限。而memory work的提出就是对这一问题进行改善。</p>
+<p>However, their memory (encoded by hidden states and weights) is typically too small, and is not compartmentalized enough to accurately remember facts from the past (knowledge is compressed into dense vectors). RNNs are known to have difficulty in performing memorization.</p>
+<p>Memory Networks 提出的基本动机是我们需要 长期记忆（long-term memory）来保存问答的知识或者聊天的语境信息，而现有的 RNN 在长期记忆中表现并没有那么好。</p>
+<h3 id="Memory-Networks"><a href="#Memory-Networks" class="headerlink" title="Memory Networks"></a>Memory Networks</h3><p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/01.png"></p>
+<h4 id="four-components"><a href="#four-components" class="headerlink" title="four components:"></a>four components:</h4><ul>
+<li>I:(input feature map)</li>
+</ul>
+<p>  把输入映射为特征向量，可以包括各种特征工程，比如parsing, coreference, entity resolution,也可以是RNN/LSTM/GRU。通常以句子为单位，将sentence用向量表示，一个句子对应一个sparse or dense feature vector.</p>
+<ul>
+<li>G:(generalization)</li>
+</ul>
+<p>  使用新的输入数据更新 memories</p>
+<ul>
+<li>O:(output feature map)</li>
+</ul>
+<p>  给定新的输入和现有的 memory state，在特征空间里产生输出</p>
+<ul>
+<li>R:(response)</li>
+</ul>
+<p>  将输出转化为自然语言</p>
+<h4 id="详细推导过程"><a href="#详细推导过程" class="headerlink" title="详细推导过程"></a>详细推导过程</h4><p><img src="http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/memory_networks1.png"></p>
+<p>1.<strong>I component:</strong> :encode input text to internal feature representation.</p>
+<p>可以选择多种特征，比如bag of words, RNN encoder states, etc.</p>
+<p>2.<strong>G component:</strong> generalization 就是结合 old memories和输入来更新 memories. $m_i=G(m_i, I(x),m), ∀i$</p>
+<p>最简单的更新memory的方法是 $m_{H(x)}=I(x)$, $H(x)$ 是一个寻址函数slot selecting function，G更新的是 m 的index，可以把新的memory m，也就是新的输入 I(x) 保存到下一个空闲的地址 $m_n$ 中，并不更新原有的memory. 更复杂的 G 函数可以去更新更早的memory，甚至是所有的memory.</p>
+<p>这里的新的input，如果在QA中就是question 和 old  memmory的组合 $[I(x), m_i]$.</p>
+<p>3.<strong>O component</strong>: reading from memories and performing inference, calculating what are the relevant memories to perform a good response.</p>
+<p>给定新的输入和memory，在memories中寻找最相关的k个记忆</p>
+<p>如果k=2：</p>
+<p>$$o_1=O_1(q,m)=argmax_{i=1,2,..,N}s_O(q,m_i)$$</p>
+<p>$$o_2=O_2(q,m)=argmax_{i=1,2,..,N}s_O([q,o_1],m_i)$$</p>
+<p>output: $[q,o_1, o_2]$ 也是module R的输入.</p>
+<p>$s_O$ is a function that scores the match between the pair of sentences x and mi. $s_O$ 用来表征 question x 和 记忆 $m_i$ 的相关程度。</p>
+<p>$$s_O=qUU^Tm$$</p>
+<p>$s_O$ 表示问题q和当前memory m的相关程度</p>
+<p>U：bilinear regression参数，相关事实的 $qUU^Tm_{true}$ 的score高于不相关事实的分数 $qUU^Tm_{random}$</p>
+<p>4.<strong>R component</strong> : 对 output feature o 进行解码，得到最后的response: r=R(o)</p>
+<p>$$r=argmax_{w\in W}s_R([q,m_{o_1},m_{o_2}],w)$$</p>
+<p>W 是词典，$s_R$ 表示与output feature o 最相关的单词。</p>
+<p>$s_R$ 和 $s_O$ 的形式是相同的。</p>
+<p>$$s(x,y)=xUU^Ty$$</p>
+<h4 id="Huge-Memory-问题"><a href="#Huge-Memory-问题" class="headerlink" title="Huge Memory 问题"></a>Huge Memory 问题</h4><p>如果memory太大，比如 Freebase or Wikipedia，</p>
+<ul>
+<li><p>可以按 entity 或者 topic 来存储 memory，这样 G 就不用在整个 memories 上操作了</p>
+</li>
+<li><p>如果 memory 满了，可以引入 forgetting 机制，替换掉没那么有用的 memory，H 函数可以计算每个 memory 的分数，然后重写</p>
+</li>
+<li><p>还可以对单词进行 hashing，或者对 word embedding 进行聚类，总之是把输入 I(x) 放到一个或多个 bucket 里面，然后只对相同 bucket 里的 memory 计算分数</p>
+</li>
+</ul>
+<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>损失函数如下，选定 2 条 supporting fact (k=2)，response 是单词的情况：</p>
+<p>多类支持向量机损失:</p>
+<p>minimize:  $L_i = \sum_{j\ne y_i}max(0,s_j - s_{y_i}+\Delta)$</p>
+<p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/02.png"></p>
+<p>其中 $\overline f, \overline f’,\overline r$ 表示负采样。比如（8）式中r表示 true response, 而 $\overline r$ 表示随机抽样词典中的其他词。</p>
+<p>QA实例：</p>
+<p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/03.png"></p>
+<p>(6) 有没有挑选出正确的第一句话</p>
+<p>(7) 正确挑选出了第一句话后能不能正确挑出第二句话</p>
+<p>(6)+(7) 合起来就是能不能挑选出正确的语境，用来训练 attention 参数</p>
+<p>(8) 把正确的 supporting fact 作为输入，能不能挑选出正确的答案，来训练 response 参数</p>
+<h2 id="Paper-reading-2-End-To-End-Memory-Networks"><a href="#Paper-reading-2-End-To-End-Memory-Networks" class="headerlink" title="Paper reading 2 End-To-End Memory Networks"></a>Paper reading 2 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1503.08895">End-To-End Memory Networks</a></h2><h3 id="motivation"><a href="#motivation" class="headerlink" title="motivation"></a>motivation</h3><p>上一篇paper中的缺陷：</p>
+<p>The model in that work was not easy to train via backpropagation, and required supervision at each layer of the network.</p>
+<p>这篇论文可以看作是上一篇论文memory networks的改进版。</p>
+<p>Our model can also be seen as a version of RNNsearch with multiple computational steps (which we term “hops”) per output symbol.</p>
+<p>也可以看做是将multiple hops应用到RNNsearch这篇论文上 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1409.0473">Neural Machine Translation by Jointly Learning to Align and Translate</a>。</p>
+<h3 id="Model-architecture"><a href="#Model-architecture" class="headerlink" title="Model architecture"></a>Model architecture</h3><h4 id="Single-layer"><a href="#Single-layer" class="headerlink" title="Single layer"></a>Single layer</h4><p><img src="http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_struc.png"></p>
+<p>输入：</p>
+<ul>
+<li><p>input: $x_1,…,x_i$</p>
+</li>
+<li><p>query: q</p>
+</li>
+<li><p>answer: a</p>
+</li>
+</ul>
+<p>对于单层网络，主要分为以下几个步骤：</p>
+<p>1.将input和query映射到特征空间</p>
+<ul>
+<li><p>memory vector {$m_i$}: ${x_i}\stackrel A\longrightarrow {m_i}$</p>
+</li>
+<li><p>internal state u: $q\stackrel B \longrightarrow u$</p>
+</li>
+</ul>
+<p>2.计算attention，也就是query的向量表示u，和input中各个sentence的向量表示 $m_i$ 的匹配度。compute the match between u and each memory mi by taking the inner product followed by a softmax.</p>
+<p>$$p_i=softmax(u^Tm_i)$$</p>
+<p>  p is a <strong>probability vector</strong> over the inputs.</p>
+<p>3.得到context vector</p>
+<ul>
+<li>output vector: ${x_i}\stackrel C\longrightarrow {c_i}$</li>
+</ul>
+<p>The response vector from the memory o is then a sum over the transformed inputs ci, weighted by the probability vector from the input:</p>
+<p>$$o = \sum_ip_ic_i$$</p>
+<p>和 Memory Networks with Strong Supervision 版本不同，这里的 output 是加权平均而不是一个 argmax</p>
+<p>4.预测最后答案，通常是一个单词</p>
+<p>$$\hat a =softmax(Wu^{k+1})= softmax(W(o^k+u^k))$$</p>
+<p>W可以看做反向embedding，W.shape=[embed_size, V]</p>
+<p>5.对 $\hat a$ 进行解码，得到自然语言的response</p>
+<p>$$\hat a \stackrel C \longrightarrow a$$</p>
+<p>其中：</p>
+<p>A: intput embedding matrix</p>
+<p>C: output embedding matrix</p>
+<p>W: answer prediction matrix</p>
+<p>B: question embedding matrix</p>
+<p>单层网络实例：</p>
+<p><img src="http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_struc2.png"></p>
+<p>这里的 memory {$m_i$} 直接用于输出向量 $c_i$. 其实我也疑惑，为啥要重新用一个output embedding C，直接用 $m_i$ 不好吗。其实这些小tricks也说不准好不好，都是试出来的吧，因为怎么说都合理。。。</p>
+<h4 id="Multiple-Layers-Multiple-hops"><a href="#Multiple-Layers-Multiple-hops" class="headerlink" title="Multiple Layers/ Multiple hops"></a>Multiple Layers/ Multiple hops</h4><p>多层结构（K hops）也很简单，相当于做多次 addressing/多次 attention，每次 focus 在不同的 memory 上，不过在第 k+1 次 attention 时 query 的表示需要把之前的 context vector 和 query 拼起来，其他过程几乎不变。</p>
+<p>$$u_{k+1}=u^k+o^k$$</p>
+<p><img src="http://ox5l2b8f4.bkt.clouddn.com/images/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/end_to_end_multi_hop.png"></p>
+<h3 id="对比上一篇paper来理解"><a href="#对比上一篇paper来理解" class="headerlink" title="对比上一篇paper来理解"></a>对比上一篇paper来理解</h3><p>多层网络也可以看做是四个组件构成的：</p>
+<ul>
+<li><p>input components: 就是将query和sentences映射到特征空间中</p>
+</li>
+<li><p>generalization components： 更新memory，这里的memory也是在变化的，${m_i}=AX$， 但是embedding matrix A 是逐层变化的</p>
+</li>
+<li><p>output components: attention就是根据inner product后softmax计算memory和query之间的匹配度，然后更新input，也就是[u_k,o_k]， 可以是相加/拼接，或者用RNN. 区别是，在上一篇论文中是argmax，$o_2=O_2(q,m)=argmax_{i=1,2,..,N}s_O([q,o_1],m_i)$, 也就是选出匹配程度最大的 memory $m_i$, 而这篇论文是对所有的memory进行加权求和</p>
+</li>
+<li><p>response components: 跟output components类似啊，上一篇论文是与词典中所有的词进行匹配，求出相似度最大的 $r=argmax_{w\in W}s_R([q,m_{o_1},m_{o_2}],w)$，而这篇论文是 $\hat a=softmax(Wu^{k+1})=softmax(W(u^k+o^k))$ 最小化交叉熵损失函数训练得到 answer prediction matrix W.</p>
+</li>
+</ul>
+<p>Overall, it is similar to the Memory Network model in [23], except that the hard max operations within each layer have been replaced with a continuous weighting from the softmax.</p>
+<h3 id="一些技术细节"><a href="#一些技术细节" class="headerlink" title="一些技术细节"></a>一些技术细节</h3><p>每一层都有 mebedding matrices $A^k, C^k$,用来embed inputs {$x_i$},为了减少训练参数.作者尝试了以下两种情况：</p>
+<ol>
+<li>Adjacent</li>
+</ol>
+<ul>
+<li><p>上一层的output embedding matrix 是下一层的 input embedding matrix, 即 $A^{k+1}=C^k$</p>
+</li>
+<li><p>最后一层的output embedding 可用作 prediction embedding matrix， 即 $W^T=C^k$</p>
+</li>
+<li><p>question embedding matrix = input embedding matrix of the first layer, $B=A^1$</p>
+</li>
+</ul>
+<ol start="2">
+<li>Layer-wise (RNN-like)</li>
+</ol>
+<ul>
+<li><p>$A^1=A^2=…=A^k, C^1=C^2=…C^k$</p>
+</li>
+<li><p>$u^{k+1} = Hu^k+o^k$</p>
+</li>
+</ul>
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><h4 id="Dataset"><a href="#Dataset" class="headerlink" title="Dataset"></a>Dataset</h4><p>数据集来源：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1502.05698">Towards AI-complete question answering: A set of prerequisite toy tasks</a></p>
+<p>总共有 20 QA tasks，其中每个task有 $I(I\le 320)$ 个sentence {$x_i$}, 词典大小 V=170, 可以看做这是个玩具级的任务。每个task有1000个problems</p>
+<h4 id="Modle-details"><a href="#Modle-details" class="headerlink" title="Modle details"></a>Modle details</h4><h5 id="Sentence-representations"><a href="#Sentence-representations" class="headerlink" title="Sentence representations"></a>Sentence representations</h5><p>也就是将input和query映射到特征空间，有两种方式：</p>
+<p>1.Bag of words(BOW) representation</p>
+<p>$$m_i=\sum_jAx_{ij}$$</p>
+<p>$$c_i=\sum_jCx_{ij}$$</p>
+<p>$$u=\sum_jBq_j$$</p>
+<p>分别对每个词embed，然后sum，缺点是没有考虑词序</p>
+<p>2.encodes the position of words within the sentence 考虑词序的编码</p>
+<p>$$m_i=\sum_jl_j\cdot Ax_{ij}$$</p>
+<p>i表示第i个sentence，j表示这个sentence中的第j个word</p>
+<p>$$l_{kj}=(1-j/J)-(k/d)(1-2j/J)$$</p>
+<p>查看源码时发现很多代码的position encoder与原paper不一样，比如<a target="_blank" rel="noopener" href="https://github.com/domluna/memn2n/blob/master/memn2n/memn2n.py#L12-L25">domluna/memn2n</a>中公式是：</p>
+<p>$$l_{kj} = 1+4(k- (d+1)/2)(j-(J+1)/2)/d/J$$</p>
+<p>原本词 $x_{ij}$ 的向量表示就是embeded后的 $Ax_{ij},(shape=[1, embed_size])$, 但现在要给这个向量加一个权重 $l_j$,而且这个权重不是一个值，而是一个向量，对 $Ax_{ij}$ 中每一个维度的权重也是不一样的。</p>
+<p>令J=20, d=50. 具体两个公式的差别可以查看</p>
+<p><a target="_blank" rel="noopener" href="https://www.wolframalpha.com/input/?i=(1.0+-+(y+/+20))+-+(x+/+50)+*+(1.0+-+(2.0+*+y+/+20))+for+0+%3C+x+%3C+50+and+0+%3C+y+%3C+20">wolframalpha1</a></p>
+<p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/08.png"></p>
+<p><a target="_blank" rel="noopener" href="https://www.wolframalpha.com/input/?i=1+++4+*+((y+-+(20+++1)+/+2)+*+(x+-+(50+++1)+/+2))+/+(20+*+50)+for+0+%3C+x+%3C+50+and+0+%3C+y+%3C+20">wolframalpha2</a></p>
+<p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/09.png"></p>
+<p>也就是说不仅跟word在sentence中的位置有关，还和embed_size中的维度有关。这就很难理解了。。。</p>
+<p>好像跟句子的结构相关，北大有篇相关的论文<a target="_blank" rel="noopener" href="https://www.aclweb.org/anthology/D16-1007">A Position Encoding Convolutional Neural Network Based on Dependency Tree for Relation Classification</a></p>
+<p>其中 J 表示sentence的长度，d表示 dimension of the embedding. 这种sentence representation称为 position encoding(PE).也就是词序会影响memory $m_i$.</p>
+<p><strong>position encoding 代码实现</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">position_encoding</span>(<span class="params">sentence_size, embedding_size</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Position Encoding described in section 4.1 [1]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    encoding = np.ones((embedding_size, sentence_size), dtype=np.float32)</span><br><span class="line"></span><br><span class="line">    le = embedding_size+<span class="number">1</span></span><br><span class="line"></span><br><span class="line">    ls = sentence_size + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, le):</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, ls):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># here is different from the paper.</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># the formulation in paper is: l_&#123;kj&#125;=(1-j/J)-(k/d)(1-2j/J)</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># here the formulation is: l_&#123;kj&#125; = 1+4(k- (d+1)/2)(j-(J+1)/2)/d/J,</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 具体表现可查看 https://www.wolframalpha.com/input/?i=1+%2B+4+*+((y+-+(20+%2B+1)+%2F+2)+*+(x+-+(50+%2B+1)+%2F+2))+%2F+(20+*+50)+for+0+%3C+x+%3C+50+and+0+%3C+y+%3C+20</span></span><br><span class="line"></span><br><span class="line">            encoding[k-<span class="number">1</span>, j-<span class="number">1</span>] = (k - (embedding_size+<span class="number">1</span>)/<span class="number">2</span>) * (j - (sentence_size+<span class="number">1</span>)/<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    encoding = <span class="number">1</span> + <span class="number">4</span> * encoding / embedding_size / sentence_size</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Make position encoding of time words identity to avoid modifying them</span></span><br><span class="line"></span><br><span class="line">    encoding[:, -<span class="number">1</span>] = <span class="number">1.0</span> <span class="comment"># 最后一个sentence的权重都为1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> np.transpose(encoding) <span class="comment"># [sentence_size, embedding_size]</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="Temporal-Encoding"><a href="#Temporal-Encoding" class="headerlink" title="Temporal Encoding"></a>Temporal Encoding</h5><p>将memory改进为：</p>
+<p>$$m_i=\sum_jAx_{ij}+T_A(i)$$</p>
+<p>其中 $T_A(i)$ is the ith row of a special matrix $T_A$ that encodes temporal information. 用一个特殊的矩阵 $T_A$ 来编码时间信息。$T_A(i)$ i表示第i个sentence的包含时间信息？？</p>
+<p>同样的output embedding:</p>
+<p>$$c_i=\sum_jCx_{ij}+T_C(i)$$</p>
+<h5 id="Learning-time-invariance-by-injecting-random-noise"><a href="#Learning-time-invariance-by-injecting-random-noise" class="headerlink" title="Learning time invariance by injecting random noise"></a>Learning time invariance by injecting random noise</h5><p>we have found it helpful to add “dummy” memories to regularize TA.</p>
+<h4 id="Training-Details"><a href="#Training-Details" class="headerlink" title="Training Details"></a>Training Details</h4><p>1.learning rate decay  </p>
+<p>2.gradient clip  </p>
+<p>3.linear start training  </p>
+<p>4.null padding, zero padding  </p>
+<h3 id="完整代码实现"><a href="#完整代码实现" class="headerlink" title="完整代码实现"></a>完整代码实现</h3><p><a target="_blank" rel="noopener" href="https://github.com/PanXiebit/text-classification/blob/master/06-memory%20networks/memn2n_model.py">https://github.com/PanXiebit/text-classification/blob/master/06-memory%20networks/memn2n_model.py</a></p>
+<h2 id="Paper-reading-3-Ask-Me-Anything-Dynamic-Memory-Networks-for-Natural-Language-Processing"><a href="#Paper-reading-3-Ask-Me-Anything-Dynamic-Memory-Networks-for-Natural-Language-Processing" class="headerlink" title="Paper reading 3 Ask Me Anything: Dynamic Memory Networks for Natural Language Processing"></a>Paper reading 3 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1506.07285">Ask Me Anything: Dynamic Memory Networks for Natural Language Processing</a></h2><h3 id="Motivation-1"><a href="#Motivation-1" class="headerlink" title="Motivation"></a>Motivation</h3><p>Most tasks in natural language processing can be cast into question answering (QA) problems over language input.</p>
+<p>大部分的自然语言处理的任务都可以看作是QA问题，比如QA, sentiment analysis, part-of-speech tagging.</p>
+<p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/05.png"></p>
+<h3 id="Model-Architecture"><a href="#Model-Architecture" class="headerlink" title="Model Architecture"></a>Model Architecture</h3><p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/06.png"></p>
+<p>可以分为以下4个模块：</p>
+<ul>
+<li><p>Input Module: 将输入文本编码为distribution representations</p>
+</li>
+<li><p>Question Module: 将question编码为distribution representations</p>
+</li>
+<li><p>Episodic Memory Module: 通过attention机制选择focus on输入文本中的某些部分，然后生成memory vector representation.</p>
+</li>
+<li><p>Answer Module: 依据the final memory vector生成answer</p>
+</li>
+</ul>
+<p>Detailed visualization:</p>
+<p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/07.png"></p>
+<h4 id="Input-Module"><a href="#Input-Module" class="headerlink" title="Input Module"></a>Input Module</h4><p>主要分为两种情况：</p>
+<p>1.输入是single sentence，那么input module输出的就是通过RNN计算得到的隐藏状态 $T_C= T_I$, $T_I$ 表示一个sentence中的词的个数。</p>
+<p>2.输入是a list of sentences，在每个句子后插入一个结束符号 end-of-sentence token, 然后每个sentence的final hidden作为这个sentence的representation. 那么input module输出 $T_C$, $T_C$等于sequence的sentence个数。</p>
+<p>然后RNN使用的是GRU，作者也尝试过LSTM，发现效果差不多，但LSTM计算量更大。</p>
+<h4 id="Question-Module"><a href="#Question-Module" class="headerlink" title="Question Module"></a>Question Module</h4><p>同样的使用GRU编码，在t时间步， 隐藏状态</p>
+<p>$$q_t=GRU(L[w_t^Q],q_{t-1})$$</p>
+<p>L代表embedding matrix.</p>
+<p>最后输出 final hidden state.</p>
+<p>$$q=q_{T_Q}$$</p>
+<p>$T_Q$ 是question的词的个数。</p>
+<h4 id="Episodic-Memory-Module"><a href="#Episodic-Memory-Module" class="headerlink" title="Episodic Memory Module"></a>Episodic Memory Module</h4><p>由 internal memory, attention mechansim, memory update mechanism 组成。 输入是 input module 和 question module 的输出。</p>
+<p>把 input module 中每个句子的表达（fact representation c）放到 episodic memory module 里做推理，使用 attention 原理从 input module 中提取相关信息，同样有 multi-hop architecture。</p>
+<p>1.<strong>Needs for multiple Episodes:</strong> 通过迭代使得模型具有了传递推理能力 transitive inference.</p>
+<p>2.<strong>Attention Mechanism</strong>: 使用了一个gating function作为attention机制。相比在 end-to-end MemNN 中attention使用的是linear regression，即对inner production通过softmax求权重。 这里使用一个两层前向神经网络 G 函数.</p>
+<p>$$g_t^i=G(c_t,m^{i-1},q)$$</p>
+<p>$c_t$ 是candidate fact, $m_{i-1}$ 是previous memory， question q. t 表示sentence中的第t时间步，i表示episodic的迭代次数。</p>
+<p>这里作者定义了 a large feture $z(c,m,q)$ 来表征input, memory, question之间的相似性。</p>
+<p>$$z_t^i=[c_t, m^{i-1},q, c_t\circ q,c_t\circ m^{i-1},|c_t-q|,|c_t-m^{i-1}|, c_t^TW^{(b)}q, c_t^TW^{(b)}m^{i-1}]$$</p>
+<p>总的来说，就是根据向量内积，向量相减来表示相似度。 跟<a href="http://www.panxiaoxie.cn/2018/05/21/cs224d-lecture16-dynamic-neural-network">cs224d-lecture16 dynamic Memory network</a>Richard Socher本人讲的有点区别，不过这个既然是人工定义的，好像怎么说都可以。</p>
+<p>然后通过G函数，也就是两层前向神经网络得到一个scale score.</p>
+<p>$$G = \sigma(W^{(2)}tanh(W^{(1)}z_i^t+b^{(1)})+b^{(2)})$$</p>
+<p>将 $c_t$, $m^{i-1}, q 带入到G函数，即可求得$$g_i^t$，也就是candidate fact $c_i$ 的score.</p>
+<p>计算完每一次迭代后的分数后，来更新episode $e^i$, 相当于 context vector,</p>
+<p><strong>soft attention</strong></p>
+<p>在之前的attention机制中，比如<a href="http://www.panxiaoxie.cn/2018/05/08/cs224d-lecture10-%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91%E5%92%8C%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6/">cs224d-lecture10-机器翻译和注意力机制</a>介绍的attention得到的context vector，在end-to-end MemNN中attention也是fact representation的加权求和。</p>
+<p><strong>attention based GRU</strong></p>
+<p>但这篇论文中应用了GRU，对fact representation c 进行处理，然后加上gate</p>
+<p>$$h_t^i=g_t^iGRU(c_t,h_{t-1}^i)+(1-g_t^i)h_{i-1}^t$$</p>
+<p>所以这里的GRU应该是 $T_C$步吧？？</p>
+<p>每次迭代的context vector是对 input module 的输出进行 attention-based GRU编码的最后的隐藏状态:</p>
+<p>$$e^i=h_{T_C}^i$$</p>
+<p><strong>总结一下：</strong></p>
+<p><strong>这部分attention mechanism目的就是生成episode $e^i$,$e^i$ 是第i轮迭代的所有input相关信息的summary.也就是 context vector,将input text压缩到一个向量表示中，end-to-end MemNN用了soft attention，就是加权求和。而这里用了GRU，各个时间步的权重不是直接相乘，而是作为一个gate机制。</strong></p>
+<p>3.<strong>Memory Update Mechanism</strong></p>
+<p>上一步计算的episode $e^i$ 以及上一轮迭代的memory $m^{i-1}$ 作为输入来更新memory $m_i$</p>
+<p>$$m_i=GRU(e^i,m^{i-1})$$</p>
+<p>$m^0=q$, 所以这里的GRU是单步的吧</p>
+<p>经过 $T_M$ 次迭代： $m=m^{T_M}$, 也就是episodic memory module的输出，即answer module的输入。</p>
+<p>在end-to-end MemNN的memory update中，$u_{k+1}=u^k+o^k$, 而在这篇论文中,如果也采用这种形式的话就是 $m^{i}=e^i+m^{i-1}$，但作者采用了 RNN 做非线性映射，用 episode $e_i$ 和上一个 memory $m_{i−1}$ 来更新 episodic memory，其 GRU 的初始状态包含了 question 信息，$m_0=q$。</p>
+<p>4.<strong>Criteria for stopping</strong></p>
+<p>Episodic Memory Module 需要一个停止迭代的信号。一般可以在输入中加入一个特殊的 end-of-passes 的信号，如果 gate 选中了该特殊信号，就停止迭代。对于没有显性监督的数据集，可以设一个迭代的最大值。</p>
+<h4 id="Answer-Module"><a href="#Answer-Module" class="headerlink" title="Answer Module"></a>Answer Module</h4><p>使用了GRU的decoder。输入是question module的输出q和上一个时刻的hidden state $a_{t-1}$,初始状态是episodic memory module的输出 $a_0=m^{T_M}$.</p>
+<p>$$y_t=softmax(W^{(a)}a_t)$$</p>
+<p>$$a_t=GRU([y_{t-1},q],a_{t-1})$$</p>
+<p>这里应该就是单步GRU吧，毕竟question的向量表示q只有一个呀。</p>
+<h3 id="Train"><a href="#Train" class="headerlink" title="Train"></a>Train</h3><p>使用 cross-entroy 作为目标函数。如果 <strong>数据集有 gate 的监督数据</strong>，还可以将 gate 的 cross-entroy 加到总的 cost上去，一起训练。训练直接使用 backpropagation 和 gradient descent 就可以。</p>
+<h3 id="总结-对比上一篇论文End-to-end-memory-networks"><a href="#总结-对比上一篇论文End-to-end-memory-networks" class="headerlink" title="总结:对比上一篇论文End-to-end memory networks"></a>总结:对比上一篇论文End-to-end memory networks</h3><ul>
+<li><p>input components: end2end MemNN 采用embedding，而DMN使用GRU</p>
+</li>
+<li><p>generalization components: 也就是memory update，End2End MemNN采用线性相加 $u^{k+1}=u^k+o^k$,其中的 $o^k$ 就是经过attention之后得到的memory vector</p>
+</li>
+<li><p>output components: end2end MemNN采用的是对比memory和query,用内积求相似度，然后softmax求权重，最后使用加权求和得到context vector. 而DMN采用的是人工定义相似度的表示形式，然后用两层前向神经网络计算得到score，再对score用softmax求权重，再然后把权重当做gate机制，使用GRU求context vector</p>
+</li>
+</ul>
+<ul>
+<li>response components: end2end MemNN 直接使用最后的 top memory layer 预测，而DMN是把top memory 当做init hidden state</li>
+</ul>
+<p>总之，DMN实在是太太太复杂了。。每一个module都用到了RNN</p>
+<h2 id="Paper-reading-4-DMN"><a href="#Paper-reading-4-DMN" class="headerlink" title="Paper reading 4  DMN+"></a>Paper reading 4  DMN+</h2><p>paper:<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1603.01417.pdf">Dynamic Memory Networks for Visual and Textual Question Answering (2016)</a></p>
+<h3 id="Motivate"><a href="#Motivate" class="headerlink" title="Motivate"></a>Motivate</h3><p>提出了DMN+，是DMN的改进版，同时将其应用到 Visual Question Answering 这一任务上。</p>
+<p>However, it was not shown whether the architecture achieves strong results for question answering when supporting facts are not marked during training or whether it could be applied to other modalities such as images.</p>
+<p>这段话是描述DMN的缺点的，在没有标注 supporting facts的情况下表现不好。但是DMN貌似也并不需要标注 supporting facts啊。。。</p>
+<p>Like the original DMN, this memory network requires that supporting facts are labeled during QA training. End-toend memory networks (Sukhbaatar et al., 2015) do not have this limitation.</p>
+<p>Based on an analysis of the DMN, we propose several improvements to its memory and input modules. Together with these changes we introduce a novel input module for images in order to be able to answer visual questions.</p>
+<p>这篇文章对DMN中的 input module进行了修改，并且提出了新的模型架构适用于图像的。</p>
+<p>DMN 存在的两个问题：</p>
+<p>输入模块只考虑了过去信息，没考虑到将来信息</p>
+<p>只用 word level 的 GRU，很难记忆远距离 supporting sentences 之间的信息。</p>
+<p>总的来说这篇文章贡献主要还是在应用到图像上了，至于作者所说的 input module的改进，只是为了减少计算量，而且改进版中的 bi-RNN 和 position encoding 都是在别人的论文中出现了的。</p>
+<h3 id="Model-Architecture-1"><a href="#Model-Architecture-1" class="headerlink" title="Model Architecture"></a>Model Architecture</h3><p>同DMN一样，也分为 input module, question module, episodic module 和 answer module.</p>
+<h4 id="Input-Module-1"><a href="#Input-Module-1" class="headerlink" title="Input Module"></a>Input Module</h4><h5 id="input-module-for-text-QA"><a href="#input-module-for-text-QA" class="headerlink" title="input module for text QA"></a>input module for text QA</h5><p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/10.png"></p>
+<p>主要分为两个组件： sentence reader 和 input fusion layer.</p>
+<p>sentence reader: 用encoding position代替RNN对单个sentence进行编码。用 positional encoding 的原因是在这里用 GRU/LSTM 编码句子计算量大而且容易过拟合（毕竟 bAbI 的单词量很小就几十个单词。。），这种方法反而更好。</p>
+<p>input fusion layer: 使用 bi-directional GRU 来得到context 信息，兼顾过去和未来的信息。</p>
+<p>总的来说： DMN+ 把 single GRU 替换成了类似 hierarchical RNN 结构，一个 sentence reader 得到每个句子的 embedding，一个 input infusion layer 把每个句子的 embedding 放入另一个 GRU 中，得到 context 信息，来解决句子远距离依赖的问题。</p>
+<h5 id="input-module-for-VQA"><a href="#input-module-for-VQA" class="headerlink" title="input module for VQA"></a>input module for VQA</h5><p><img src="/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/11.png"></p>
+<p>1.Local region feature extraction:</p>
+<p>获取局部特征信息，使用VGG预训练得到的特征。局部特征 feature vector 通过一个linear layer 和 tanh activation 得到 feature embedding.</p>
+<p>2.Input fusion layer:</p>
+<p>将 feature embedding 放入到 bi-GRU 中。</p>
+<p>Without global information, their representational power is quite limited, with simple issues like object scaling or locational variance causing accuracy problems.  强调了为什么要使用 input fusion layer.</p>
+<h3 id="Question-Module-1"><a href="#Question-Module-1" class="headerlink" title="Question Module"></a>Question Module</h3><p>这部分跟DMN是一样的, question 都是文本，用RNN编码。</p>
+<h3 id="Episodic-Module"><a href="#Episodic-Module" class="headerlink" title="Episodic Module"></a>Episodic Module</h3><h4 id="score-mechanism"><a href="#score-mechanism" class="headerlink" title="score mechanism"></a>score mechanism</h4><p>input module 的输出是:</p>
+<p>$$\overleftrightarrow F=[\overleftrightarrow f_1, …,\overleftrightarrow f_N]$$</p>
+<p>同DMN一样，作者也是用了人工特征，相比DMN简化一点：</p>
+<p>$$z_i^t=[\overleftrightarrow f_i\circ q,\overleftrightarrow f_i\circ m^{t-1},|\overleftrightarrow f_i-q|,|\overleftrightarrow f_i-m^{i-1}|]$$</p>
+<p>这里与前面DMN的公式有点区别，就是这里的i表示input module中的时间步， t 表示episodic迭代次数。</p>
+<p>同样使用一个两层前向神经网络：</p>
+<p>$$G = W^{(2)}tanh(W^{(1)}z_i^t+b^{(1)})+b^{(2)}$$</p>
+<p>但是这里不是使用 sigmoid 函数来求的 score，而是使用softmax 来求score $g_i^t$.</p>
+<p>$$g_i^t=\dfrac{Z_i^t}{\sum_{k=1}^{M_i}exp(Z_k^t)}$$</p>
+<h4 id="attention-mechanism"><a href="#attention-mechanism" class="headerlink" title="attention mechanism"></a>attention mechanism</h4><p>比较了 soft attention 和 attention-based-GRU.相比DMN那篇论文，这里给出了详细的比较。</p>
+<h5 id="soft-attention-就是简单的加权求和。"><a href="#soft-attention-就是简单的加权求和。" class="headerlink" title="soft attention, 就是简单的加权求和。"></a>soft attention, 就是简单的加权求和。</h5><p>$$c^t=\sum_{i=1}^Ng_i^t\overleftrightarrow f_i$$</p>
+<p>其缺点在于丢失了位置信息和词序信息。</p>
+<p>感觉简单的attention已经很好了吧。。前面 $\overleftrightarrow f_i$ 不就是考虑了词序信息的么，然后再用GRU对 $\overleftrightarrow f_i$ 处理不会过拟合吗？？？</p>
+<h5 id="attention-based-GRU"><a href="#attention-based-GRU" class="headerlink" title="attention based GRU"></a>attention based GRU</h5><p>使用attention gate $g_i^t$ 代替 update gate $u_i$. 我们知道 $u_i$ 是通过 current input 和 previous hidden state得到的。 而使用 attention gate $g_i^t$ 能够考虑到 question 和 previous memory. 因为我们这里是要更新memory， 所以这样很合理呀。。厉害了</p>
+<p>$$h_i=g_i^t\circ \tilde h_i+(1-g_i^t)\circ h_{i-1}$$</p>
+<h4 id="memory-update-mechanism"><a href="#memory-update-mechanism" class="headerlink" title="memory update mechanism"></a>memory update mechanism</h4><p>在DMN中，更新memory在基于 previous memory 和 当前的 context vector 的GRU编码得到的。 DMN+采用的是将 previous memory $m^{t-1}$, 当前 context $c^t$，和question q 拼接起来，然后通过全连接层，以及relu激活函数得到的：</p>
+<p>$$m_t = ReLU(W^t[m^{t-1},c^t,q]+b)$$</p>
+<p>使用relu的全连接层能提升0.5%的准确率。</p>
+<h3 id="Answer-Module-1"><a href="#Answer-Module-1" class="headerlink" title="Answer Module"></a>Answer Module</h3><p>同DMN.</p>
+<p>reference:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.shuang0420.com/2017/12/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20-%20Memory%20Networks/">徐阿衡-论文笔记 - Memory Networks</a></li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>论文笔记 memory networks</p><p><a href="http://www.panxiaoxie.cn/2018/06/10/论文笔记-memory-networks/">http://www.panxiaoxie.cn/2018/06/10/论文笔记-memory-networks/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-06-10</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/MRC-and-QA/">MRC and QA</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/06/25/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Attention-%E7%BB%BC%E8%BF%B0/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">论文笔记 - Attention 综述</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/06/09/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/"><span class="level-item">SCAPP-02-信息的表示和处理</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://www.panxiaoxie.cn/2018/06/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-memory-networks/';
+            this.page.identifier = '2018/06/10/论文笔记-memory-networks/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'panxie' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="潘小榭"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">潘小榭</p><p class="is-size-6 is-block">Blogging is happier than writing essays!</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">110</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">31</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">November 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">October 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">August 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">June 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">May 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/04/"><span class="level-start"><span class="level-item">April 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/03/"><span class="level-start"><span class="level-item">March 2019</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">February 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">January 2019</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">November 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">October 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/09/"><span class="level-start"><span class="level-item">September 2018</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">August 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/07/"><span class="level-start"><span class="level-item">July 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">March 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DL/"><span class="tag">DL</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ESA/"><span class="tag">ESA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN/"><span class="tag">GAN</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN%EF%BC%8CRL/"><span class="tag">GAN，RL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ML/"><span class="tag">ML</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MRC-and-QA/"><span class="tag">MRC and QA</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Machine-Translation/"><span class="tag">Machine Translation</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">14</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TensorFlow/"><span class="tag">TensorFlow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Tensorflow/"><span class="tag">Tensorflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/capsules/"><span class="tag">capsules</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-augmentation/"><span class="tag">data augmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interview/"><span class="tag">interview</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-translation/"><span class="tag">machine translation</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/open-set-recognition/"><span class="tag">open set recognition</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/reinforcement-learning/"><span class="tag">reinforcement learning</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentence-embedding/"><span class="tag">sentence embedding</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentiment-classification/"><span class="tag">sentiment classification</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/text-matching/"><span class="tag">text matching</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/transfer-learning/"><span class="tag">transfer learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="tag">文本分类</span><span class="tag">8</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>文本分类系列0：NLTK学习和特征工程 - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="计算语言：简单的统计123from nltk.book import *    *** Introductory Examples for the NLTK Book ***  Loading text1, ..., text9 and sent1, ..., sent9  Type the name of the text or sentence to view it.  Type: &amp;#39;"><meta property="og:type" content="blog"><meta property="og:title" content="文本分类系列0：NLTK学习和特征工程"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="计算语言：简单的统计123from nltk.book import *    *** Introductory Examples for the NLTK Book ***  Loading text1, ..., text9 and sent1, ..., sent9  Type the name of the text or sentence to view it.  Type: &amp;#39;"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/output_16_0.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/01.png"><meta property="article:published_time" content="2018-05-25T07:12:40.000Z"><meta property="article:modified_time" content="2021-06-29T08:12:08.522Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="文本分类"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/output_16_0.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"},"headline":"文本分类系列0：NLTK学习和特征工程","image":["http://www.panxiaoxie.cn/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/output_16_0.png","http://www.panxiaoxie.cn/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/01.png"],"datePublished":"2018-05-25T07:12:40.000Z","dateModified":"2021-06-29T08:12:08.522Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"计算语言：简单的统计123from nltk.book import *    *** Introductory Examples for the NLTK Book ***  Loading text1, ..., text9 and sent1, ..., sent9  Type the name of the text or sentence to view it.  Type: &#39;"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2018-05-25T07:12:40.000Z" title="2018/5/25 下午3:12:40">2018-05-25</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.522Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/">文本分类</a></span><span class="level-item">19 minutes read (About 2870 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">文本分类系列0：NLTK学习和特征工程</h1><div class="content"><h3 id="计算语言：简单的统计"><a href="#计算语言：简单的统计" class="headerlink" title="计算语言：简单的统计"></a>计算语言：简单的统计</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> nltk.book <span class="keyword">import</span> *</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>*** Introductory Examples for the NLTK Book ***
+
+Loading text1, ..., text9 and sent1, ..., sent9
+
+Type the name of the text or sentence to view it.
+
+Type: &#39;texts()&#39; or &#39;sents()&#39; to list the materials.
+
+text1: Moby Dick by Herman Melville 1851
+
+text2: Sense and Sensibility by Jane Austen 1811
+
+text3: The Book of Genesis
+
+text4: Inaugural Address Corpus
+
+text5: Chat Corpus
+
+text6: Monty Python and the Holy Grail
+
+text7: Wall Street Journal
+
+text8: Personals Corpus
+
+text9: The Man Who Was Thursday by G . K . Chesterton 1908
+</code></pre>
+<p>找出text1,《白鲸记》中的词monstrous，以及其上下文</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">text1.concordance(<span class="string">&quot;monstrous&quot;</span>, width=<span class="number">40</span>, lines=<span class="number">10</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>Displaying 10 of 11 matches:
+
+ was of a most monstrous size . ... Thi
+
+ Touching that monstrous bulk of the wh
+
+enish array of monstrous clubs and spea
+
+ wondered what monstrous cannibal and s
+
+e flood ; most monstrous and most mount
+
+Moby Dick as a monstrous fable , or sti
+
+PTER 55 Of the Monstrous Pictures of Wh
+
+exion with the monstrous pictures of wh
+
+ose still more monstrous stories of the
+
+ed out of this monstrous cabinet there
+</code></pre>
+<p>找出text1中与monstrous具有相同语境的词。比如monstrous的上下文 the __ pictures, the __ size. 同样在text1中与monstrous类似的上下文的词。很好奇这个是怎么实现的？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">similar</span>(<span class="params">self, word, num=<span class="number">20</span></span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Distributional similarity: find other words which appear in the</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    same contexts as the specified word; list most similar words first.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">text1.similar(<span class="string">&quot;monstrous&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>true contemptible christian abundant few part mean careful puzzled
+
+mystifying passing curious loving wise doleful gamesome singular
+
+delightfully perilous fearless
+</code></pre>
+<p>共用两个或两个以上词汇的上下文，如monstrous和very</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">text2.common_contexts([<span class="string">&quot;monstrous&quot;</span>, <span class="string">&quot;very&quot;</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>a_pretty am_glad a_lucky is_pretty be_glad
+</code></pre>
+<p>自动检测出现在文本中的特定词，并显示同一上下文中出现的其他词。text4是《就职演说语料》，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line"></span><br><span class="line">    text4.dispersion_plot([<span class="string">&quot;citizens&quot;</span>, <span class="string">&quot;liberty&quot;</span>, <span class="string">&quot;freedom&quot;</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<pre><code>&lt;matplotlib.figure.Figure at 0x7f3794818588&gt;
+</code></pre>
+<p>如果不使用 if <strong>name</strong>==”<strong>main</strong>“ 的话会报错``` ‘NoneType’ object has no attribute ‘show’</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```python</span><br><span class="line"></span><br><span class="line">fdist1 = FreqDist(text1)</span><br><span class="line"></span><br><span class="line">vocabulary1 = list(fdist1.keys())  # keys() 返回key值组成的list</span><br><span class="line"></span><br><span class="line">print(vocabulary1[:10])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[&#39;[&#39;, &#39;Moby&#39;, &#39;Dick&#39;, &#39;by&#39;, &#39;Herman&#39;, &#39;Melville&#39;, &#39;1851&#39;, &#39;]&#39;, &#39;ETYMOLOGY&#39;, &#39;.&#39;]
+</code></pre>
+<p>需要加list，不然回报错，<code>“TypeError: &#39;dict_keys&#39; object is not subscriptable”</code></p>
+<p>dict.keys() returns an iteratable but not indexable object. The most simple (but not so efficient) solution would be:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 同样的道理这里也需要加list，因为生成的&lt;class &#x27;dict_items&#x27;&gt;z在python3中是迭代器</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(fdist1.items()))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(fdist1.items())[:<span class="number">10</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>&lt;class &#39;dict_items&#39;&gt;
+
+[(&#39;[&#39;, 3), (&#39;Moby&#39;, 84), (&#39;Dick&#39;, 84), (&#39;by&#39;, 1137), (&#39;Herman&#39;, 1), (&#39;Melville&#39;, 1), (&#39;1851&#39;, 3), (&#39;]&#39;, 1), (&#39;ETYMOLOGY&#39;, 1), (&#39;.&#39;, 6862)]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># dict.items() 实际上是将dict转换为可迭代对象list，list的对象是 (&#x27;[&#x27;, 3), (&#x27;Moby&#x27;, 84), (&#x27;Dick&#x27;, 84), (&#x27;by&#x27;, 1137)这样的</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这下总能记住dict按照value排序了吧。。。尴尬，以前居然没弄懂？？</span></span><br><span class="line"></span><br><span class="line">fdist_sorted = <span class="built_in">sorted</span>(fdist1.items(), key=<span class="keyword">lambda</span> item:item[<span class="number">1</span>], reverse=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(fdist_sorted[:<span class="number">10</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[(&#39;,&#39;, 18713), (&#39;the&#39;, 13721), (&#39;.&#39;, 6862), (&#39;of&#39;, 6536), (&#39;and&#39;, 6024), (&#39;a&#39;, 4569), (&#39;to&#39;, 4542), (&#39;;&#39;, 4072), (&#39;in&#39;, 3916), (&#39;that&#39;, 2982)]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 这个就是按照key排序。</span></span><br><span class="line"></span><br><span class="line">fdist_sorted2 = <span class="built_in">sorted</span>(fdist1.keys(), reverse=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(fdist_sorted2[:<span class="number">10</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[&#39;zoology&#39;, &#39;zones&#39;, &#39;zoned&#39;, &#39;zone&#39;, &#39;zodiac&#39;, &#39;zig&#39;, &#39;zephyr&#39;, &#39;zeal&#39;, &#39;zay&#39;, &#39;zag&#39;]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">fdist1.plot(<span class="number">20</span>, cumulative=<span class="literal">True</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/output_16_0.png" alt="png"></p>
+<p>可以看到高频词大都是无用的停用词</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 低频词 fdist.hapaxes() 出现次数为1的词</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(fdist1.hapaxes()))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> fdist1.hapaxes():</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> fdist1[i] <span class="keyword">is</span> <span class="keyword">not</span> <span class="number">1</span>:</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;hh&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>9002
+</code></pre>
+<p>可以看到低频词也很多，而且大都也是很无用的词。</p>
+<h4 id="词语搭配"><a href="#词语搭配" class="headerlink" title="词语搭配"></a>词语搭配</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">list</span>(bigrams([<span class="string">&#x27;more&#x27;</span>, <span class="string">&#x27;is&#x27;</span>, <span class="string">&#x27;sad&#x27;</span>, <span class="string">&#x27;than&#x27;</span>, <span class="string">&#x27;done&#x27;</span>]))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<pre><code>[(&#39;more&#39;, &#39;is&#39;), (&#39;is&#39;, &#39;sad&#39;), (&#39;sad&#39;, &#39;than&#39;), (&#39;than&#39;, &#39;done&#39;)]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">text4.collocations(window_size=<span class="number">4</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>United States; fellow citizens; four years; years ago; men women;
+
+Federal Government; General Government; self government; Vice
+
+President; American people; every citizen; within limits; Old World;
+
+Almighty God; Fellow citizens; Chief Magistrate; Chief Justice; one
+
+another; Declaration Independence; protect defend
+</code></pre>
+<p>文本4是就职演说语料，可以看到n-grams能够很好的展现出文本的特性，说明n-grams是不错的特征。</p>
+<p>collections()源码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">collocations</span>(<span class="params">self, num=<span class="number">20</span>, window_size=<span class="number">2</span></span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Print collocations derived from the text, ignoring stopwords.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :seealso: find_collocations</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :param num: The maximum number of collocations to print.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :type num: int</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :param window_size: The number of tokens spanned by a collocation (default=2)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :type window_size: int</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> (<span class="string">&#x27;_collocations&#x27;</span> <span class="keyword">in</span> self.__dict__ <span class="keyword">and</span> self._num == num <span class="keyword">and</span> self._window_size == window_size):</span><br><span class="line"></span><br><span class="line">        self._num = num</span><br><span class="line"></span><br><span class="line">        self._window_size = window_size</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">#print(&quot;Building collocations list&quot;)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> stopwords</span><br><span class="line"></span><br><span class="line">        ignored_words = stopwords.words(<span class="string">&#x27;english&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        finder = BigramCollocationFinder.from_words(self.tokens, window_size)</span><br><span class="line"></span><br><span class="line">        finder.apply_freq_filter(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        finder.apply_word_filter(<span class="keyword">lambda</span> w: <span class="built_in">len</span>(w) &lt; <span class="number">3</span> <span class="keyword">or</span> w.lower() <span class="keyword">in</span> ignored_words)</span><br><span class="line"></span><br><span class="line">        bigram_measures = BigramAssocMeasures()</span><br><span class="line"></span><br><span class="line">        self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)</span><br><span class="line"></span><br><span class="line">    colloc_strings = [w1+<span class="string">&#x27; &#x27;</span>+w2 <span class="keyword">for</span> w1, w2 <span class="keyword">in</span> self._collocations]</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(tokenwrap(colloc_strings, separator=<span class="string">&quot;; &quot;</span>))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="自动理解自然语言"><a href="#自动理解自然语言" class="headerlink" title="自动理解自然语言"></a>自动理解自然语言</h3><ul>
+<li><p>词义消歧 Ambiguity 关于词义消歧的理解可以看之前的笔记<a href="http://www.panxiaoxie.cn/2018/04/20/chapter12-%E5%8F%A5%E6%B3%95%E5%88%86%E6%9E%90/">chapter12-句法分析</a></p>
+</li>
+<li><p>指代消解 anaphora resolution</p>
+</li>
+<li><p>自动问答</p>
+</li>
+<li><p>机器翻译</p>
+</li>
+<li><p>人机对话系统</p>
+</li>
+</ul>
+<h3 id="获得文本语料和词汇资源"><a href="#获得文本语料和词汇资源" class="headerlink" title="获得文本语料和词汇资源"></a>获得文本语料和词汇资源</h3><h4 id="布朗语料库"><a href="#布朗语料库" class="headerlink" title="布朗语料库"></a>布朗语料库</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> brown</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>有以下这些类别的文本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">print</span>(brown.categories())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[&#39;adventure&#39;, &#39;belles_lettres&#39;, &#39;editorial&#39;, &#39;fiction&#39;, &#39;government&#39;, &#39;hobbies&#39;, &#39;humor&#39;, &#39;learned&#39;, &#39;lore&#39;, &#39;mystery&#39;, &#39;news&#39;, &#39;religion&#39;, &#39;reviews&#39;, &#39;romance&#39;, &#39;science_fiction&#39;]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> nltk</span><br><span class="line"></span><br><span class="line">news_text = brown.words(categories=<span class="string">&quot;news&quot;</span>)</span><br><span class="line"></span><br><span class="line">fdist_news = nltk.FreqDist([w.lower() <span class="keyword">for</span> w <span class="keyword">in</span> news_text])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(fdist_news))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>13112
+</code></pre>
+<h3 id="标注文本语料库"><a href="#标注文本语料库" class="headerlink" title="标注文本语料库"></a>标注文本语料库</h3><p>经过了标注的语料库，有词性标注、命名实体、句法结构、语义角色等。</p>
+<h4 id="分类和标注词汇"><a href="#分类和标注词汇" class="headerlink" title="分类和标注词汇"></a>分类和标注词汇</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">text = nltk.word_tokenize(<span class="string">&quot;and now for something completely differences!&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(text)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.pos_tag(text))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[&#39;and&#39;, &#39;now&#39;, &#39;for&#39;, &#39;something&#39;, &#39;completely&#39;, &#39;differences&#39;, &#39;!&#39;]
+
+[(&#39;and&#39;, &#39;CC&#39;), (&#39;now&#39;, &#39;RB&#39;), (&#39;for&#39;, &#39;IN&#39;), (&#39;something&#39;, &#39;NN&#39;), (&#39;completely&#39;, &#39;RB&#39;), (&#39;differences&#39;, &#39;VBZ&#39;), (&#39;!&#39;, &#39;.&#39;)]
+</code></pre>
+<h5 id="词性标注"><a href="#词性标注" class="headerlink" title="词性标注"></a>词性标注</h5><p>NLTK中采用的方法可参考：<a target="_blank" rel="noopener" href="https://explosion.ai/blog/part-of-speech-pos-tagger-in-python">A Good Part-of-Speech Tagger in about 200 Lines of Python</a></p>
+<p>对于一些同形同音异义词，通过词性标注能消除歧义.很多文本转语音系统通常需要进行词性标注，因为不同意思发音会不太一样。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">text1 = nltk.word_tokenize(<span class="string">&quot;They refuse to permit us tpo obtain the refuse permit&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.pos_tag(text1))</span><br><span class="line"></span><br><span class="line">text2 = nltk.word_tokenize(<span class="string">&quot;They refuse to permit us to obtain the refuse permit&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.pos_tag(text2))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[(&#39;They&#39;, &#39;PRP&#39;), (&#39;refuse&#39;, &#39;VBP&#39;), (&#39;to&#39;, &#39;TO&#39;), (&#39;permit&#39;, &#39;VB&#39;), (&#39;us&#39;, &#39;PRP&#39;), (&#39;tpo&#39;, &#39;VB&#39;), (&#39;obtain&#39;, &#39;VB&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;refuse&#39;, &#39;NN&#39;), (&#39;permit&#39;, &#39;NN&#39;)]
+
+[(&#39;They&#39;, &#39;PRP&#39;), (&#39;refuse&#39;, &#39;VBP&#39;), (&#39;to&#39;, &#39;TO&#39;), (&#39;permit&#39;, &#39;VB&#39;), (&#39;us&#39;, &#39;PRP&#39;), (&#39;to&#39;, &#39;TO&#39;), (&#39;obtain&#39;, &#39;VB&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;refuse&#39;, &#39;NN&#39;), (&#39;permit&#39;, &#39;NN&#39;)]
+</code></pre>
+<h5 id="获取已经标注好的语料库"><a href="#获取已经标注好的语料库" class="headerlink" title="获取已经标注好的语料库"></a>获取已经标注好的语料库</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.corpus.brown.tagged_words())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[(&#39;The&#39;, &#39;AT&#39;), (&#39;Fulton&#39;, &#39;NP-TL&#39;), ...]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.corpus.treebank.tagged_words())</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.corpus.treebank.tagged_sents()[<span class="number">0</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[(&#39;Pierre&#39;, &#39;NNP&#39;), (&#39;Vinken&#39;, &#39;NNP&#39;), (&#39;,&#39;, &#39;,&#39;), ...]
+
+[(&#39;Pierre&#39;, &#39;NNP&#39;), (&#39;Vinken&#39;, &#39;NNP&#39;), (&#39;,&#39;, &#39;,&#39;), (&#39;61&#39;, &#39;CD&#39;), (&#39;years&#39;, &#39;NNS&#39;), (&#39;old&#39;, &#39;JJ&#39;), (&#39;,&#39;, &#39;,&#39;), (&#39;will&#39;, &#39;MD&#39;), (&#39;join&#39;, &#39;VB&#39;), (&#39;the&#39;, &#39;DT&#39;), (&#39;board&#39;, &#39;NN&#39;), (&#39;as&#39;, &#39;IN&#39;), (&#39;a&#39;, &#39;DT&#39;), (&#39;nonexecutive&#39;, &#39;JJ&#39;), (&#39;director&#39;, &#39;NN&#39;), (&#39;Nov.&#39;, &#39;NNP&#39;), (&#39;29&#39;, &#39;CD&#39;), (&#39;.&#39;, &#39;.&#39;)]
+</code></pre>
+<p>查看brown语料库中新闻类最常见的词性</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">brown_news_tagged = brown.tagged_words(categories=<span class="string">&#x27;news&#x27;</span>, tagset=<span class="string">&#x27;universal&#x27;</span>)</span><br><span class="line"></span><br><span class="line">tag_fd = nltk.FreqDist(tag <span class="keyword">for</span> (word, tag) <span class="keyword">in</span> brown_news_tagged)</span><br><span class="line"></span><br><span class="line">tag_fd.keys()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<pre><code>dict_keys([&#39;DET&#39;, &#39;NOUN&#39;, &#39;ADJ&#39;, &#39;VERB&#39;, &#39;ADP&#39;, &#39;.&#39;, &#39;ADV&#39;, &#39;CONJ&#39;, &#39;PRT&#39;, &#39;PRON&#39;, &#39;NUM&#39;, &#39;X&#39;])
+</code></pre>
+<h3 id="文本分类"><a href="#文本分类" class="headerlink" title="文本分类"></a>文本分类</h3><h4 id="朴素贝叶斯分类"><a href="#朴素贝叶斯分类" class="headerlink" title="朴素贝叶斯分类"></a>朴素贝叶斯分类</h4><p>选取特征，将名字的最后一个字母作为特征. 返回的字典称为特征集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gender_features</span>(<span class="params">word</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&#x27;last_letter&#x27;</span>:word[-<span class="number">1</span>]&#125;</span><br><span class="line"></span><br><span class="line">gender_features(<span class="string">&#x27;Shrek&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>&#123;&#39;last_letter&#39;: &#39;k&#39;&#125;
+</code></pre>
+<p>定义一个特征提取器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> names</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line">names = ([(name, <span class="string">&#x27;male&#x27;</span>) <span class="keyword">for</span> name <span class="keyword">in</span> names.words(<span class="string">&#x27;male.txt&#x27;</span>)] +</span><br><span class="line"></span><br><span class="line">        [(name, <span class="string">&#x27;female&#x27;</span>) <span class="keyword">for</span> name <span class="keyword">in</span> names.words(<span class="string">&#x27;female.txt&#x27;</span>)])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.corpus.names.words(<span class="string">&#x27;male.txt&#x27;</span>)[:<span class="number">10</span>])</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(names[:<span class="number">10</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[&#39;Aamir&#39;, &#39;Aaron&#39;, &#39;Abbey&#39;, &#39;Abbie&#39;, &#39;Abbot&#39;, &#39;Abbott&#39;, &#39;Abby&#39;, &#39;Abdel&#39;, &#39;Abdul&#39;, &#39;Abdulkarim&#39;]
+
+[(&#39;Aamir&#39;, &#39;male&#39;), (&#39;Aaron&#39;, &#39;male&#39;), (&#39;Abbey&#39;, &#39;male&#39;), (&#39;Abbie&#39;, &#39;male&#39;), (&#39;Abbot&#39;, &#39;male&#39;), (&#39;Abbott&#39;, &#39;male&#39;), (&#39;Abby&#39;, &#39;male&#39;), (&#39;Abdel&#39;, &#39;male&#39;), (&#39;Abdul&#39;, &#39;male&#39;), (&#39;Abdulkarim&#39;, &#39;male&#39;)]
+</code></pre>
+<p>使用特征提取器处理names数据，并把数据集分为训练集和测试集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 二分类</span></span><br><span class="line"></span><br><span class="line">features = [(gender_features(n), g) <span class="keyword">for</span> (n, g) <span class="keyword">in</span> names]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">train_set, test_set = features[<span class="number">500</span>:], features[:<span class="number">500</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">print</span>(train_set[:<span class="number">10</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[(&#123;&#39;last_letter&#39;: &#39;n&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;e&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;e&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;b&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;b&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;e&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;y&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;y&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;t&#39;&#125;, &#39;male&#39;), (&#123;&#39;last_letter&#39;: &#39;e&#39;&#125;, &#39;male&#39;)]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">classifier = nltk.NaiveBayesClassifier.train(train_set)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 预测一个未出现的名字</span></span><br><span class="line"></span><br><span class="line">classifier.classify(gender_features(<span class="string">&#x27;Pan&#x27;</span>))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<pre><code>&#39;male&#39;
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 测试集上的准确率</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.classify.accuracy(classifier, test_set))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>0.602
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">classifier.show_most_informative_features(<span class="number">5</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>Most Informative Features
+
+             last_letter = &#39;a&#39;            female : male   =     35.5 : 1.0
+
+             last_letter = &#39;k&#39;              male : female =     34.1 : 1.0
+
+             last_letter = &#39;f&#39;              male : female =     15.9 : 1.0
+
+             last_letter = &#39;p&#39;              male : female =     13.5 : 1.0
+
+             last_letter = &#39;v&#39;              male : female =     12.7 : 1.0
+</code></pre>
+<p>构建包含所有实例特征的单独list会占用大量内存，所有应该把这些特征集成起来。</p>
+<h4 id="定义一个特征提取器包含多个特征"><a href="#定义一个特征提取器包含多个特征" class="headerlink" title="定义一个特征提取器包含多个特征"></a>定义一个特征提取器包含多个特征</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 添加多个特征</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> nltk.classify <span class="keyword">import</span> apply_features</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gender_features2</span>(<span class="params">word</span>):</span></span><br><span class="line"></span><br><span class="line">    features = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    features[<span class="string">&#x27;firstletter&#x27;</span>] = word[<span class="number">0</span>].lower()</span><br><span class="line"></span><br><span class="line">    features[<span class="string">&#x27;lastletter&#x27;</span>] = word[-<span class="number">1</span>].lower()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> letter <span class="keyword">in</span> <span class="string">&#x27;abcdefghijklmnopqrstuvwxyz&#x27;</span>:</span><br><span class="line"></span><br><span class="line">        features[<span class="string">&quot;count(%s)&quot;</span>%letter] = word.lower().count(letter)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> features</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gender_features2(<span class="string">&#x27;xiepan&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(gender_features2(<span class="string">&#x27;xiepan&#x27;</span>))) <span class="comment"># 有28个特征， 2+26=28</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>&#123;&#39;firstletter&#39;: &#39;x&#39;, &#39;lastletter&#39;: &#39;n&#39;, &#39;count(a)&#39;: 1, &#39;count(b)&#39;: 0, &#39;count(c)&#39;: 0, &#39;count(d)&#39;: 0, &#39;count(e)&#39;: 1, &#39;count(f)&#39;: 0, &#39;count(g)&#39;: 0, &#39;count(h)&#39;: 0, &#39;count(i)&#39;: 1, &#39;count(j)&#39;: 0, &#39;count(k)&#39;: 0, &#39;count(l)&#39;: 0, &#39;count(m)&#39;: 0, &#39;count(n)&#39;: 1, &#39;count(o)&#39;: 0, &#39;count(p)&#39;: 1, &#39;count(q)&#39;: 0, &#39;count(r)&#39;: 0, &#39;count(s)&#39;: 0, &#39;count(t)&#39;: 0, &#39;count(u)&#39;: 0, &#39;count(v)&#39;: 0, &#39;count(w)&#39;: 0, &#39;count(x)&#39;: 1, &#39;count(y)&#39;: 0, &#39;count(z)&#39;: 0&#125;
+
+28
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 对每个样本进行特征处理</span></span><br><span class="line"></span><br><span class="line">features = [(gender_features(n), g) <span class="keyword">for</span> (n,g) <span class="keyword">in</span> names]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(features))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>7944
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 训练集，开发集和测试集</span></span><br><span class="line"></span><br><span class="line">train_set = features[<span class="number">1500</span>:]</span><br><span class="line"></span><br><span class="line">dev_set = apply_features(gender_features2, names[<span class="number">500</span>:<span class="number">1500</span>])</span><br><span class="line"></span><br><span class="line">test_set = apply_features(gender_features2, names[:<span class="number">500</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">classifier = nltk.NaiveBayesClassifier.train(train_set)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.classify.accuracy(classifier, dev_set))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.classify.accuracy(classifier, test_set))</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(nltk.classify.accuracy(classifier, train_set))  <span class="comment">## 明显过拟合了～</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>0.007
+
+0.008
+
+0.883302296710118
+</code></pre>
+<h3 id="文档分类"><a href="#文档分类" class="headerlink" title="文档分类"></a>文档分类</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">from</span> nltk.corpus <span class="keyword">import</span> movie_reviews</span><br><span class="line"></span><br><span class="line">documents = [(<span class="built_in">list</span>(movie_reviews.words(fileid)), category) <span class="keyword">for</span> category <span class="keyword">in</span> movie_reviews.categories()</span><br><span class="line"></span><br><span class="line">             <span class="keyword">for</span> fileid <span class="keyword">in</span> movie_reviews.fileids(category) ]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">movie_reviews.categories()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<pre><code>[&#39;neg&#39;, &#39;pos&#39;]
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">neg_docu = movie_reviews.fileids(<span class="string">&#x27;neg&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(neg_docu))   <span class="comment"># neg类别的文档数　1000</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(documents))  <span class="comment">#　总的文档数    1000</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">len</span>(movie_reviews.words(neg_docu[<span class="number">0</span>])) <span class="comment"># 第一个文件中单词数  879</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<pre><code>1000
+
+2000
+
+879
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">random.shuffle(documents)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="文档分类的特征提取器"><a href="#文档分类的特征提取器" class="headerlink" title="文档分类的特征提取器"></a>文档分类的特征提取器</h4><p>所谓特征提取器实际上就是将文档原本的内容用认为选定的特征来表示。然后用分类器找出这些特征和对应类标签的映射关系。</p>
+<p>那么什么样的特征才是好的特征，这就是特征工程了吧。</p>
+<h4 id="文本分类概述"><a href="#文本分类概述" class="headerlink" title="文本分类概述"></a>文本分类概述</h4><p>文本分类，顾名思义，就是根据文本内容本身将文本归为不同的类别，通常是有监督学习的任务。根据文本内容的长短，有做句子、段落或者文章的分类；文本的长短不同可能会导致文本可抽取的特征上的略微差异，<strong>但是总体上来说，文本分类的核心都是如何从文本中抽取出能够体现文本特点的关键特征，抓取特征到类别之间的映射。</strong> 所以，特征工程就显得非常重要，特征找的好，分类效果也会大幅提高（当然前提是标注数据质量和数量也要合适，数据的好坏决定效果的下限，特征工程决定效果的上限）。</p>
+<p>也许会有人问最近的深度学习技术能够避免我们构造特征这件事，为什么还需要特征工程？深度学习并不是万能的，在NLP领域深度学习技术取得的效果有限（毕竟语言是高阶抽象的信息，深度学习在图像、语音这些低阶具体的信息处理上更适合，因为在低阶具体的信息上构造特征是一件费力的事情），并不是否认深度学习在NLP领域上取得的成绩，工业界现在通用的做法都是会把深度学习模型作为系统的一个子模块（也是一维特征），和一些传统的基于统计的自然语言技术的特征，还有一些针对具体任务本身专门设计的特征，一起作为一个或多个模型（也称Ensemble，即模型集成）的输入，最终构成一个文本处理系统。</p>
+<h4 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h4><p>那么，对于文本分类任务而言，工业界常用到的特征有哪些呢？下面用一张图以概括：</p>
+<p><img src="/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/01.png"></p>
+<p>我主要将这些特征分为四个层次，由下往上，特征由抽象到具体，粒度从细到粗。我们希望能够从不同的角度和纬度来设计特征，以捕捉这些特征和类别之间的关系。下面详细介绍这四个层次上常用到的特征表示。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>文本分类系列0：NLTK学习和特征工程</p><p><a href="http://www.panxiaoxie.cn/2018/05/25/文本分类系列0：NLTK学习和特征工程/">http://www.panxiaoxie.cn/2018/05/25/文本分类系列0：NLTK学习和特征工程/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-05-25</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/">文本分类</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/05/30/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%972-textCNN/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">文本分类系列2-textCNN</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/05/23/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%971-fasttext/"><span class="level-item">文本分类系列1-fasttext</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://www.panxiaoxie.cn/2018/05/25/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E7%B3%BB%E5%88%970%EF%BC%9ANLTK%E5%AD%A6%E4%B9%A0%E5%92%8C%E7%89%B9%E5%BE%81%E5%B7%A5%E7%A8%8B/';
+            this.page.identifier = '2018/05/25/文本分类系列0：NLTK学习和特征工程/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'panxie' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="潘小榭"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">潘小榭</p><p class="is-size-6 is-block">Blogging is happier than writing essays!</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">110</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">31</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">November 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">October 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">August 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">June 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">May 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/04/"><span class="level-start"><span class="level-item">April 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/03/"><span class="level-start"><span class="level-item">March 2019</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">February 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">January 2019</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">November 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">October 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/09/"><span class="level-start"><span class="level-item">September 2018</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">August 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/07/"><span class="level-start"><span class="level-item">July 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">March 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DL/"><span class="tag">DL</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ESA/"><span class="tag">ESA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN/"><span class="tag">GAN</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN%EF%BC%8CRL/"><span class="tag">GAN，RL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ML/"><span class="tag">ML</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MRC-and-QA/"><span class="tag">MRC and QA</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Machine-Translation/"><span class="tag">Machine Translation</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">14</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TensorFlow/"><span class="tag">TensorFlow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Tensorflow/"><span class="tag">Tensorflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/capsules/"><span class="tag">capsules</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-augmentation/"><span class="tag">data augmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interview/"><span class="tag">interview</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-translation/"><span class="tag">machine translation</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/open-set-recognition/"><span class="tag">open set recognition</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/reinforcement-learning/"><span class="tag">reinforcement learning</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentence-embedding/"><span class="tag">sentence embedding</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentiment-classification/"><span class="tag">sentiment classification</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/text-matching/"><span class="tag">text matching</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/transfer-learning/"><span class="tag">transfer learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="tag">文本分类</span><span class="tag">8</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

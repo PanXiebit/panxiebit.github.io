@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>机器学习-生成模型到高斯判别分析再到GMM和EM算法 - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="生成模型-高斯判别分析GDA- 高斯混合模型GMM- EM算法 在学习生成模型之前，先学习了解下密度估计和高斯混合模型。 生成学习算法(cs229,Ng)生成算法和判别算法的区别举个栗子： 我们要区分elephants(y&amp;#x3D;1)和dogs(y&amp;#x3D;0)  对判别模型（discriminative），以logistic回归为例：   logistic回归模型：$p(y|x;\theta)，h_{\the"><meta property="og:type" content="blog"><meta property="og:title" content="机器学习-生成模型到高斯判别分析再到GMM和EM算法"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="生成模型-高斯判别分析GDA- 高斯混合模型GMM- EM算法 在学习生成模型之前，先学习了解下密度估计和高斯混合模型。 生成学习算法(cs229,Ng)生成算法和判别算法的区别举个栗子： 我们要区分elephants(y&amp;#x3D;1)和dogs(y&amp;#x3D;0)  对判别模型（discriminative），以logistic回归为例：   logistic回归模型：$p(y|x;\theta)，h_{\the"><meta property="og:image" content="http://img.blog.csdn.net/20180316155009910?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcGFueGlhb3hpZQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/GDA.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/GMM2.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/jensen.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em2.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em1.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em3.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em11.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em13.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em12.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em14.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em15.jpeg"><meta property="article:published_time" content="2018-03-29T08:15:26.000Z"><meta property="article:modified_time" content="2021-06-29T08:12:09.140Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="ML"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="http://img.blog.csdn.net/20180316155009910?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcGFueGlhb3hpZQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/"},"headline":"机器学习-生成模型到高斯判别分析再到GMM和EM算法","image":["http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/GDA.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/GMM2.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/jensen.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em2.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em1.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em3.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em11.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em13.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em12.png","http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em14.png"],"datePublished":"2018-03-29T08:15:26.000Z","dateModified":"2021-06-29T08:12:09.140Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"生成模型-高斯判别分析GDA- 高斯混合模型GMM- EM算法 在学习生成模型之前，先学习了解下密度估计和高斯混合模型。 生成学习算法(cs229,Ng)生成算法和判别算法的区别举个栗子： 我们要区分elephants(y&#x3D;1)和dogs(y&#x3D;0)  对判别模型（discriminative），以logistic回归为例：   logistic回归模型：$p(y|x;\\theta)，h_{\\the"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2018-03-29T08:15:26.000Z" title="2018/3/29 下午4:15:26">2018-03-29</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:09.140Z" title="2021/6/29 下午4:12:09">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/ML/">ML</a></span><span class="level-item">40 minutes read (About 5973 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">机器学习-生成模型到高斯判别分析再到GMM和EM算法</h1><div class="content"><p>生成模型-高斯判别分析GDA- 高斯混合模型GMM- EM算法</p>
+<p>在学习生成模型之前，先学习了解下密度估计和高斯混合模型。</p>
+<h3 id="生成学习算法-cs229-Ng"><a href="#生成学习算法-cs229-Ng" class="headerlink" title="生成学习算法(cs229,Ng)"></a>生成学习算法(cs229,Ng)</h3><h4 id="生成算法和判别算法的区别"><a href="#生成算法和判别算法的区别" class="headerlink" title="生成算法和判别算法的区别"></a>生成算法和判别算法的区别</h4><p>举个栗子：</p>
+<p>我们要区分elephants(y=1)和dogs(y=0)</p>
+<ol>
+<li>对判别模型（discriminative），以logistic回归为例：</li>
+</ol>
+<ul>
+<li><p>logistic回归模型：$p(y|x;\theta)，h_{\theta}=g(\theta^Tx)$,对应的模型其中g是sigmoid函数。通过logistic回归，我们找到一条决策边界decision boundary，能够区分elephants和dogs.</p>
+</li>
+<li><p>这个学习的过程就是找到表征这个决策过程的参数 $\theta$.</p>
+</li>
+</ul>
+<ol start="2">
+<li>生成模型（generative）：</li>
+</ol>
+<p>同样的我们也是要通过给定的特征x来判别其对应的类别y。但我们换个思路，就是先求p(x|y),也就是通过y来分析对应x满足的一个概率模型p(x|y)。然后在反过来看特征x，以二分类为例，p(x|y=0)和p(x|y=1)哪个概率大，那么x就属于哪一类。</p>
+<ul>
+<li><p>模型：p(x|y)，在给定了样本所属的类的条件下，对样本特征建立概率模型。</p>
+</li>
+<li><p>p(x|y=1)是elephants的分类特征模型</p>
+</li>
+<li><p>p(x|y=0)是dogs的分类特征模型</p>
+</li>
+</ul>
+<p>然后通过p(x|y)来判断特征x所属的类别，根据贝叶斯公式：</p>
+<p>$$p(y=1|x) = \dfrac{p(x|y=1)p(x)}{p(x)}$$</p>
+<p>在给定了x的情况下p(x)是个定值，p(y)是先验分布，那么计算方法如下：</p>
+<p>$$arg\max_yp(y|x) = arg\max_{y}\dfrac{p(x|y)p(y)}{p(x)}= arg\max_{y}p(x|y)p(y)$$</p>
+<p>总结下就是：</p>
+<ul>
+<li>生成模型：一般是学习一个代表目标的模型，然后通过它去搜索图像区域，然后最小化重构误差。类似于生成模型描述一个目标，然后就是模式匹配了，在图像中找到和这个模型最匹配的区域，就是目标了。</li>
+</ul>
+<ul>
+<li>判别模型：以分类问题为例，然后找到目标和背景的决策边界。它不管目标是怎么描述的，那只要知道目标和背景的差别在哪，然后你给一个图像，它看它处于边界的那一边，就归为哪一类。</li>
+</ul>
+<ul>
+<li> 由生成模型可以得到判别模型，但由判别模型得不到生成模型。</li>
+</ul>
+<p>然鹅，生成模型p(x|y)怎么得到呢？不慌，我们先了解下多维正态分布～</p>
+<h4 id="多维正态分布-the-multivariate-nirmal-distribution"><a href="#多维正态分布-the-multivariate-nirmal-distribution" class="headerlink" title="多维正态分布(the multivariate nirmal distribution)"></a>多维正态分布(the multivariate nirmal distribution)</h4><p><img src="http://img.blog.csdn.net/20180316155009910?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcGFueGlhb3hpZQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast"></p>
+<p>关于一维正态分布怎么推导出多维正态分布的概率密度函数，可参考知乎:<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/36339816">多维高斯分布是如何由一维发展而来的？</a></p>
+<p>首先一维正态分布:</p>
+<p>$p(x) = \dfrac{1}{\sqrt{2\pi}}exp(\dfrac{-x^2}{2})$</p>
+<p>二维标准正态分布，就是两个独立的一维标准正态分布随机变量的联合分布：</p>
+<p>$p(x,y) = p(x)p(y)=\dfrac{1}{2\pi}exp(-\dfrac{x^2+y^2}{2})$</p>
+<p>把两个随机变量组合成一个随机向量：$v=[x\quad y]^T$</p>
+<p>$p(v)=\dfrac{1}{2\pi}exp(-\dfrac{1}{2}v^Tv)\quad$ 显然x,y相互独立的话，就是上面的二维标准正态分布公式～</p>
+<p>然后从标准正态分布推广到一般正态分布，通过一个线性变化：$v=A(x-\mu)$</p>
+<p>$p(x)=\dfrac{|A|}{2\pi}exp[-\dfrac{1}{2}(x-\mu)^TA^TA(x-\mu)]$</p>
+<p>注意前面的系数多了一个|A|（A的行列式）。</p>
+<p>可以证明这个分布的均值为$\mu$，协方差为$(A^TA)^{-1}$。记$\Sigma = (A^TA)^{-1}$，那就有</p>
+<p>$$p(\mathbf{x}) = \frac{1}{2\pi|\Sigma|^{1/2}} \exp \left[ -\frac{1}{2} (\mathbf{x} - \mu) ^T \Sigma^{-1} (\mathbf{x} - \mu) \right]$$</p>
+<p>推广到n维：</p>
+<p>$$p(\mathbf{x}) = \frac{1}{(2\pi)^{n/2}|\Sigma|^{1/2}} \exp \left[ -\frac{1}{2} (\mathbf{x} - \mu) ^T \Sigma^{-1} (\mathbf{x} - \mu) \right]$$</p>
+<blockquote>
+<p>需要注意的是：这里的二维、n维到底指的是什么？</p>
+</blockquote>
+<ul>
+<li><p>以飞机检测的数据点为例，假设它由heat和time决定，那么这就是个二维正态分布，数据点的生成所处的位置由其概率决定，也就是$p(\mathbf{x})$</p>
+</li>
+<li><p>如果这个数据有n个特征，那么其分布就是n维正态分布。</p>
+</li>
+<li><p>之前一直理解的是，n维正态分布是两个向量巴拉巴拉。。好像一直没搞懂。。</p>
+</li>
+</ul>
+<p>再顺便了解下协方差矩阵吧～</p>
+<h4 id="关于协方差矩阵，参考blog"><a href="#关于协方差矩阵，参考blog" class="headerlink" title="关于协方差矩阵，参考blog"></a>关于协方差矩阵，<a target="_blank" rel="noopener" href="http://blog.csdn.net/zhengjihao/article/details/78030918">参考blog</a></h4><p>对多维随机变量$X=[X_1,X_2,…,X_n]^T$，我们往往需要计算各维度之间的协方差，这样协方差就组成了一个n×n的矩阵，称为协方差矩阵。协方差矩阵是一个对角矩阵，对角线上的元素是各维度上随机变量的方差,非对角线元素是维度之间的协方差。 我们定义协方差为$\Sigma$, 矩阵内的元素$\Sigma_{ij}$为:</p>
+<p>$$\Sigma_{ij} = cov(X_i,X_j) = E[(X_i - E(X_i)) (X_j - E(X_j))]$$</p>
+<p>则协方差矩阵为:</p>
+<p>$$\Sigma = E[(X-E(X)) (X-E(X))^T]$$</p>
+<p>$$= \left[</p>
+<p>\begin{array}{cccc}</p>
+<p>cov(X_1,X_1) &amp; cov(X_1,X_2) &amp; \cdots &amp; cov(X_1,X_n) \</p>
+<p>cov(X_2,X_1) &amp; cov(X_2,X_2) &amp; \cdots &amp;cov(X_2,X_n) \</p>
+<p>\vdots &amp; \vdots&amp; \vdots &amp; \vdots \</p>
+<p>cov(X_n,X_1) &amp; cov(X_n,X_2,)&amp;\cdots&amp; cov(X_n,X_n)</p>
+<p>\end{array}</p>
+<p>\right]</p>
+<p>$$</p>
+<p>如果X~$N(\mu,\Sigma)$,则$Cov(X)=\Sigma$</p>
+<p>可以这么理解协方差，对于n维随机变量X，第一维是体重$X_1$，第二维是颜值$X_2$，显然这两个维度是有一定联系的，就用$cov(X_1,X_2)$来表征，这个值越小，代表他们越相似。协方差怎么求，假设有m个样本，那么所有的样本的第一维就构成$X_1$…不要把$X_1$和样本搞混淆了。</p>
+<p>了解了多维正态分布和协方差，我们再回到生成模型p(x|y)。。其实我们就是假设对于n维特征，p(x|y)是n维正态分布～怎么理解呢，下面就说！</p>
+<h4 id="高斯判别分析模型The-Gaussian-Discriminant-Analysis-model"><a href="#高斯判别分析模型The-Gaussian-Discriminant-Analysis-model" class="headerlink" title="高斯判别分析模型The Gaussian Discriminant Analysis model"></a>高斯判别分析模型The Gaussian Discriminant Analysis model</h4><p>高斯判别模型就是：假设p(x|y)是一个多维正态分布，为什么可以这么假设呢？因为对于给定y的条件下对应的特征x都是用来描述这一类y的，比如特征是n维的，第一维描述身高，一般都是满足正态分布的吧，第二维描述体重，也可认为是正态分布吧～</p>
+<p>则生成模型：</p>
+<p>y ~ Bernoulli($\phi)$ 伯努利分布，又称两点分布，0-1分布</p>
+<p>x|y=0 ~ $N(u_0,\Sigma)$</p>
+<p>x|y=1 ~ $N(u_1,\Sigma)$</p>
+<ul>
+<li>这里可以看作是一个二分类，y=0和y=1,可以看作是伯努利分布，则$p(y)=\phi^y(1-\phi)^{1-y}$，要学的参数之一: $\phi=p(y=1)$，试想如果是多分类呢，那么要学习的参数就有$\phi_1,\phi_2,….\phi_k$</li>
+</ul>
+<ul>
+<li>其中类别对应的特征x|y=0,x|y=1服从正态分布。怎么理解呢？就是既然你们都是一类人，那么你们的身高啊，体重啊等等应该满足正态分布。。有几维特征就满足几维正态分布</li>
+</ul>
+<ul>
+<li>这里x是n维特征，身高，体重，颜值…balabala，所以x|y=0满足n维正态分布～x|y=1也是啦，只不过对于不同的类，对应n维特征的均值不一样，奇怪为什么协方差矩阵是一样的？？这里是将它特殊化了，后面会讲的一般性的em算法就不是这样的了</li>
+</ul>
+<ul>
+<li>每个分类对应的n维特征的分布显然不是独立的，比如体重和颜值还是有关系的吧～他们的协方差，方差就统统都在$\Sigma$协方差矩阵里面了</li>
+</ul>
+<p>$$p(x|y=0) = \frac{1}{(2\pi)^{n/2}|\Sigma|^{1/2}} \exp \left[ -\frac{1}{2} (x - \mu_0) ^T \Sigma^{-1} (x - \mu_0) \right]$$</p>
+<p>$$p(x|y=1) = \frac{1}{(2\pi)^{n/2}|\Sigma|^{1/2}} \exp \left[ -\frac{1}{2} (x - \mu_1) ^T \Sigma^{-1} (x - \mu_1) \right]$$</p>
+<p>这样，模型中我们要学习的参数有$\phi,\Sigma, \mu_0,\mu_1$，对于训练数据，就是观测到的数据x,y，既然他们出现了，那么他们的联合概率，也就是似然函数$\prod_{i=1}^mp(x,y)$就要最大～其对数似然log-likelihood：</p>
+<p>$$\begin{equation}\begin{aligned}</p>
+<p>L(\phi,\Sigma, \mu_0,\mu_1) &amp;= log\prod_{i=1}^mp(x^{(i)},y^{(i)};\phi,\Sigma, \mu_0,\mu_1$) \</p>
+<p>  &amp;= log\prod_{i=1}^mp(x^{(i)}|y^{(i)};\phi,\Sigma, \mu_0,\mu_1$) p(y^{(i)};\phi)\</p>
+<p>\end{aligned}\end{equation}\label{eq2}$$</p>
+<p>其中$p(y^{(i)};\phi)$是已知的，也就是先验概率(class priors)，$p(x^{(i)}|y^{(i)})$就是上面推导的～代入后，分别对参数求导即可：</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/GDA.png"></p>
+<p>在回过头来看这些公式，</p>
+<ul>
+<li><p>$\phi$很好理解，就是样本中正分类的概率。</p>
+</li>
+<li><p>$\mu_0$就是负分类中x对应的均值</p>
+</li>
+<li><p>$\mu_1$就是正分类中x对应的均值</p>
+</li>
+<li><p>$\Sigma$就是$(x-\mu_1)$和$x-\mu_2$的协方差矩阵</p>
+</li>
+</ul>
+<p>然后通过p(x|y=0),p(x|y=1)即可对需要预测的x求出对应的概率，然后做出判别了。这样看来，如果直接对x|y=1,和x|y=0做出了正态分布的猜测，就可以直接写出来了。只不过，我们用极大似然估计重新推导了一遍。</p>
+<h3 id="高斯混合模型GMM"><a href="#高斯混合模型GMM" class="headerlink" title="高斯混合模型GMM"></a>高斯混合模型GMM</h3><h4 id="GMM"><a href="#GMM" class="headerlink" title="GMM"></a>GMM</h4><p>前面GDA是有标签的，也算是有监督学习。而在没有标签的情况下呢，就是无监督学习了，虽然我们无法给出x所属的类叫啥，但是我们可以判断出哪些x是同一类，以及样本中总共有多少类（虽然这个类数嘛。。类似于k-means的类数，可根据交叉验证选择）。</p>
+<p>其实和GDA非常相似，不过这里没有了类标签，只有一堆样本特征，${x^{(1)},x^{(2)},…,x^{(m)}}$,</p>
+<p>我们不知道这些样本属于几个类别，也不知道有哪些类了。但虽然不知道，我们确定他们是存在的，只是看不见而已。我们可以假设存在k类，${z^{(1)},z^{(2)},…,z^{(k)}}$,看不见的，我们就叫它们隐藏随机变量(latent random variable)，</p>
+<p>这样一来，就训练样本就可以用这样的联合分概率模型表示了，$p(x^{(i)},z^{(i)})=p(x^{(i)}|z^{(i)})p(z^{(i)})$</p>
+<ul>
+<li>同GDA不一样的是，这里是多分类，可假定$z^{(i)}\sim Multinomial(\phi)$，多项式分布（二项分布的拓展～），那么$p(z^{(i)})=\phi_j$</li>
+</ul>
+<ul>
+<li>同GDA相同的是，对于每一个类别，其对应的样本满足n维正态分布，也就是：$x^{(i)}|z^{(i)}=j\sim N(\mu_j,\Sigma_j)$,但注意哦，这里每个高斯分布使用了不同的协方差矩阵$\Sigma_j$</li>
+</ul>
+<p>$$p(x|z^{(1)}) = \frac{1}{(2\pi)^{n/2}|\Sigma_0|^{1/2}} \exp \left[ -\frac{1}{2} (x - \mu_0) ^T \Sigma_0^{-1} (x - \mu_0) \right]$$</p>
+<p>$$p(x|z^{(2)}) = \frac{1}{(2\pi)^{n/2}|\Sigma_1|^{1/2}} \exp \left[ -\frac{1}{2} (x - \mu_1) ^T \Sigma_1^{-1} (x - \mu_1) \right]$$</p>
+<p>$$….$$</p>
+<p>$$p(x|z^{(k)}) = \frac{1}{(2\pi)^{n/2}|\Sigma_k|^{1/2}} \exp \left[ -\frac{1}{2} (x - \mu_k) ^T \Sigma_k^{-1} (x - \mu_k) \right]$$</p>
+<p>然后带入到训练样本的对数似然（log-likelihood）:</p>
+<p>$$L(\phi,\mu,\Sigma)=\sum_{i=1}^{m}logp(x^{(i)};\phi,\mu,\Sigma)$$</p>
+<p>$$L(\phi,\mu,\Sigma)=\sum_{i=1}^{m}log\sum_{z^{(i)}=1}^{k}p(x^{(i)}|z^{(i)};\mu,\Sigma) p(z^{(i)};\phi)\$$</p>
+<p>这里需要注意下标：对于类别有k类，第一个求和符号是对第i个样本在k个类别上的联合概率，第二个求和符号是m个样本的联合概率。</p>
+<p>我们可以注意到，如果我们知道$z^{(i)}$,那么这个似然函数求极大值就很容易了，类似于高斯判别分析，这里的$z^{(i)}$相当于标签，分别对参数求导可得：</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/GMM2.png"></p>
+<p>其中的参数:</p>
+<ul>
+<li>$1{z^{(i)}=j}$表示第i个样本为j类时，这个值就为１，那么$\phi_j=\frac{1}{m}\sum_{i=1}^m1{z^{(i)}=j}$表示样本中类别为j的概率</li>
+</ul>
+<ul>
+<li>其中$p(z^{(i)};\phi)$是根据伯努利分布得到的，在GDA中$p(y|\phi)$是已知的频率概率。</li>
+</ul>
+<p>So $z^{(i)}$ 到底有多少个分类？每个类别的概率是多少？譬如上式中 $\sum_{i=1}^{m}1{z^{(i)}=j}$ 这个没法求对吧～它是隐藏变量！所以还是按照这个方法是求不出来的～</p>
+<p>这个时候EM算法就登场了～～～</p>
+<h4 id="用EM算法求解GMM模型"><a href="#用EM算法求解GMM模型" class="headerlink" title="用EM算法求解GMM模型"></a>用EM算法求解GMM模型</h4><p>上面也提到了，如果$z^({i})$是已知的话，那么$\phi_j=\frac{1}{m}\sum_{i=1}^m1{z^{(i)}=j}$表示类别j的概率$p(z^{(i)}=j)$也就已知了，但是呢？我们不知道。。所以我们要猜测$p(z^{(i)}=j)$这个值，也就是EM算法的第一步：</p>
+<p><strong>Repeat until convergence 迭代直到收敛:{</strong></p>
+<p>(E-step):for each i,j,set:</p>
+<p>$w_j^{(i)}:=p(z^{(i)}=j|x^{(i)};\phi,\mu,\Sigma)$</p>
+<p>$w_j^{(i)}$什么意思呢?就是对于i样本,它是j类的后验概率。在GDA里面，x_i的类别是确定的，在GMM里面呢？不知道它的类别，所以只能假设k类都有可能，它是j类别的概率就是$w_j^{(i)}$，它仅仅取决于$\phi_j$,而在GMM里面，它取决于$\phi_j,\mu_j,\Sigma_j$，实际上$w_j^{(i)}$的值，就包含了两个我们在GMM所做的假设，多项式分布和正态分布。</p>
+<blockquote>
+<p>The values $w_j$ calculated in the E-step represent our “soft” guesses for</p>
+</blockquote>
+<p>the values of $z^{(i)}$ .</p>
+<p>The term “soft” refers to our guesses being probabilities and taking values in [0, 1]; in</p>
+<p>contrast, a “hard” guess is one that represents a single best guess (such as taking values</p>
+<p>in {0, 1} or {1, . . . , k}).</p>
+<p>硬猜测是k均值聚类，GMM是软猜测。</p>
+<p>这样一来，参数更新就可以这样写了，也就是EM算法的第二步：</p>
+<p>(M-step) Updata the parameters:</p>
+<p>然后对似然函数求导，后面会详细介绍</p>
+<p>$$\phi_j:=\frac{1}{m}\sum_{i=1}^mw_j^{(i)}$$</p>
+<p>$$\mu_j:=\dfrac{\sum_{i=1}^mw_j^{(i)}x^{(i)}}{\sum_{i=1}^mw_j^{(i)}}$$</p>
+<p>$$\Sigma_j:=\dfrac{\sum_{i=1}^mw_j^{(i)}(x^{(i)}-\mu_j)(x^{(i)}-\mu_j)^T}{\sum_{i=1}^mw_j^{(i)}}$$</p>
+<p><strong>｝</strong></p>
+<p>训练过程的理解可参考<a target="_blank" rel="noopener" href="http://blog.pluskid.org/?p=39">blog</a></p>
+<p><strong>$w_j^{(i)}表示第i个样本为ｊ类别的概率，而\phi_j$表示m个样本中j类别的概率，$\mu_j,\Sigma_j$分别表示j类别对应的n维高斯分布的期望和协方差矩阵</strong></p>
+<p>所以，求出$w_j^{(i)}$，一切就都解决了吧？对于后验概率$p(z^{(i)}=j|x^{(i)})$可以根据Bayes公式：</p>
+<p>$$p(z^{(i)}=j|x^{(i)};\phi,\mu,\Sigma)=\dfrac{p(x^{(i)}|z^{(i)}=j;\mu,\Sigma)p(z^{(i)}=j;\phi)}{\sum_{l=1}^kp(x^{(i)}|z^{(i)}=l;\mu,\Sigma)p(z^{(i)}=l;\phi)}$$</p>
+<ul>
+<li>其中先验概率$p(x^{(i)}|z^{(i)}=j;\mu,\Sigma)$可以根据高斯分布的密度函数来求，$z^{(i)}=j\sim N(\mu_j,\Sigma_j)$</li>
+</ul>
+<ul>
+<li>类先验(class priors)$p(z^{(i)}=j;\phi)$可以取决于多项式分布中j类的概率$\phi_j$</li>
+</ul>
+<blockquote>
+<p>The EM-algorithm is also reminiscent of the K-means clustering algorithm, except that instead of the “hard” cluster assignments $c^(i)$, we instead have the “soft” assignments $w_j$ . Similar to K-means, it is also susceptible to local optima, so reinitializing at several different initial parameters may be a good idea.  </p>
+</blockquote>
+<p>EM算法使我们联想起了k-means,区别在于k-means的聚类是通过欧氏距离c(i)来定义的，而EM是通过$w_j$probabilities来分类的。同k-means一样，这里的EM算法也是局部优化，因此最好采用不同的方式初始化～</p>
+<h4 id="convergence"><a href="#convergence" class="headerlink" title="convergence?"></a>convergence?</h4><p>我们知道k-means一定是收敛的，虽然结果不一定是全局最优解，但它总能达到一个最优解。但是EM算法呢，也是收敛的。</p>
+<h3 id="The-EM-algorithm"><a href="#The-EM-algorithm" class="headerlink" title="The EM algorithm"></a>The EM algorithm</h3><p>前面我们讲的是基于高斯混合模型的EM算法，但一定所有的类别都是高斯分布吗？还有卡方分布，泊松分布等等呢，接下来我们就将讨论EM算法的一般性。</p>
+<p>在学习一般性的EM算法前，先了解下Jensen’s inequality</p>
+<h4 id="Jensen’s-inequality"><a href="#Jensen’s-inequality" class="headerlink" title="Jensen’s inequality"></a>Jensen’s inequality</h4><p>如果函数$f$，其二阶导恒大与等于0 $(f^{‘’}\ge 0)$，则它是凸函数f(convec function)。</p>
+<p>如果凸函数的输入是向量vector-valued inputs，那么它的海森矩阵(hessian)H是半正定的。Jensen’s 不等式：</p>
+<blockquote>
+<p>Let f be a convex function, and let X be a random variable.</p>
+</blockquote>
+<p>Then:</p>
+<p>$$E[f (X)] ≥ f (EX).$$</p>
+<p>Moreover, if f is strictly convex, then $E[f (X)] = f (EX)$ holds true if and</p>
+<p>only if $X = E[X]$ with probability 1 (i.e., if X is a constant).</p>
+<p>举个栗子来解释jensen不等式：</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/jensen.png"></p>
+<p>假设输入随机变量X是一维的哈，然后Ｘ取a,b的概率都是0.5,那么</p>
+<p>$$EX=(a+b)/2,f(EX)=f(\dfrac{a+b}{2})$$,$$E[f(X)]=\dfrac{f(a)+f(b)}{2}$$</p>
+<p>因为是凸函数，所以 $f(EX)\le E[f(X)]$</p>
+<p>同理，如果是凹函数(concave function),那么不等式方向相反$f(EX)\ge E[f(X)]$。后面EM算法里面就要用到log(X)，log(x)就是个典型的凹函数～</p>
+<h4 id="The-EM-algorithm-1"><a href="#The-EM-algorithm-1" class="headerlink" title="The EM algorithm"></a>The EM algorithm</h4><p>首先，问题是：我们要基于给定的m个训练样本${x^{(1)},x^{(2)},…,x^{(m)}}$来进行密度估计～</p>
+<p>像前面一样，创建一个参数模型p(x,z)来最大化训练样本的对数似然：</p>
+<p>$$L(\theta)=\sum_{i=1}^mlogp(x;\theta)$$</p>
+<p>$$L(\theta)=\sum_{i=1}^mlog\sum_zp(x,z;\theta)$$</p>
+<p>一般性就是把前面特殊化的假设去掉，没有了正态分布和多项式分布。</p>
+<p>可以看到，$z^{(i)}$是隐藏的随机变量(latent random variable),关于参数$\theta$的最大似然估计就很难计算了。</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em2.png"></p>
+<p>解释下公式中的推导：</p>
+<ul>
+<li>这里是针对样本i来说，对于样本i，它可能是$z^1,z^2,…,z^k$都有可能，但他们的probability之和为１，也就是</li>
+</ul>
+<p>$\sum_zQ_i(z)=1$</p>
+<ul>
+<li>(2)到(3)的推导：可以将</li>
+</ul>
+<p>$\dfrac{p(x^{(i)},z^{(i)};\theta)}{Q_i(z^{(i)})}$</p>
+<p>看做随机变量Ｘ,那么（２）式中的后半部分 $log\sum_{z^{(i)})}[\dfrac{p(x^{(i)},z^{(i)};\theta)}{Q_i(z^{(i)})}]$就是log(EX)了，$logx$是一个凹函数，则其大于$E[log(x)]$</p>
+<p><font size="4" color="#D2691E">EM迭代过程(重点):</font></p>
+<ul>
+<li><p>（1）根据上式可以看做$L(\theta)\ge J(Q,\theta)$.两边都是关于$\theta$的函数，那么将$\theta$固定，调整Q在一定条件下能使等式成立。</p>
+</li>
+<li><p>（2）然后固定Q,调整$\theta^t$到$\theta^{t+1}$找到下界函数的最大值$J(Q,\theta^{t+1})$.显然在当前Q的条件下，$L(\theta^{t+1})\ne J(Q,\theta^{t+1})$,那么根据Jensen不等式，$L(\theta_{t+1})&gt;J(Q,\theta^{t+1})=L(\theta^{t})$,也就是说找到了使得对数似然L更大的$\theta$.这不就是我们的目的吗？！</p>
+</li>
+<li><p>然后迭代循环(1)(2)步骤，直到在调整$\theta$时，下界函数$J(Q,\theta)$不在增加，即小于某个阈值。</p>
+</li>
+</ul>
+<p>看下Ng画的图：</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em1.png" alt="em1.png"></p>
+<p>任意初始化$\theta$和Q,然后找下界函数和$l(\theta)$交接的点，这就是EM算法的第一步：</p>
+<p>我们要让不等式相等,即Jensen’s inequality中的随机变量取值是一个常量，看(2)式：</p>
+<p>$$\dfrac{p(x^{(i)},z^{(i)};\theta)}{Q_i(z^{(i)})}=c$$</p>
+<p>对左边分子分母同时对z求类和：</p>
+<p>$$\dfrac{\sum_zp(x^{(i)},z^{(i)};\theta)}{\sum_zQ_i(z^{(i)})}=c$$</p>
+<p>根据$\sum_zQ_i(z)=1$：</p>
+<p>$$\sum_zp(x^{(i)},z^{(i)};\theta)=c$$</p>
+<p>带回去可得：</p>
+<p>$$Q_i(z^{(i)})=\dfrac{p(x^{(i)},z^{(i)};\theta)}{\sum_zp(x^{(i)},z^{(i)};\theta)}$$</p>
+<p>$$Q_i(z^{(i)})=\dfrac{p(x^{(i)},z^{(i)};\theta)}{p(x^{(i)};\theta)}$$</p>
+<p>$$Q_i(z^{(i)})=p(z^{(i)}|x^{(i)};\theta)$$</p>
+<p>EM总结下来：</p>
+<p>Repeat until convergence {</p>
+<p>(E-step)</p>
+<p>For each i,找到下界函数, set:</p>
+<p>$$Q_i(z^{(i)}):=p(z^{(i)}|x^{(i)};\theta)$$</p>
+<p>(M-step)找到下界凹函数的最大值,也就是(3)式 Set:</p>
+<p>$$\theta:=arg\max_{\theta}\sum_i^m\sum_{z^{(i)}}^kQ_i(z^{(i)})log\dfrac{p(x^{(i)},z^{(i)};\theta)}{Q_i(z^{(i)})}$$</p>
+<p>}</p>
+<p><font size="4" color="#D2691E">要理解的是：</font></p>
+<p>EM算法只是一种计算方式，对于上式中的$Q_i(z^{(i)})=p(z^{(i)}|x^{(i)};\theta)$我们还是要根据假设来求得，比如GMM中的多类高斯分布。然后带回到对数似然中，通过求导得到参数估计。我们费尽心机证明EM算法收敛，只是为了去证明这样去求似然函数的极大值是可行的，然后应用到类似于GMM，HMM中。</p>
+<h4 id="training-and-will-converge"><a href="#training-and-will-converge" class="headerlink" title="training and will converge?"></a>training and will converge?</h4><p>首先说是否收敛，答案是肯定收敛的。。懒得输公式了。。直接贴图吧，这个比较好理解：</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em3.png" alt="em3.png"></p>
+<p>上面写这么多，其实就是证明$L(\theta_{t+1})&gt;L(\theta_t)$.</p>
+<h4 id="Mixture-of-Gaussians-revisited"><a href="#Mixture-of-Gaussians-revisited" class="headerlink" title="Mixture of Gaussians revisited"></a>Mixture of Gaussians revisited</h4><p>我们知道了em算法是一种计算方式，用来解决含有隐变量似然对数很难求的问题，那么我们把它运用到GMM中。</p>
+<p><font size="4" color="#D2691E">E step:</font></p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em11.png"></p>
+<p>$w_j^{(i)}:=p(z^{(i)}=j|x^{(i)};\phi,\mu,\Sigma)$</p>
+<p>$$w_j^{(i)}:=p(z^{(i)}=j|x^{(i)};\phi,\mu,\Sigma)=\dfrac{p(x^{(i)}|z^{(i)}=j;\mu,\Sigma)p(z^{(i)}=j;\phi)}{\sum_{l=1}^kp(x^{(i)}|z^{(i)}=l;\mu,\Sigma)p(z^{(i)}=l;\phi)}$$</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em13.png"></p>
+<ul>
+<li><p>其中先验概率$p(x^{(i)}|z^{(i)}=j;\mu,\Sigma)$可以根据高斯分布的密度函数来求，$z^{(i)}=j\sim N(\mu_j,\Sigma_j)$</p>
+</li>
+<li><p>类先验(class priors)$p(z^{(i)}=j;\phi)$可以取决于多项式分布中j类的概率$\phi_j$</p>
+</li>
+</ul>
+<p>这样我们就完成了对$w_j^{(i)}$的soft ‘guess’，也就是E step.</p>
+<p><font size="4" color="#D2691E">M step:</font></p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em12.png"></p>
+<p>然后对参数求导：</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em14.png"></p>
+<p>详细推导过程，参考cs229-notes8</p>
+<p><img src="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/em15.jpeg"></p>
+<p>我们在整体回顾一下整个过程，所谓的E step就是找到$Q_i(z^{j}),w_i^j$（在一定假设下是可以通过bayes公式求得的），使得下界函数与log函数相等，也就是Jensen取等号时。然后是M step就是在Q的条件下找到下界函数最大值，也就是对参数求导，导数为0的地方。</p>
+<p>然后在根据求得的参数，再求Q，再带入求导。。。迭代直到收敛。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>机器学习-生成模型到高斯判别分析再到GMM和EM算法</p><p><a href="http://www.panxiaoxie.cn/2018/03/29/机器学习-生成模型到高斯判别分析再到GMM和EM算法/">http://www.panxiaoxie.cn/2018/03/29/机器学习-生成模型到高斯判别分析再到GMM和EM算法/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-03-29</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/ML/">ML</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-sklearn%E4%B8%AD%E9%AB%98%E6%96%AF%E6%B7%B7%E5%90%88%E6%A8%A1%E5%9E%8B%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E4%BB%A5%E5%8F%8A%E5%AE%9E%E7%8E%B0/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">代码实现高斯混合模型</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/03/25/python-%E7%B1%BB%E5%92%8C%E6%96%B9%E6%B3%95/"><span class="level-item">类和方法</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://www.panxiaoxie.cn/2018/03/29/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E7%94%9F%E6%88%90%E6%A8%A1%E5%9E%8B%E5%88%B0%E9%AB%98%E6%96%AF%E5%88%A4%E5%88%AB%E5%88%86%E6%9E%90%E5%86%8D%E5%88%B0GMM%E5%92%8CEM%E7%AE%97%E6%B3%95/';
+            this.page.identifier = '2018/03/29/机器学习-生成模型到高斯判别分析再到GMM和EM算法/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'panxie' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="潘小榭"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">潘小榭</p><p class="is-size-6 is-block">Blogging is happier than writing essays!</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">110</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">31</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">November 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">October 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">August 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">June 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">May 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/04/"><span class="level-start"><span class="level-item">April 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/03/"><span class="level-start"><span class="level-item">March 2019</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">February 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">January 2019</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">November 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">October 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/09/"><span class="level-start"><span class="level-item">September 2018</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">August 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/07/"><span class="level-start"><span class="level-item">July 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">March 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DL/"><span class="tag">DL</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ESA/"><span class="tag">ESA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN/"><span class="tag">GAN</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN%EF%BC%8CRL/"><span class="tag">GAN，RL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ML/"><span class="tag">ML</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MRC-and-QA/"><span class="tag">MRC and QA</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Machine-Translation/"><span class="tag">Machine Translation</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">14</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TensorFlow/"><span class="tag">TensorFlow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Tensorflow/"><span class="tag">Tensorflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/capsules/"><span class="tag">capsules</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-augmentation/"><span class="tag">data augmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interview/"><span class="tag">interview</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-translation/"><span class="tag">machine translation</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/open-set-recognition/"><span class="tag">open set recognition</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/reinforcement-learning/"><span class="tag">reinforcement learning</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentence-embedding/"><span class="tag">sentence embedding</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentiment-classification/"><span class="tag">sentiment classification</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/text-matching/"><span class="tag">text matching</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/transfer-learning/"><span class="tag">transfer learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="tag">文本分类</span><span class="tag">8</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

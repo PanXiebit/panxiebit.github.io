@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Category: GAN - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="潘小榭"><meta property="og:url" content="http://www.panxiaoxie.cn/"><meta property="og:site_name" content="潘小榭"><meta property="og:image" content="http://www.panxiaoxie.cn/img/og_image.png"><meta property="article:author" content="Xie Pan"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":null}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">Categories</a></li><li class="is-active"><a href="#" aria-current="page">GAN</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-10-31T02:46:20.000Z" title="2019/10/31 上午10:46:20">2019-10-31</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.540Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">6 minutes read (About 942 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/10/31/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-9-metric-for-NLG/">从0开始GAN-9-metric for NLG</a></h1><div class="content"><p>related papers:  </p>
+<ul>
+<li><p><a href>MoverScore: Text Generation Evaluating with Contextualized Embeddings and Earth Mover Distance</a>  </p>
+</li>
+<li><p><a href>Why We Need New Evaluation Metrics for NLG</a>      </p>
+</li>
+<li><p><a href>Beyond BLEU: Training Neural Machine Translation with Semantic Similarity</a>    </p>
+</li>
+<li><p><a href>Better Rewards Yield Better Summaries: Learning to Summarise Without References</a>    </p>
+</li>
+<li><p><a href>RUSE: Regressor Using Sentence Embeddings for Automatic Machine Translation Evaluation</a>     </p>
+</li>
+<li><p><a href>ROUGE: A Package for Automatic Evaluation of Summaries Chin-Yew</a>  </p>
+</li>
+</ul>
+<h2 id="MoverScore"><a href="#MoverScore" class="headerlink" title="MoverScore"></a>MoverScore</h2><h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h3><p>评价指标对于模型的训练或选择至关重要，现阶段对于文本生成的模型（机器翻译，摘要生产，图像标题生成）大都采用的hard match的方式，比如 BLEU, ROUGE. 这些都是简单的基于共现词的统计，这种metric仅仅只考虑了表面的形式，无法覆盖同意却不同词的表达，所以他们并不太好（over correction），不具备评价文本相似性的能力。</p>
+<h3 id="MoverScore-1"><a href="#MoverScore-1" class="headerlink" title="MoverScore"></a>MoverScore</h3><blockquote>
+<p>It is particularly important for a metric to not only capture the amount of shared content between two texts, i.e., intersect(A,B), as is the case with many semantic textual similarity measures  </p>
+</blockquote>
+<p>根据语义相似度来计算距离。</p>
+<p>计算 MoverScore 的一些符号：  </p>
+<ul>
+<li><p>sentence：$x=(x_1,x_2,…,x_m)$  </p>
+</li>
+<li><p>$x^n$ 表示 x 中的 n-gram.</p>
+</li>
+<li><p>$f_{x^n}$ 表示x中每一个 n-gram 的权重。如果 n=(size of sentence), 那么 $f_{x^n}=1$  </p>
+</li>
+</ul>
+<p>n-gram 之间的距离：  </p>
+<p>$$C_{ij}=d(x_i^n,y_j^n)$$</p>
+<p>表示 x 中第 $i^{th}$ 个 n-gram 与 y 中第 $j^{th}$ 个 n-gram 的距离。</p>
+<p>那么两个句子中所有 n-gram 的距离 Word Mover’s Distance (WMD)：</p>
+<p>$$WMD(x^n,y^n):=min_{F\in R^{|x^n|\times |y^n|}}&lt;C,F&gt;$$</p>
+<p>$&lt;&gt;$ 表示加权求和。计算出两个 n-gram 序列的推土机距离与传统的推土机距离不太一样的地方是，这里每个 n-gram 还有权重。</p>
+<p>那么如何计算两个 n-gram 的距离 $d(x_i^n,y_j^n)$ 呢, 作者采用的是 Euclidean distance：</p>
+<p>$$d(x_i^n,y_j^n)=||E(x_i^n)-E(y^n_j)||_ {2}$$</p>
+<p>$E$ 是n-gram 的向量表示，比如 $x_i^n=(x_i,..,x_{i+n-1})$ 是 x 中第 i 个 n-gram.</p>
+<p>$$E{(x_i^n)}=\sum_{k=i}^{i+n-1}idf{(x_k)}\cdot E{(x_k)}$$</p>
+<p>n-gram 的权重计算：</p>
+<p>$$f_{x_i^n}=\dfrac{1}{Z}\sum_{k=i}^{i+n-1}idf{(x_k)}$$</p>
+<p>Z 是归一化常数，也就是总和吧。</p>
+<p>当 n&gt;(size of sentence) 时，$WMD(x^n,y^n)$ 变成计算两个完整的句子的距离：  </p>
+<p>$$SMD(x^n,y^n)=||E(x_1^{l_x})-E(y_1^{l_y})||$$</p>
+<p>其中 $l_x,l_y$ 表示两个sentence 的长度。</p>
+<h3 id="Contextualized-Representations"><a href="#Contextualized-Representations" class="headerlink" title="Contextualized Representations"></a>Contextualized Representations</h3><p>如何得到一个 word/n-gram 的向量表示，基于预训练的模型来得到 contextualized 表示是一个开放性的问题，Elmo和BERT都是多层结构，不同的layer包含了不同的含义。作者这里提到了两种方法，并最终采用了前者：    </p>
+<ul>
+<li><p>the concatenation of power means  </p>
+</li>
+<li><p>a routing mechanism for aggregation</p>
+</li>
+</ul>
+<p><strong>power means:</strong></p>
+<p>$$h_i(p)=(\dfrac{z_{i,1}^p+…+z_{i,L}^p}{L})^{1/p}$$</p>
+<p>L 表示预训练模型的层数，p=1是数值平均，p=0时是调和平均。</p>
+<p>$$E(x_i)=h_i^{p_1}\oplus …. \oplus h_i^{p_k}$$</p>
+<p>$\oplus$ 表示 concatenation. 作者设置 p=1,K=3. 也就是一个词的向量表示由三个向量表示 $h$ 拼接而成,而每个h又是不同层的数值平均。</p>
+<h3 id="result"><a href="#result" class="headerlink" title="result"></a>result</h3><p>对于这种提出新指标的问题，一直很疑惑怎么去 evaluation。好像只能通过人工去评价了对吧？</p>
+<p><img src="/2019/10/31/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-9-metric-for-NLG/mt.png"></p>
+<p>这是机器翻译的结果。</p>
+<p>WMD-1/2+BERT+MNLI+PMeans：表示 1-gram 的word mover distences + 在NMLI语料上训练的BERT + PMeans 的融合方式。</p>
+<p>根据 NMT system 得到 translations，然后与 references 计算对应的指标。然后根据指标与human evalation相似度进行对比，越接近人类评价的，这个指标就越好。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-08-30T11:36:13.000Z" title="2019/8/30 下午7:36:13">2019-08-30</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.200Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">10 minutes read (About 1448 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/">从0开始GAN-7-IRGAN</a></h1><div class="content"><h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1705.10513">IRGAN: A Minimax Game for Unifying Generative and Discriminative Information Retrieval Models</a>  </p>
+<p>信息检索的方法主要分为两个流派，生成式检s索模型(generative retrieval model)和判别式检索模型(discriminative retrieval model)。</p>
+<p>生成式检索模型 ($q \rightarrow d$)：认为query和检索所需要的document之间有一个潜在的随机生成的过程。也就是给定一个 query，然后生成相应的 document.  </p>
+<p>判别式检索模型 ($q + d \rightarrow r$)：把query和document作为联合feature，计算其相关性relevancy. 然后基于 relevancy 对 document 进行排序。其中关于 ranking a list of documents 有三种范式：pointwise, pairwise, listwise.</p>
+<p>作者将上述两种模型与GAN相结合，利用GAN的对抗性的思想去提升两类模型。   </p>
+<p>判别式检索模型 $p_{\phi}(r|q,d)$ 作为判别器，maximize 来自真实 labeled 的数据。它提供信息来指导生成器的训练，这种信息不同于传统的 log-likelihood.  </p>
+<p>判别式检索模型 $p_{\theta}(d|q,r)$ 是生成器，生成generated sample来迷惑判别器，minimize 对应的目标函数。</p>
+<h3 id="Model-Architecture"><a href="#Model-Architecture" class="headerlink" title="Model Architecture"></a>Model Architecture</h3><h4 id="A-Minimax-Retrieval-Framework"><a href="#A-Minimax-Retrieval-Framework" class="headerlink" title="A Minimax Retrieval Framework"></a>A Minimax Retrieval Framework</h4><p>a set of queries ${q_1,…,q_N}$, a set of documents ${d_1,…,d_M}$. 其中 给定一个 query 都有对应的相关度较高的 document 也就是真实的数据 $true_{(q,d)}$，其数据量是远小于总的document数量 M 的.</p>
+<blockquote>
+<p>The underlying true relevance distribution can be expressed</p>
+</blockquote>
+<p>as conditional probability $p_{true} (d|q, r)$, which depicts the (user’s) relevance preference distribution over the candidate documents with respect to her submitted query.  </p>
+<p>这样真实的相关性 (q,d) 存在潜在的相关性条件分布 $p_{true}(d|q,r)$.</p>
+<p>Generative retrieval model $p_{\theta}(d|q,r)$: 生成器的目的就是去尽可能的模拟真实的相关性分布 $p_{ture}(d|q,r)$, 从而尽可能生成相似度高的 document.</p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/generator_model.png"></p>
+<p>Discriminative retrieval model $f_{\phi}(q,d)$：是一个二分类分类器。</p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/discriminator_model.png">  </p>
+<p>其中判别器具体的计算 $f_{\phi}(d,q)$ 与IR task有关。后续会详细介绍。</p>
+<p>Overall Objective 目标函数：</p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/object_func.png">  </p>
+<p>最小化来自生成器 $p_{\theta}$ 的 sample 的概率，最大化来自true data $p_{true}$ 的 sample 的概率.  </p>
+<h4 id="Optimising-Discriminative-Retrieval"><a href="#Optimising-Discriminative-Retrieval" class="headerlink" title="Optimising Discriminative Retrieval"></a>Optimising Discriminative Retrieval</h4><p>优化判别器：  </p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/train_dis_model.png">  </p>
+<h4 id="Optimising-Generative-Retrieval"><a href="#Optimising-Generative-Retrieval" class="headerlink" title="Optimising Generative Retrieval"></a>Optimising Generative Retrieval</h4><p>这篇paper中生成器不是token by token的生成新的ducoment，而是从given documents中选择最相关的document.  </p>
+<p>对于生成器的优化，最小化目标函数（1）：  </p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/train_gen_model.png"></p>
+<p>上述公式从第一步到第二步有点小变化，简单推导下即可。</p>
+<p>这里sample得到d的过程是离散的。怎么理解呢，可以类比文本的生成（尽管此表的分布是连续的，但是从中选一个token，然后作为判别器的输入，这个过程是不可导的）。同样，这里是从一系列documents中sample一个作为判别器的输入，这个过程是离散的，且不可导。所以作者采用了policy gradient的方法来解决这个问题。</p>
+<p>公式(4)中对生成器的优化可以看作是 maximize $J^G(q_n)$. 使用policy gradient优化的推导如下：</p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/pg_train.png">  </p>
+<p>这里的policy是 $p_{\theta}(d|q_n,r)$ 就是我们需要优化的生成式检索模型，对应的action是给定environment q的情况下sample得到 document. 判别器得到的log-prob就是reward.</p>
+<p>为了减小REINFORCE方法中variance，作者采用了advantage-function，也就是减去baseline，其中baseline是均值：</p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/advantage_func.png"></p>
+<p>整个IRGAN的训练过程的伪代码：</p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/algorithm.png"></p>
+<p>上图中的公式(22)就是公式(5). 整个过程理解起来还是蛮简单的。</p>
+<p>还有个问题为解决的是，前面提到对于不同的 IR 任务，判别器 $f_{\phi}(q,d)$ 的方式是不一样的。</p>
+<h4 id="pairwise-case"><a href="#pairwise-case" class="headerlink" title="pairwise case"></a>pairwise case</h4><blockquote>
+<p>Furthermore, ifwe use graded relevance scales (indicating a varying degree of match between each document and the corresponding query) rather than binary relevance, the training data could also be represented naturally as ordered document pairs.   </p>
+</blockquote>
+<p>此外，如果我们使用分级相关性比例（指示每个文档与相应查询之间的不同匹配程度）而不是二元相关性，则训练数据也可以自然地表示为有序文档对.</p>
+<p>也就是不仅仅根据query和document之间是否相似这样的二元文档对，而是利用有序文档对（这在IR中其实更为常见），作为判别器的输入，这样能获取更多的信息。</p>
+<p>这个时候的labeled document是 $R_n={&lt;d_i,d_j&gt;|d_i &gt; d_j}$, 其中 $d_i &gt; d_j$ 意味着 $d_i$ 比 $d_j$ 的相关性更高。</p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/pairwise_func.png"></p>
+<p>使用pairwise discriminator对应的目标函数：  </p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/pairwise_train.png"></p>
+<p>其中 $o = &lt;d_u,d_v&gt;, o’=&lt;d_u’,d_v’&gt;$. 在实际的操作中，选择一对document $&lt;d_i,d_j&gt;$. 然后选择相似度较低的 $d_j$ 与生成器得到的 $d_k$ 组成新的pairs $&lt;d_k, d_j&gt;$，作为判别器的输入。这样的目的就是认为 $d_k$ 的相似度高于 $d_j$ 的情况下，让 $d_k$ 尽可能的去与 $d_i$ 相似。</p>
+<p>在前面介绍了生成器 $p_{\theta}(d|q,r)$ 实际上就是 softmax，看公式(2).</p>
+<p>对于pairwise的形式,$d_j$ 也作为生成器的输入之一，对应的生成器是另一种 softmax:</p>
+<p><img src="/2019/08/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-7-IRGAN/pairwise_gen.png">  </p>
+<p>其中 $g_{\theta}(q,d)$ is a task-specific real-valued function reflecting the chance of d being generated from q.  </p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-30T07:43:31.000Z" title="2019/6/30 下午3:43:31">2019-06-30</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.539Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">10 minutes read (About 1521 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/06/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-6-pretraining-for-NLG/">从0开始GAN-6-pretraining for NLG</a></h1><div class="content"><h3 id="related-papers"><a href="#related-papers" class="headerlink" title="related papers"></a>related papers</h3><ul>
+<li><p><a href>BERT</a>   </p>
+</li>
+<li><p><a href>BERT has a Mouth, and It Must Speak: BERT as a Markov Random Field Language Model</a>    </p>
+</li>
+<li><p><a href>GPT/GPT-2.0</a>  </p>
+</li>
+<li><p><a href>MASS: Masked Sequence to Sequence Pre-training for Language Generation</a>   </p>
+</li>
+<li><p><a href>Unified Language Model Pre-training for Natural Language Understanding and Generation</a>      </p>
+</li>
+<li><p><a href>Pretraining for Conditional Generation with Pseudo Self Attention</a>    </p>
+</li>
+<li><p><a href>Transformer-XL</a>       </p>
+</li>
+<li><p><a href>XLNet</a>     </p>
+</li>
+<li><p><a href>Defending Against Neural Fake News</a></p>
+</li>
+<li><p><a href>ERNIE</a>  </p>
+</li>
+<li><p><a href>WWM</a>  </p>
+</li>
+<li><p><a href>SpanBERT</a></p>
+</li>
+</ul>
+<h3 id><a href="#" class="headerlink" title></a></h3><h3 id="cross-lingual-word-embedding"><a href="#cross-lingual-word-embedding" class="headerlink" title="cross-lingual word embedding"></a>cross-lingual word embedding</h3><p><a href>A survey of cross-lingual word embedding models, Ruder et al.2017</a>  </p>
+<p><a href>Word translation without parallel data. Conneau et al.2017</a>  </p>
+<p><a href>Massively multilingual sentence embeddings for zero-shot cross-lingual transfer and beyond. Artetxe et al.2018</a>  </p>
+<h3 id="contextual-word-embedding"><a href="#contextual-word-embedding" class="headerlink" title="contextual word embedding"></a>contextual word embedding</h3><p><a href>ELMo</a>  </p>
+<p><a href>Word2vec</a>  </p>
+<p><a href>Glove</a>  </p>
+<p><a href>GPT</a>  </p>
+<p><a href>ULMFT: Universal language model fine-tuning for text classificatio</a>  </p>
+<p><a href>Cross-lingual language model pretraining</a>  </p>
+<p><a href>Polyglot contextual representations im- prove crosslingual transfer</a>  </p>
+<h3 id="pre-trained-for-NMT"><a href="#pre-trained-for-NMT" class="headerlink" title="pre-trained for NMT"></a>pre-trained for NMT</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1908.05672">Towards Making the Most of BERT in Neural Machine Translation</a></p>
+<p><a href>Unsupervised Pretraining for Sequence to Sequence Learning</a></p>
+<p><a href>When and Why are Pre-trained Word Embeddings Useful for Neural Machine Translation?</a></p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1901.07291">Cross-lingual Language Model Pretraining</a>  </p>
+<h1 id="XLM"><a href="#XLM" class="headerlink" title="XLM"></a>XLM</h1><p>paper: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1901.07291">Cross-lingual Language Model Pretraining</a>  </p>
+<p>作者提出了两种方法来学习 cross-lingual 语言模型。其中一种是仅基于 monolingual data, 另一种是基于平行语料。在 cross-lingal 相关的任务上都有很大的提升。比如 XNLI，unsupervised machine translation, 以及 supervised machine tranlsation.</p>
+<p>现有的在NLP领域的发展主要是围绕英文进行的，一些start-of-the-art或者NLP任务的benchmarks都是以英文为基础的。其他的一些语言受限于语料的问题，发展相对缓慢。近期随着cross-lingual sentence representation的发展，消除English-centric bias,并且构建一个通用的cross-lingual encoder来讲任何语言的sentence编码到共享的embedding空间成为可能。</p>
+<p><strong>Shared sub-word vocabulary</strong></p>
+<p>使用 bpe,并且不同的language共享词表.</p>
+<blockquote>
+<p>this greatly improves the alignment of embedding spaces across languages that share either the same alphabet or anchor tokens such as digits (Smith et al., 2017) or proper nouns.  </p>
+</blockquote>
+<p>共享词表能显著提升那些具有相同字母表或者anchor token(数字或专有名词)的语言之间的向量空间的对齐。</p>
+<p>作者先从不同语言的monolingual data中筛选出部分data，然后学习bpe splits.</p>
+<blockquote>
+<p>Sentences are sampled according to a multinomial distribution with probabilities ${q_i}_{i=1…N}$, where:</p>
+</blockquote>
+<p><img src="/2019/06/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-6-pretraining-for-NLG/sample_data.png"></p>
+<p>其中 $n_i$ 表示第 i 中语言中sentence的总数。 $\sum_{k=1}^nn_k$ 表示N种语言所有的sentence的总数。$p_i$ 则表示第 i 中语言sample的概率。设定 $\alpha=0.5$，这样能增加 low-resource 的比例，从而减轻 bias to high-resource language.</p>
+<p>作者总共提出了三种 language model. 接下来一一介绍：</p>
+<p><strong>Causal Language Modeling (CLM)</strong>  </p>
+<p>$p(w_t|w_1,…,w_{t-1},\theta)$</p>
+<p>也就是普通的 aotu-regressive 语言模型。</p>
+<p><a target="_blank" rel="noopener" href="https://www.aaai.org/ojs/index.php/AAAI/article/view/4182">Character-Level Language Modeling with Deeper Self-Attention</a> 这篇paper使用的self-attention, 我们知道self-attention 不像rnn那样具有hidden state的概率，这篇paper把上一个batch作为下一个batch的context，有点类似于 transformer-XL,但是这对于cross-lingual不太适合，所以这里的 CLM 与传统的language model完全一致。</p>
+<p><strong>Masked Language Modeling (MLM)</strong></p>
+<p><img src="/2019/06/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-6-pretraining-for-NLG/mlm.png"></p>
+<p>与 BERT 中MLM的区别：  </p>
+<blockquote>
+<p>Differences between our approach and the MLM of Devlin et al. (2018) include the use of text streams of an arbitrary number of sentences (truncated at 256 tokens) instead of pairs of sentences.  </p>
+</blockquote>
+<p>文本 stream 是任意数量的sentences，而不是pairs.（这里的pairs in BERT应该指的是 next sentence prediction.）</p>
+<p>在筛选用来mask的词时，为了处理 rare word 和 frequent word(punctuation or stop words) 的不均衡问题:    </p>
+<blockquote>
+<p>tokens in a text stream are sampled according to a multinomial distribution, whose weights are proportional to the square root of their invert frequencies.</p>
+</blockquote>
+<p><strong>Translation Language Modeling (TLM)</strong></p>
+<p><img src="/2019/06/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-6-pretraining-for-NLG/tlm.png"></p>
+<p>在预测一个 masked english word 的同时，不仅可以attend english context，也可以 attend franch translation.</p>
+<p><strong>Cross-lingual Language Models</strong></p>
+<p>如何使用这三种语言模型，CLM 和 MLM 在单语上进行训练。 TLM 在平行语料上训练。TLM 在使用时是联合 MLM 一起训练的，迭代优化两个目标函数。</p>
+<blockquote>
+<p>In this work, we consider cross-lingual language model pretraining with either CLM, MLM, or MLM used in combination with TLM. For the CLM and MLM objectives, we train the model with batches of 64 streams of continuous sentences composed of 256 tokens. At each iteration, a batch is composed of sentences coming from the same language, which is sampled from the distribution ${q_i}_{i=1…N}$ above, with α = 0.7. When TLM is used in combination with MLM, we alternate between these two objectives, and sample the language pairs with a similar approach.</p>
+</blockquote>
+<h1 id="CTNMT"><a href="#CTNMT" class="headerlink" title="CTNMT"></a>CTNMT</h1><p>paper: [Towards Making the Most of BERT in Neural Machine Translation</p>
+<p>Jiacheng](<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1908.05672">https://arxiv.org/abs/1908.05672</a>)</p>
+<p>ByteDance 的一篇paper.</p>
+<p>前人的研究中我们发现，BERT pretrian 对NMT几乎没有提升。作者认为其原因是，NMT 相对其他linguistic的任务，训练的steps会多很多，比如NMT一般是10万step，而 POS tagging只需要几百步。这使得在训练过程中，参数的更新太多导致 catastrophic forgetting problem. 也就是 BERT 训练得到的knowledge并不能给NMT代来提升。</p>
+<p>于是乎，作者认为只是大家没有好好利用BERT而已，像我们这样搞, BERT还是能对NMT有提升的。然后提出了三种techniques:</p>
+<p><strong>Asymptotic Distillation</strong>  </p>
+<p><img src="/2019/06/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-6-pretraining-for-NLG/asymptotic_distill.png"></p>
+<p>渐近蒸馏，主要是用来解决 catastrophic forgetting 这一问题的，和这篇paper “<a href>Overcoming Catastrophic Forgetting During Domain Adaptation of Neural Machine Translation</a>“ 相似，也是采用的 Elastic Weight Consolidation(EWC) 的方法，对weight采用MSE的约束。</p>
+<p>$$L_{kd}=-||\hat h^{lm}-h_l||^2_2$$</p>
+<p>$$L=\alpha\cdot L_{nmt}+(1-\alpha)\cdot L_{kd}$$</p>
+<p>其中 $L_{kd}$ 是正则化项，$\hat h^{lm}$ 是经过BERT编码之后的 sentence embedding. $h_l$ 则是NMT的encoded之后的 sentence embedding. 作者都使用的最后一层的表示。在后续实验中，作者也测试了不同层的表示进行约束。</p>
+<p><strong>Dynamic Switch</strong></p>
+<p>动态开关。</p>
+<p><img src="/2019/06/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-6-pretraining-for-NLG/switch.png"></p>
+<p>就是GRU中的gate机制。</p>
+<p>$$g = \sigma(Wh^{lm} + Uh^{nmt} + b)$$</p>
+<p>$$h=g\odot h^{lm}+(1-g)\odot h^{nmt}$$</p>
+<p><strong>Rate-scheduled learning</strong></p>
+<p>slanted triangular learning, 斜三角学习率。最开始提出是在 <a href>ULMFT: Universal language model fine-tuning for text classificatio</a> 这篇论文中。</p>
+<p>$$\theta_t=\theta_{t-1}-\eta\nabla_{\theta}L(\theta)$$</p>
+<p>对 NMT 和 LM 对应的参数使用不同的学习率，但是都采用这种scheduled学习率.</p>
+<p><strong>Result</strong></p>
+<p><img src="/2019/06/30/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-6-pretraining-for-NLG/result.png"></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-29T01:48:44.000Z" title="2019/6/29 上午9:48:44">2019-06-29</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.539Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">8 minutes read (About 1173 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/06/29/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-5-decoding/">从0开始GAN-5-NAT Decoding</a></h1><div class="content"><p>non-autoregressive decode 相关的paper：</p>
+<ul>
+<li><p><a href>Non-autoregressive neural machine translation. Gu et al. 2018 ICLR</a></p>
+</li>
+<li><p><a href>End-to-End Non-Autoregressive Neural Machine Translation with Connectionist Temporal Classification</a>  </p>
+</li>
+<li><p><a href>Deterministic Non-Autoregressive Neural Sequence Modeling by Iterative Refinemen</a>  </p>
+</li>
+</ul>
+<h2 id="paper1"><a href="#paper1" class="headerlink" title="paper1"></a>paper1</h2><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1904.09324">Constant-Time Machine Translation with Conditional Masked Language Models</a></p>
+<h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h3><p>把auto-regressive转换成non-autoregressive. 其做法是先确定一个target sentece的长度，然后可以看作是每一个time-step的分类任务了。这样decoder就是可并行的了。</p>
+<h3 id="architecture"><a href="#architecture" class="headerlink" title="architecture"></a>architecture</h3><p>模型架构采用transformer的架构。  </p>
+<p>原生的 Transformer:  </p>
+<ul>
+<li><p>source-language encoder: self-attention, 包括padding mask.  </p>
+</li>
+<li><p>translation model decoder  </p>
+<ul>
+<li><p>self-attention, 包括padding mask和 look ahead mask，用以mask掉future information.</p>
+</li>
+<li><p>interaction attention with enc_out, 包括 padding mask.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>这篇paper中的 conditional mask language model(CMLM) 与transormer的区别在于 decoder 部分的self-attention去掉了 look ahead mask. 所以可以类似于 BERT 那样基于上下文来预测被 mask 的词，decoder 是 bi-directional.</p>
+<h3 id="Decoding-with-Mask-Predict"><a href="#Decoding-with-Mask-Predict" class="headerlink" title="Decoding with Mask-Predict"></a>Decoding with Mask-Predict</h3><p>decoder 的具体操作是一个迭代的过程。</p>
+<p>| src | Der Abzug der franzsischen Kampftruppen wurde am 20. November abgeschlossen .    |</p>
+<p>| :—– | :—————————————————- |</p>
+<p>|t=0|<strong>The withdrawal of French combat troops was completed on November 20th .</strong>|</p>
+<p>|t=1|The <strong>departure of the French combat completed completed on</strong> 20 November .|</p>
+<p>|t=2|The <strong>departure</strong> of the French combat completed <strong>completed</strong> on <strong>20 November</strong> .|</p>
+<p>表中加粗的部分是被 mask 的。可以看到随着迭代进行，mask的词越来越少。</p>
+<p>如何选择mask的词：  </p>
+<ol>
+<li><p>mask词的数量n: 基于一个递减的公式, $n=N\dfrac{T-t}{T}$. t 是迭代次数。  </p>
+</li>
+<li><p>mask哪些词呢：$Y^{(t)}_{mask}=argmin_i(p_i,n)$ $p_i$ 表示上一次prediction得到的每一个词的置信度，选择概率最低的 n 个词。</p>
+</li>
+</ol>
+<p>基于 encoder_src, $Y_{obs}$ 对 mask token 进行预测:</p>
+<p><img src="/2019/06/29/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-5-decoding/prediction.png"></p>
+<h3 id="target-sequence-length"><a href="#target-sequence-length" class="headerlink" title="target sequence length"></a>target sequence length</h3><p>这中 non-Autoregressive 存在的一个大问题就是如何确定target sentence 的长度。在 auto-egressive 里面是根据 ${<eos>}$ 来确定句子长度的。</eos></p>
+<p>针对这个问题，作者采用了类似于 BERT 中 CLS 的做法。使用了 $LENGTH$ 来预测sentence的长度，也是一个分类任务，这个 LENGTH 对应的词表应该就是长度~</p>
+<p>作者选取 top b length，类似于 beam search. 然后选择 candidated b sentence 中概率最大的.</p>
+<p>$$\dfrac{1}{N}\sum logp_i^{(T)}$$</p>
+<h3 id="code-reading"><a href="#code-reading" class="headerlink" title="code reading"></a>code reading</h3><h2 id="paper2"><a href="#paper2" class="headerlink" title="paper2"></a>paper2</h2><p>Non-Autoregressive Neural Machine Translation</p>
+<h3 id="Motivation-1"><a href="#Motivation-1" class="headerlink" title="Motivation:"></a>Motivation:</h3><p>现有的机器翻译模型在inference时，需要在生成前一个单词的基础上继续生成下一个单词，这种自回归的特性严重影响了推理的速度。</p>
+<p>并且与训练阶段的不一致导致存在exposure bias。作者提出一个非自回归的方法，在infer阶段并行输出。</p>
+<p>Exposure bias:</p>
+<ul>
+<li><p>training 阶段上一个token是ground truth</p>
+</li>
+<li><p>infer 阶段上一个token是生成得到的，这样自回归生成整个句子存在误差累积</p>
+</li>
+<li><p>两个阶段生成target的方式不一样，也就是 exposure bias.</p>
+</li>
+</ul>
+<h3 id="Model-Architecture"><a href="#Model-Architecture" class="headerlink" title="Model Architecture:"></a>Model Architecture:</h3><ul>
+<li><p>前一项表示基于监督学习来预测targets 句子的长度。在本文中作者使用了这个词 fertilities(生育能力) 来表示通过source句子通过encode之后所包含的知识.</p>
+</li>
+<li><p>后一项依旧是极大似然估计，也就是 independent cross-entropy losses on each output distribution。 但不同的是，在inference阶段也是可以并行的。</p>
+</li>
+</ul>
+<p>这里有个疑问，在训练阶段会预测得到一个长度T，但是训练阶段时groud truth长度的，这个怎么解决？</p>
+<p>这里在训练阶段显然需要长度与 ground truth 的target sentence长度一致，才能计算 word-wise corss entropy loss.</p>
+<h3 id="Decoder-Stack"><a href="#Decoder-Stack" class="headerlink" title="Decoder Stack"></a>Decoder Stack</h3><p>1.decoder input</p>
+<p>首先关于 decoder 的初始输入，在已有的模型中，训练阶段 decoder 的输入是 time-shifted target outputs，推理阶段是前面时间步预测的输出。</p>
+<p>对于NAT模型，需要提前确定 target output 的长度，作者提出了两种方法：</p>
+<ul>
+<li><p>Copy source inputs uniformly</p>
+</li>
+<li><p>Copy source inputs using fertilities， 如上图中输入的每个时间步都有其对应的 fertility. 然后把source input按照其对应的次数copy到decoder的输入。</p>
+</li>
+</ul>
+<p>2.Non-causal self-attention</p>
+<p>因为不是自回归，也就是下一个词的生成并不依赖于previous的tokens，所以可以去掉transformer中decoder部分的cause-mask,也就是可以结合上下文的词，而不仅仅只是上文。</p>
+<p>3.position attention</p>
+<p>We also include an additional positional attention module in each decoder layer, which is a multi-head attention module with the same general attention mechanism used in other parts of the Transformer network. 为了强调位置信息。</p>
+<p>Modeling fertility to tackle the multimodality problem</p>
+<p>$P_F(f_{t’}|x_{1:T’}; \theta)$ 表示 fertility 在 t’ 时间步的概率分布，其是通过encoder顶层的 mlp + softmax 得到的。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-22T07:59:37.000Z" title="2019/6/22 下午3:59:37">2019-06-22</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:09.140Z" title="2021/6/29 下午4:12:09">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">11 minutes read (About 1608 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-4-ScratchGAN/">从0开始GAN-4-ScratchGAN</a></h1><div class="content"><h2 id="Training-Language-GANs-from-Scratch"><a href="#Training-Language-GANs-from-Scratch" class="headerlink" title="Training Language GANs from Scratch"></a>Training Language GANs from Scratch</h2><p>发现一个问题，目前看到language gans的相关paper大部分是Google，DeepMind的paper. 感觉是个深不见底的坑，弱渣哭了。。。</p>
+<h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h3><p>我们知道language GAN非常难训练，主要是因为gradient estimation, optimization instability, and mode collapse等原因，这导致很多NLPer选择先基于maximum likelihood对模型进行预训练，然后在用language GAN进行fine-tune.作者认为这种 fine-tune 给模型带来的benefit并不clear，甚至会带来不好的效果。  </p>
+<blockquote>
+<p>关于mode collapse，李宏毅老师讲过，在对话生成时，模型总是倾向于生成“我不知道”，”我知道了”这样通用的没有太多sense的回复，其实就是属于mode collapse. 类似于图像领域，既要生成鼻子，又要生成嘴巴，但是模型会倾向于生成一个居中的distribution来模拟这两个distribution。  </p>
+</blockquote>
+<blockquote>
+<p>关于gradient estimator，是因为对于离散的数据，其gradients的方差会很大。</p>
+</blockquote>
+<p>[13-16]就是先使用ML预训练模型，然后在此基础上adversarial fine-tune.[17-18]则说明了 “that the best-performing GANs tend to stay close to the solution given by maximum-likelihood training”.</p>
+<p>所以作者为了证明language GAN真的能work，就from scratch训练了一个language GAN, 对，没有预训练。作者认为从头训练好language GAN的核心技术是 <strong>large batch sizes, dense rewards and discriminator regularization</strong>.</p>
+<p>本文的贡献：  </p>
+<ol>
+<li><p>从头训练一个language GAN能达到基于ML方法的unconditional text generation.  </p>
+</li>
+<li><p>证明 <strong>large batch sizes, dense rewards and discriminator regularization</strong> 对于训练language GAN的重要性。  </p>
+</li>
+<li><p>作者对文本生成模型的evaluation提出了一些性的拓展，能充分挖掘生成的language更多的特性。比如：</p>
+<ul>
+<li><p>BLEU and Self-BLEU [19] capture basic local consistency.    </p>
+</li>
+<li><p>The Frechet Distance metric [17] captures global consistency and semantic information.    </p>
+</li>
+<li><p>Language and Reverse Language model scores [18] across various softmax temperatures to capture the diversity-quality trade-off.    </p>
+</li>
+<li><p>Nearest neighbor analysis in embedding and data space provide evidence that our model is not trivially overfitting.   </p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="Generative-Models-of-Text"><a href="#Generative-Models-of-Text" class="headerlink" title="Generative Models of Text"></a>Generative Models of Text</h3><p>生成模型的本质就是对unknown data distribution进行建模，也就是学习模型 p(x|y) 的参数。在传统的机器学习里面，我们认为模型 p(x|y) 的分布就是多维高斯正态分布，然后用EM算法去学习得到参数。在基于neural network的自然语言处理领域，对于 $x=[x_1,..,x_T]$， $p_{\theta}(x_t|x_1,…,x_{t-1})$ 也可以看作是学习这样一个distribution，只不过模型的参数不是高斯正态分布这么简单，而是基于network来模拟的。同样序列特性使得其非常适合使用自回归模型进行建模:</p>
+<p>$$p_{\theta}=\prod_{t=1}^Tp_{\theta}(x_t|x_1,…,x_{t-1})$$</p>
+<h3 id="Maximum-Likelihood"><a href="#Maximum-Likelihood" class="headerlink" title="Maximum Likelihood"></a>Maximum Likelihood</h3><p>一旦模型建立好了，接下来就是训练模型。最常用的方法就是使用极大似然估计 maximum likelihood estimation(MLE).</p>
+<p>$$\argmax_{\theta}\mathbb{E}<em>{p^* (x)}logp</em>{\theta}(x)$$</p>
+<p>关于 maximum likelihood 是否是最优解，这篇paper有讨论[9]。</p>
+<h3 id="Generative-Adversarial-Networks"><a href="#Generative-Adversarial-Networks" class="headerlink" title="Generative Adversarial Networks"></a>Generative Adversarial Networks</h3><p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-4-ScratchGAN/gans.png"></p>
+<p>前面seqgan也说过自回归模型中 $p_{\theta}=\prod_{t=1}^Tp_{\theta}(x_t|x_1,…,x_{t-1})$的过程有个sample的操作，这是不可导的。针对这个问题，有三种解决方法：  </p>
+<ul>
+<li><p>高方差，无偏估计的 reinforce[28]. 基于大数定律的条件下，去sample更多的example，来模拟 $p(y_t|s_t)$ 的分布，然后基于policy gradient去优化这个distribution，这使得速度很慢。  </p>
+</li>
+<li><p>低方差，有偏估计的 gumbel-softmax trick[29-30].  </p>
+</li>
+<li><p>other continuous relaxations[11].  </p>
+</li>
+</ul>
+<h3 id="Learning-Signals"><a href="#Learning-Signals" class="headerlink" title="Learning Signals"></a>Learning Signals</h3><p>对于generator的训练，作者采用了基于 REINFORCE 的方法:</p>
+<p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-4-ScratchGAN/reinforce.png"></p>
+<p>其中同 MaliGAN[15] 一样，设置 $R(x)=\dfrac{p^* (x)}{p_{\theta}(x)}$, 这样等效于 MLE 估计。</p>
+<p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-4-ScratchGAN/mailgan.png"></p>
+<p>基于MLE eatimator的梯度更新可以看作是reinforce的一个spacial case.区别在于language gans的reward是可以学习的，也就是discriminator是不断更新的。可学习的discriminator的效果已经被证明过了[34].</p>
+<p>如果learned reward能够提供相比MLE loss更光滑的信号，那么discriminator就能提供更多有意义的signal，甚至training data没有cover的distribution.</p>
+<p>同时，discriminator是可以ensemble的，使用更多的domain knowledge.这样能学习到更多的信息。</p>
+<h3 id="Training-Language-GANs-from-Scratch-1"><a href="#Training-Language-GANs-from-Scratch-1" class="headerlink" title="Training Language GANs from Scratch"></a>Training Language GANs from Scratch</h3><p>作者通过实验验证，要训好一个language gans，所需要的是：  </p>
+<ul>
+<li><p>a recurrent discriminator used to provide dense rewards at each time step  </p>
+</li>
+<li><p>large batches for variance reduction  </p>
+</li>
+<li><p>discriminator regularization</p>
+</li>
+</ul>
+<p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-4-ScratchGAN/scratchgans.png"></p>
+<h4 id="dense-rewards"><a href="#dense-rewards" class="headerlink" title="dense rewards"></a>dense rewards</h4><p>判别器能够判别generated sentence和real sentence，但是对于不完整的句子，就没办法去判断。这就造成，如果generated sentence很容易就被判断为fake，那么在fix discriminator训练generator时，生成器无法获得有意义的信号，也就是梯度为0吧。</p>
+<p>为了避免这种情况，作者采用了 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1801.07736">MaskGAN</a>[32] 的方法:  </p>
+<h4 id="maskGAN"><a href="#maskGAN" class="headerlink" title="maskGAN"></a>maskGAN</h4><p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-4-ScratchGAN/maskgan.png"></p>
+<p>maskGAN是一种 actor-critic 方法，利用类似于完形填空的形式，只需要生成被挖去的词，就能对整个sentence进行判别，并计算reward，这样得到的reward相比sentence中的每一个词都是生成的，其variance会小很多。</p>
+<p>具体做法是：</p>
+<ol>
+<li><p>生成器是 seq2seq 的形式，输入sequence $x=(x_1,…,x_T)$. 通过 binary mask $m=(m_1,…,m_T)$ 得到 $m(x)$.  </p>
+</li>
+<li><p>根据 m(x) 来生成得到完整的 generated examples $\hat x=(\hat x_1, \hat x_2,…,\hat x_T)$.</p>
+</li>
+</ol>
+<p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-4-ScratchGAN/maskgan_gen.png"></p>
+<ol start="3">
+<li><p>这里生成的时候参考上图，如果当前time-step被mask了，则需要用到上一个time-step生成的词，如果没有被mask，就直接使用当前词，类似于teacher-forcing.  </p>
+</li>
+<li><p>判别器就是计算每一个词为真的概率，注意这里判别器的输入也有 m(x)，其原因是让模型更好的识别生成的sentence中，哪一个是之前被mask了的。  </p>
+</li>
+</ol>
+<p>$$D_{\phi}(\tilde x_t|\tilde x_{0:T}, m(x)) = P(\tilde x_t=x_t^{real}|\tilde x_{0:T}, m(x))$$</p>
+<ol start="5">
+<li>reward 的计算：  </li>
+</ol>
+<p>$$r_t=logD_{\phi}(\tilde x_t|\tilde x_{0:T}, m(x))$$</p>
+<h4 id="Large-Batch-Sizes-for-Variance-Reduction"><a href="#Large-Batch-Sizes-for-Variance-Reduction" class="headerlink" title="Large Batch Sizes for Variance Reduction"></a>Large Batch Sizes for Variance Reduction</h4><p>reference:</p>
+<p>[9] How (not) to train your generative model: Scheduled sampling, likelihood, adversary? arXiv  </p>
+<p>[12-16]    </p>
+<p>[17-18]  </p>
+<p>[32] Maskgan: Better text generation via filling in the ____  </p>
+<p>[34]</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-06-22T07:52:16.000Z" title="2019/6/22 下午3:52:16">2019-06-22</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.200Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">13 minutes read (About 1995 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-3-%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90planning/">从0开始GAN-3-文本生成planning</a></h1><div class="content"><p>写这篇博客源于在知乎上看到大佬Towser在 “BERT模型在NLP中目前取得如此好的效果，那下一步NLP该何去何从？” 这个问题下的回答，对于文本生成的总结觉得太赞了。所以基于大佬的回答，画了一个脑图(<a target="_blank" rel="noopener" href="http://www.xmind.net/m/AcA3bE)%EF%BC%8C%E6%8E%A5%E4%B8%8B%E6%9D%A5%E4%B8%80%E4%B8%A4%E4%B8%AA%E6%9C%88%E7%9A%84%E6%97%B6%E9%97%B4%E4%B9%9F%E5%86%B3%E5%AE%9A%E6%8C%89%E7%85%A7%E8%BF%99%E4%B8%AA%E8%B7%AF%E7%BA%BF%E8%BF%9B%E8%A1%8C%E5%AD%A6%E4%B9%A0%E3%80%82">http://www.xmind.net/m/AcA3bE)，接下来一两个月的时间也决定按照这个路线进行学习。</a></p>
+<p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-3-%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90planning/text_generation.png"></p>
+<h2 id="Reward-Augmented-Maximum-Likelihood-for-Neural-Structured-Prediction"><a href="#Reward-Augmented-Maximum-Likelihood-for-Neural-Structured-Prediction" class="headerlink" title="Reward Augmented Maximum Likelihood for Neural Structured Prediction"></a>Reward Augmented Maximum Likelihood for Neural Structured Prediction</h2><h3 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h3><h4 id="Maximum-likilihood-based-method"><a href="#Maximum-likilihood-based-method" class="headerlink" title="Maximum likilihood based method"></a>Maximum likilihood based method</h4><p>对于NMT或者其他的 conditional generation，最常用的seq2seq模型是基于maximum likilihood(ML)来最小化下面这个目标函数的：</p>
+<p>$$L_{ML}=\sum_{(x,y^* )\in D}-logp_{\theta}(y^* |x)$$</p>
+<p>但是这种方式存在几个问题:  </p>
+<ul>
+<li>Minimizing this objective increases the conditional probability of the target outputs, $logp_{\theta}p(y^* |x)$, while decreasing the conditional probability of alternative incorrect outputs. According to this objective, all negative outputs are equally wrong, and none is preferred over the others.  </li>
+</ul>
+<p>在最大化目标函数，意味着增加 ground truth output的概率 $logp_{\theta}p(y^* |x)$，减少其他错误输出的概率。这个过程中，对于错误的output，模型认为所有的negative output都是同等的，这其实是不太正确的。</p>
+<ul>
+<li><a href>Generating Sentences from a Continuous Space</a>:However, by breaking the model structure down into a series of next-step predictions, the rnnlm does not expose an interpretable representation of global features like topic or of high-level syntactic properties.  </li>
+</ul>
+<p>将结构化输出的预测问题，分解成一系列word prediction(seq2seq在训练阶段，其目标函数的loss是将所有的word对应的cross entropy加起来，并没有将sentence作为一个整体来进行优化)，所以使得模型很难学到global feature，类似于topic或者high-level的句法特性。  </p>
+<ul>
+<li>exposure bias的问题。<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1905.10617.pdf">Quantifying Exposure Bias for Neural Language Generation</a></li>
+</ul>
+<h4 id="RL-based-method"><a href="#RL-based-method" class="headerlink" title="RL based method"></a>RL based method</h4><p>$$L_{RL}(\theta;\tau,D)=\sum_{(x,y^* )\in D}{-\tau\mathbb{H}(p_{\theta}(y^* |x))-\sum_{y\in \mathbb{Y}}p_{\theta}(y|x)r(y,y^* )}\quad{(1)}$$</p>
+<p>D 表示 training parallel data. $\mathbb{H}(p)$ 表示概率分布 $p_{\theta}$ 对应的交叉熵, $H(p(y))=\sum_{y\in \mathbb{Y}p(y)logp(y)}$. $\tau$ 表示 temperature parameter，是一个超参。这个公式的理解可以与上一篇blog中seqgan的公式对应起来：</p>
+<p>$$J(\theta)=E[R_T|s_0,\theta]=\sum_{y_1\in V}G_{\theta}(y_1|s_0)\cdot Q_{D_{\phi}}^{G_{\theta}}(s_0,y_1)\quad{(2)}$$</p>
+<p>（1）式中的第2项就是（2）式。那么（1）式中的第一项表示的是Maximum likilihood的交叉熵？</p>
+<p>使用RL based的方法存在这样两个问题：  </p>
+<ul>
+<li><p>使用随机梯度下降SGD来优化 $L_{RL}(\theta;\tau)$ 非常困难，因为reward对应的gradients的方差很大(large variance).  </p>
+</li>
+<li><p>没能有效利用到监督信息。  </p>
+</li>
+</ul>
+<p>作者提出了一种新的方法，能结合ML和RL的优势。</p>
+<h4 id="RAMI"><a href="#RAMI" class="headerlink" title="RAMI"></a>RAMI</h4><p>作者在output space定义了一个 exponentiated payoffdistribution, 表示ML和RL的central distribution：</p>
+<p>其中 $Z(y^* ,\tau)=\sum_{y\in \mathbb{Y}}exp{r(y, y^* )/\tau}$. 简单点理解就是基于 $r(y,y^* )$ 计算得到的reward r，然后softmax得到的分布。</p>
+<p>$$q(y|y^* ;\tau)=\dfrac{1}{Z(y^* ,\tau)}exp{r(y, y^* )/\tau}\quad(3)$$</p>
+<blockquote>
+<p>显然，这个 $r(y,y^* )$ 的计算是基于 BLEU 来计算的。这样一来，既考虑到了不同的 y 之间的差异性，也将 BLEU 的计算转换成了 distribution.</p>
+</blockquote>
+<p>然后作者推导了各种公式证明了从ML的角度来优化 $q(y|y^* ;\tau)$ 和 $p_{\theta}(y|x)$ 的KL散度等效于优化 $L_{RL}$.</p>
+<p>所以 reward-augmented maximum likelihood (RAML) 的loss function可以写成:</p>
+<p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-3-%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90planning/rami.png"></p>
+<blockquote>
+<p>Note that the temperature parameter, $\tau \ge 0$, serves as a hyper-parameter that controls the smoothness of the optimal distribution around correct targets by taking into account the reward function in the output space.</p>
+</blockquote>
+<h5 id="optimization"><a href="#optimization" class="headerlink" title="optimization"></a>optimization</h5><p>对于 $L_{RAMI}(\theta;\tau)$ 的优化很简单，就是直接通过 $q(y|y^* ;\tau)$ 来sampling出 unbiased samples y. 如果超参数 $\tau=0$,那么就只能sample出 $y^* $.</p>
+<p>对公示（７）求导，可以得到：　　</p>
+<p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-3-%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90planning/optimizer.png"></p>
+<p>这里 $q(y|y^* ;\tau)$ 是通过 $y^* $ 来sample y,不包含需要训练的参数的。所以 RAMI 也就是优化log-likelihood,不过这里的 y 不是ground truth，而是基于 ground truth和评估指标metric来sample得到的y.</p>
+<p>对比基于 RL 的优化，作者进行了吐槽：</p>
+<p><img src="/2019/06/22/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-3-%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90planning/vsrl.png"></p>
+<ol>
+<li><p>RL中sample得到的样本 y 是通过生成模型得到的，而且这个model还是不断进化的。这使得训练速度很慢，比如 seqgan 中的roll-out policy.  </p>
+</li>
+<li><p>reward 在高维output空间非常稀疏，这使得优化很困难。   </p>
+</li>
+<li><p>actor-critique methods.</p>
+</li>
+</ol>
+<h5 id="Sampling-from-the-exponentiated-payoff-distribution"><a href="#Sampling-from-the-exponentiated-payoff-distribution" class="headerlink" title="Sampling from the exponentiated payoff distribution"></a>Sampling from the exponentiated payoff distribution</h5><p>在通过公式（9）进行优化之前，需要先通过 exponentiated payoff distribution $q(y|y^* ;\tau)$ 来sample得到 y. This sampling is the price that we have to pay to learn with rewards. 这个sample过程与RL相比是没有参数的，瞬间简单了很多啊。。</p>
+<p>那么具体是怎么sample的呢，作者使用的基于edit distance的方法。</p>
+<ul>
+<li><p>给定的ground truth $y^* $ 长度是m  </p>
+</li>
+<li><p>基于edit distance $y^* $ sample出与 $y^* $ 距离在 e 范围内的sentences y, 其中 $e\in {0,…,2m}$.  </p>
+</li>
+</ul>
+<p>知乎上有大佬对这篇paper做了一个简单的总结, <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/67214174">NLP八卦每日谈 2</a>.</p>
+<p>RL: x –&gt; 通过decoder sample一个句子y’ –&gt; 和y计算metric –&gt; 把metric作为reward，算policy gradient</p>
+<p>RAML: y –&gt; 通过和metric对应的一个distribution sample一个句子y* –&gt; 把y* 作为GT进行ML训练</p>
+<p>这样做的好处是RL的sample是根据decoder sample，而decoder有参数，所以需要policy gradient。而RAML，是根据y（target sentence）来sample句子。这样就没有参数的问题，也就不需要policy gradient了。</p>
+<p>RAML看起来几乎完美，不存在任何优化问题。可天下没有免费的午餐。RAML的难点在于如何将Metric转化成对应的distribution。RAML只提供了将诸如edit distance等metric转化成dist的方法，但对于BLEU等却无能为力。</p>
+<p>所以目前为止，RAML的主要贡献在于让我们理解RL language generation到底train了个啥。简单来说就是不学ground truth distribution，而学习一个跟metric相关的dense distribution。这么做的好处是y的distribution更大，相对来说更容易学习</p>
+<h5 id="关于结构化预测related-work"><a href="#关于结构化预测related-work" class="headerlink" title="关于结构化预测related work"></a>关于结构化预测related work</h5><p>(a) supervised learning approaches that ignore task reward and use supervision;  </p>
+<p>(b) reinforcement learning approaches that use only task reward and ignore supervision;  </p>
+<p>(c) hybrid approaches that attempt to exploit both supervision and task reward.</p>
+<h2 id="Generating-Sentences-from-a-Continuous-Space-Samuel"><a href="#Generating-Sentences-from-a-Continuous-Space-Samuel" class="headerlink" title="Generating Sentences from a Continuous Space Samuel"></a>Generating Sentences from a Continuous Space Samuel</h2><p>这是非常早期的一篇基于变分自编码做文本生成的论文，我们都知道VAE和GAN是非常类似的。所以在看 GAN text generation相关的paper之前先学习下如何用VAE做文本生成。</p>
+<p>关于 VAE 有两篇非常不错的blog:  </p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://kexue.fm/archives/5253">苏剑林变分自编码器（一）：原来是这么一回事</a>   </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://anotherdatum.com/vae.html">Variational Autoencoders Explained</a></p>
+</li>
+</ul>
+<h3 id="何为-VAE"><a href="#何为-VAE" class="headerlink" title="何为 VAE"></a>何为 VAE</h3><h3 id="Motivation-1"><a href="#Motivation-1" class="headerlink" title="Motivation"></a>Motivation</h3><p>传统 RNNLM 在做text生成的时候，其结构是把一个序列breaking成一个个next word的prediction. 这使得模型并没有显示的获取文本的全局信息，也没有获取类似于topic和句法相关的高级特征。</p>
+<p>于是乎，作者提出了一种基于vatiational encoder的方法，能有效获取global feature，并且能避免 MLM 带来的几乎不可能完成的计算。同时，作者认为基于传统的language model的验证方法并不能有效展示出global feature的存在，于是提出了一种新的 evaluation strategy.</p>
+<blockquote>
+<p>For this task, we introduce a novel evaluation strategy using an adversarial classifier, sidestepping the issue of intractable likelihood computations by drawing inspiration from work on non-parametric two-sample tests and adversarial training.</p>
+</blockquote>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-05-27T08:14:00.000Z" title="2019/5/27 下午4:14:00">2019-05-27</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.540Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">43 minutes read (About 6510 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/">从0开始GAN-2-sequence generation by GAN</a></h1><div class="content"><h2 id="paper-list"><a href="#paper-list" class="headerlink" title="paper list"></a>paper list</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1511.06349">Generating Sentences from a Continuous Space</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1611.04051">GANS for Sequences of Discrete Elements with the Gumbel-softmax Distribution</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1611.01144">Categorical Reparameterization with Gum-bel-Softmax</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1606.01541v3.pdf">Deep Reinforcement Learning for Dialogue Generation</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1406.2661v1">Generative Adversarial Networks</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av9770302/?p=17">李宏毅老师讲seqGAN</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/29168803">Role of RL in Text Generation by GAN(强化学习在生成对抗网络文本生成中扮演的角色)</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/ycy0706/article/details/80425091">好玩的文本生成</a>  </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1411.1784">Conditional Generative Adversarial Nets</a>  </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1605.05396">Generative Adversarial Text to Image Synthesis</a>  </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1701.06547">Adversarial Learning for Neural Dialogue Generation</a>    </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1511.05101">How (not) to train your generative model: Scheduled sampling, likelihood, adversary?</a>  </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1808.05599">Improving Conditional Sequence Generative Adversarial Networks by Stepwise Evaluation</a>  </p>
+</li>
+</ul>
+<h2 id="为什么GAN不适合文本生成"><a href="#为什么GAN不适合文本生成" class="headerlink" title="为什么GAN不适合文本生成"></a>为什么GAN不适合文本生成</h2><p>前面学过了GAN很自然的就会想到将GAN引入到文本生成中来，比如对话可以看作是conditional GAN, 但实际上却并不如想象中那样简单，原因是GAN只适用于连续数据的生成，对离散数据效果不佳。</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/gan_continuous.png"></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/29168803">Role of RL in Text Generation by GAN(强化学习在生成对抗网络文本生成中扮演的角色)</a> 这里面从两方面讲的很清楚:  </p>
+<ul>
+<li><p>sampling：从生成得到的softmax probability到one-hot向量，从而查询出对应index的词，这一步称为“sampling”，显然是不可微的。  </p>
+</li>
+<li><p>去掉sampling,将softmax probability和one-hot vector作为discriminator的输入，如果是discriminator是一个二分类器的话，判别器D很容易“作弊”，它根本不用去判断生成分布是否与真实分布更加接近，它只需要识别出给到的分布是不是除了一项是 1 ，其余都是 0 就可以了。因此，我们也可以想到用WGAN来解决这个问题。<a href>Improved Training of Wasserstein GANs</a>也给出了文本生成的实验，效果当然是好了很多，不至于直接崩了。</p>
+</li>
+</ul>
+<p>但是WGAN为什么没那么好呢？将一个softmax probability强行拉倒一个one-hot vector真的可行吗？</p>
+<h2 id="Gumbel-softmax，模拟Sampling的softmax"><a href="#Gumbel-softmax，模拟Sampling的softmax" class="headerlink" title="Gumbel-softmax，模拟Sampling的softmax"></a>Gumbel-softmax，模拟Sampling的softmax</h2><h2 id="RL-in-text-generation"><a href="#RL-in-text-generation" class="headerlink" title="RL in text generation"></a>RL in text generation</h2><h3 id="reinforcement-learning"><a href="#reinforcement-learning" class="headerlink" title="reinforcement learning"></a>reinforcement learning</h3><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Reinforcement_learning">reinforcement learning</a> 和监督学习、非监督学习一起构成机器学习的三大范式。  </p>
+<blockquote>
+<p>Reinforcement learning (RL) is an area of machine learning concerned with how software agents ought to take actions in an environment so as to maximize some notion of cumulative reward.  </p>
+</blockquote>
+<p>It differs from supervised learning in that labelled input/output pairs need not be presented, and sub-optimal actions need not be explicitly corrected. Instead the focus is finding a balance between <strong>exploration</strong> (of uncharted territory) and <strong>exploitation</strong> (of current knowledge)</p>
+<p>RL所适用的环境是一个典型的马尔科夫决策过程(Markov decision process,MDP)。所以强化学习实际上也可以看作是一种动态规划的方法。不过与传统的dynamic programming方法不同的是，RL不会假设MDP的精确数学模型的知识。我的理解是，在很多DP问题中，状态转移矩阵是已知的，但是RL所处理的问题，从一个状态到另一个状态，不是根据已有的知识，而是取决于当前action带来的reward以及未来的reward,所以这也就涉及到了 exploration 和 exploitation 的平衡问题。</p>
+<p> Markov decision process 包括：GANs-in-NLP/Reinforcement_learning_diagram.png</p>
+<ul>
+<li><p>环境以及agent状态的集合 S;    </p>
+</li>
+<li><p>agent能采取的动作的集合 $A$  </p>
+</li>
+<li><p>状态之间转换的规则 $P_a(s,s’)=Pr(s_{t+1}=s’|s_t=s,a_t=a)$  </p>
+</li>
+<li><p>规定转换之后的即时奖励 $R_a(s,s’)$    </p>
+</li>
+<li><p>描述主体能够观察到什么的规则(这是啥玩意？？)</p>
+</li>
+</ul>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/Reinforcement_learning_diagram.png"></p>
+<h4 id="policy"><a href="#policy" class="headerlink" title="policy"></a>policy</h4><p>将从头到尾所有的动作连在一起就称为一个“策略”或“策略路径” $pi$ ，强化学习的目标就是找出能够获得最多奖励的最优策略.  </p>
+<p>$\pi: A\times S \rightarrow [0,1]$  </p>
+<p>$\pi(a,s)=Pr(a_t=a|s_t=s)$</p>
+<h4 id="state-value-function"><a href="#state-value-function" class="headerlink" title="state-value function"></a>state-value function</h4><p>状态-值函数 $V_{\pi}(s)$ 定义在当前状态 s下，按照策略 $\pi$ 接下来能获得的 reward.也就是说，given state s，当前以及未来的reward期望.  </p>
+<p>$$V_{\pi}(s)=E[R]=E[\sum_{t=0}^{\infty}\gamma^tr_t|s_0=s]$$  </p>
+<p>其中 $\gamma^t$ 是折扣因子，因为还是当前利益最重要嘛，所以未来的reward要打个折。</p>
+<p>$$R=\sum_{t=0}^{\infty}\gamma^tr_t$$</p>
+<h4 id="value-function"><a href="#value-function" class="headerlink" title="value function"></a>value function</h4><p>value funcion 和 state-value function 的区别是后者给定了一个 state. 而value function是计算给定任意初始状态，得到的reward.</p>
+<p>$$V^{\pi}=E[R|s,\pi]$$</p>
+<p>所以最优的 policy 实际上就是 value function 的期望最大。$\rho^{\pi}=E[V^{\pi}(S)]$， 其中状态S是从一个分布 $\mu$ 随机采样得到的。</p>
+<p>尽管 state-value 足够定义最优 policy，再定义一个 action-value 也是很有用的。 given state s, action a, policy $\pi$, action-value:</p>
+<p>$$Q^{\pi}(s,a)=E[R|s,a,\pi]$$</p>
+<p>个人理解，在强化学习的应用场景中，很多时候是由 action 来确定下一个 state 的。所以 action-value 这个function会更实用吧。比如 text generation，sample当前词就是 action，然后才有下一个时刻的 state.</p>
+<h4 id="Monte-Carlo-methods"><a href="#Monte-Carlo-methods" class="headerlink" title="Monte Carlo methods"></a>Monte Carlo methods</h4><h4 id="Temporal-difference-methods"><a href="#Temporal-difference-methods" class="headerlink" title="Temporal difference methods"></a>Temporal difference methods</h4><h3 id="RL应用到对话场景下"><a href="#RL应用到对话场景下" class="headerlink" title="RL应用到对话场景下"></a>RL应用到对话场景下</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1606.01541v3.pdf">Deep Reinforcement Learning for Dialogue Generation</a></p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/chat_bot.png"></p>
+<p>对话生成任务本身非常符合强化学习的运行机理（让人类满意，拿奖励）。</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/rl_based_e2e.png"></p>
+<p>输入句子是 h,模型返回的response是 x，其从人类得到的奖励是 $R(h,x)$. 基于RL的目标函数就是最大化对话的期望奖励。上图中 $p_{\theta}(x,h)$ 表示在 $\theta$ 参数下，一组对话 $(x,h)$ 出现的概率。$P(h)$ 表示出现句子 h 的概率。</p>
+<p>最大化奖励期望：</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/max_excepted_reward.png"></p>
+<p>$$公式(1)$$</p>
+<ul>
+<li><p>上式中 $h\sim P(h)$ 可以看作是均匀分布，所以 $E_{h\sim P(h)}\approx \dfrac{1}{N}$.  </p>
+</li>
+<li><p>其中 $E_{x\sim P_{\theta}(x|h)}$ 的计算无法考虑所有的对话，所以通过采样 $(h^1,x^1), (h^2,x^2), .., (h^N,x^N)$ 来计算。</p>
+</li>
+</ul>
+<p>然后问题来了，我们需要优化的参数 $\theta$ 不见了，这怎么对 $\theta$ 进行求导呢？可以采用强化学习中常用的 policy gradient 进行变形：</p>
+<p>$$\dfrac{dlog(f(x))}{dx}=\dfrac{1}{f(x)}\dfrac{df(x)}{dx}$$</p>
+<p>适当变形后，对 $\theta$ 进行求导：  </p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/policy_gradient.png"></p>
+<p>$$公式(2)$$</p>
+<p>这样一来，梯度优化的重心就转化到了生成对话的概率上来，也就是说，通过对参数 $\theta$ 进行更新，奖励会使模型趋于将优质对话的出现概率提高，而惩罚则会让模型趋于将劣质对话的出现概率降低。</p>
+<blockquote>
+<p>自AlphaGo使得强化学习猛然进入大众视野以来，大部分对于强化学习的理论研究都将游戏作为主要实验平台，这一点不无道理，强化学习理论上的推导看似逻辑通顺，但其最大的弱点在于，基于人工评判的奖励 Reward 的获得，让实验人员守在电脑前对模型吐出来的结果不停地打分看来是不现实的，游戏系统恰恰能会给出正确客观的打分（输/赢 或 游戏Score）。基于RL的对话生成同样会面对这个问题，研究人员采用了类似AlphaGo的实现方式（AI棋手对弈）——同时运行两个机器人，让它们自己互相对话，同时，使用预训练（pre-trained）好的“打分器”给出每组对话的奖励得分 R(a^i, x^i) ，关于这个预训练的“打分器” R ，可以根据实际的应用和需求自己DIY。</p>
+</blockquote>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/rl_dilogue.png"></p>
+<h2 id="SeqGAN"><a href="#SeqGAN" class="headerlink" title="SeqGAN"></a>SeqGAN</h2><p>seqGAN对前面仅基于RL的对话生成进行了改进，也就是前面用pre-trained的打分器（或者是人类），用GAN中的判别器进行了代替。</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/chat_bot_gan.png"></p>
+<p>这里问题在于生成得到的response x输入到判别器时，这个过程涉及到了sampling的操作，所以固定discriminator来更新generator时，梯度无法回流。</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/no_gradient.png"></p>
+<p>这就需要RL的出现了。</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/rl_in_dialogue.png"></p>
+<p>总结一下RL在这里面的作用：这里的discriminator得到的是reward。我们fix住判别器D来优化生成器 $\theta$ 的过程就变成了：生成器不再是原来的sample一个词，作为下一个time step的输入，因为这不可导。而是把当前time step作为一个state，然后采取action，这个action当然也是在词表中选一个词(用Monte Carlo Search). 以前是通过最大化似然概率（最小化交叉熵）来优化生成器，现在是寻找最优的 policy（最大化奖励期望）来优化生成器。而采用policy gradient可以将reward期望写成 $\theta$ 的连续函数，然后就可以根据最大化reward期望来优化 $\theta$,也就是梯度上升。</p>
+<p>有了前面的基础再重新阅读<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1609.05473.pdf">seqGAN</a>这篇paper.</p>
+<h3 id="motivation"><a href="#motivation" class="headerlink" title="motivation"></a>motivation</h3><p>传统的GAN在序列生成的能力有限主要是两个原因：  </p>
+<ol>
+<li><p>无法处理离散的数据（前面已经讲过了）  </p>
+</li>
+<li><p>判别器D只能对完整的序列进行评价（原因是判别器就是基于完整的句子或dialogue进行训练的）。但是在序列生成的过程中，在生成部分序列的时候，对当前部分序列的评价也是很重要的。</p>
+</li>
+</ol>
+<p>传统的基于 RNN/attention 的序列生成模型也存在 exposure bias 的问题，也就是训练阶段和inference阶段不一致的问题。在训练阶段是teacher forcing，而在infer阶段，下一个词的预测仅仅依赖于当前的隐藏状态（attention-based会有attention vector）. Bengio 的弟弟，另一个 Bengio 提出了 scheduled sampling 的方法，但这依然未能完全解决这个问题。</p>
+<p>为此，作者提出基于RL的seqGAN。对序列生成的问题进行建模，把序列生成问题看作是马尔可夫决策过程(<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1506.03504">Data generation as sequential decision making</a>)，从而转换成基于RL的寻找最优policy的问题，有效的解决了上述三个问题。</p>
+<h3 id="Sequence-Generative-Adversarial-Nets"><a href="#Sequence-Generative-Adversarial-Nets" class="headerlink" title="Sequence Generative Adversarial Nets"></a>Sequence Generative Adversarial Nets</h3><p>这里先介绍一些数学符号：  </p>
+<p>我们的目的是训练得到一个生成模型 $G_{\theta}$，使其能生成得到这样的一个序列 $Y_{1:T}=(y_1,…,y_t,…,y_T)$. 其中 $y_t\sim V$. V是候选词表。用RL来描述序列生成的过程就是：  </p>
+<ol>
+<li><p>当前时间步 t 的状态 state s: $(y_1,…,y_{t-1})$    </p>
+</li>
+<li><p>action a 是选择下一个 token $y_t$.    </p>
+</li>
+<li><p>policy也就是生成模型 $G_{\theta}(y_t|Y_{1:t-1})$    </p>
+</li>
+<li><p>状态的转移取决于 action a. 比如状态转移的概率 $\sigma_{s,s’}^a=1$，也就是在当前状态 $s=Y_{1:t-1}$ 情况下，下一个状态是 $s’$ 的概率为1，那么下一个状态是 $s’=Y_{1:t}$,对应的action也就是 $a=y_t$.</p>
+</li>
+</ol>
+<p>首先我们需要训练一个判别模型 $D_{\phi}(Y_{1:T})$, 通过判断输入来自 real or fake 进行训练。而生成器的训练需要借助于判别器D的输出，也就是 reward.</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/seqgan.png"></p>
+<h5 id="SeqGAN-via-Policy-Gradient"><a href="#SeqGAN-via-Policy-Gradient" class="headerlink" title="SeqGAN via Policy Gradient"></a>SeqGAN via Policy Gradient</h5><p>如果不考虑中间每一个时间步的奖励，也就是只考虑整个sentence的reward, 那么基于生成模型（policy）$G_{\theta}(y_t|Y_{1:t-1})$ 的最大奖励期望的函数是:</p>
+<p>$$J(\theta)=E[R_T|s_0,\theta]=\sum_{y\sim V}G_{\theta}(y|s_0)\cdot Q_{D_{\phi}}^{G_{\theta}}(s_0,y)$$</p>
+<p>其中 $R_T$ 是对整个sentence的奖励, $G_{\theta}(y|s_0)$ 是 given $s_0$,生成 $y$ 的概率，$Q_{D_{\phi}}^{G_{\theta}}(s_0,y )$ 是 action-value 函数，也就是 given $s_0$ 和 policy $G_{\theta}$ 后采取的 action 是 $y$ 时对应的 reward. 在这篇论文里面，reward 就是判别器判断生成的sentence为real的概率。</p>
+<p>$$Q_{D_{\phi}}^{G_{\theta}}(a=y_T,s=Y_{1:T-1})=D_{\phi}(Y_{1:T})$$</p>
+<p>但是对于序列生成问题，不能仅仅考虑完整的句子的reward，还要考虑到每一个 time step. 但是在每一个time step也不能贪心的只考虑当前最大的reward，还要考虑到未来的情况. 作者提出基于 Monte Carlo search 的方法。</p>
+<blockquote>
+<p>Monte Carlo methods can be used in an algorithm that mimics policy iteration. Policy iteration consists of two steps: policy evaluation and policy improvement. Monte Carlo is used in the policy evaluation step. In this step, given a stationary, deterministic policy ${\displaystyle \pi }$, the goal is to compute the function values ${\displaystyle Q^{\pi }(s,a)}$ (or a good approximation to them) for all state-action pairs ${\displaystyle (s,a)}$. Assuming (for simplicity) that the MDP is finite, that sufficient memory is available to accommodate the action-values and that the problem is episodic and after each episode a new one starts from some random initial state. Then, the estimate of the value of a given state-action pair ${\displaystyle (s,a)}$ can be computed by averaging the sampled returns that originated from ${\displaystyle (s,a)}$ over time. Given sufficient time, this procedure can thus construct a precise estimate ${\displaystyle Q}$ of the action-value function ${\displaystyle Q^{\pi }}$. This finishes the description of the policy evaluation step.  </p>
+</blockquote>
+<p>policy iteration分为两个步骤，policy evaluation和policy improvement.蒙特卡洛被用在policy evaluation step中，给定一个静态的，判别型的policy $\pi$，其目标是计算</p>
+<p>具体来说，在当前状态 $s=Y_{1:t}$ 下，基于一个 roll-out policy $G_{\beta}$ 生成剩下的 T-t 个tokens，这个过程重复 N 次.</p>
+<p>$${Y_{1:T}^1,…,Y_{1:T}^N}=MC^{G_{\beta}}(Y_{1:t;N})$$</p>
+<p>式子左边是 N 个完整的sentence。 对于 roll-out policy $G_{\beta}$ 作者在这篇 paper 中采用的与生成模型一样的 $G_{\theta}$. 如果追求速度的话，可以选择更简单的策略。</p>
+<p>这样基于 Monte Carlo method 就能计算每一个 time step 的能考虑到 future 的reward.</p>
+<p>$$Q_{D_{\phi}}^{G_{\theta}}(s=Y_{1:t-1}, a=y_t)=</p>
+<p>\begin{cases}</p>
+<p>\dfrac{1}{N}\sum_{n=1}^ND_{\phi}(Y_{1:T}^n),Y_{1:T}^n \sim MC^{G_{\beta}}(Y_{1:t;N}), \quad \text{for t &lt; T}\</p>
+<p>D_{\phi}(Y_{1:t}),\quad\text{for t = T}</p>
+<p>\end{cases}\quad (4)$$</p>
+<p>公式还是比较好理解的。所以事实上判别器 $D_{\phi}$ 依旧是只能判断完整的sentence，但是在每一个 time step 可以借助于 roll-out policy 来得到完整的sentence，进而对当前 action 进行评分，计算得到 $a=y_t$ 的reward。</p>
+<p>知道了如何计算reward，就可以利用最大化这个奖励期望来优化我们的生成器（policy $G_{\theta}$）.对 $\theta$ 求导:</p>
+<p>$$\nabla J(\theta)=\sum_{t=1}^T\mathbb{E}<em>{Y</em>{1:t-1}\sim G_{\theta}}[\sum_{y_t\sim V}\nabla_{\theta}G_{\theta}({y_t|Y_{1:t-1}})\cdot Q_{D_{\phi}}^{G_{\theta}}(Y_{1:t-1},y_t)]\quad\text{公式(3)}$$</p>
+<p>公式（3）与前面李弘毅老师讲的公式（2）是一致的，只不过这里考虑的中间 reward.上式中 $E_{Y_{1:t-1}\sim G_{\theta}}[\cdot]$ 等同于前面提到的 $E_{x\sim P_{\theta}(x|h)}$ 都是通过sample 来计算的。同样 reward 的计算式 $Q_{D_{\phi}}^{G_{\theta}}(Y_{1:t-1},y_t)$ 也是不包含生成器的参数 $\theta$ 的。</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/max_reward.png"></p>
+<p>上述公式中 $\sum_{y_t\sim V}\sim G_{\theta}(y_t|Y_{1:t-1})$</p>
+<p>然后基于梯度上升来优化参数 $\theta$.</p>
+<p>$$\theta \leftarrow \theta + \alpha_h\nabla J(\theta)\quad(8)$$</p>
+<p>作者建议使用 Adam 或 RMSprop 优化算法。</p>
+<p>除了生成器的优化，这里的判别器D是动态的。这样相比传统基于pre-train的判别器会更叼吧。优化判别器的目标函数是：</p>
+<p>$$\min_{\phi}-\mathbb{E}<em>{Y\sim p</em>{data}}[logD_{\phi}(Y)]-\mathbb{E}<em>{Y\sim G</em>{\theta}}[log(1-D_{\phi}(Y))]\quad(5)$$</p>
+<p>具体的算法步骤是：</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/algorithm.png"></p>
+<blockquote>
+<p>And to reduce the vari- ability of the estimation, we use different sets of negative samples combined with positive ones, which is similar to bootstrapping (Quinlan 1996)</p>
+</blockquote>
+<h3 id="The-Generative-Model-for-Sequences"><a href="#The-Generative-Model-for-Sequences" class="headerlink" title="The Generative Model for Sequences"></a>The Generative Model for Sequences</h3><p>作者使用基于 LSTM 的生成器G。</p>
+<p>$$h_t=g(h_{t-1},x_t)$$</p>
+<p>$$p(y_t|x_1,…,x_t)=z(h_t)=softmax(c+Vh_t)$$</p>
+<h3 id="The-Discriminative-Model-for-Sequences"><a href="#The-Discriminative-Model-for-Sequences" class="headerlink" title="The Discriminative Model for Sequences"></a>The Discriminative Model for Sequences</h3><p>作者使用基于 CNN 的判别器，用来预测一个sentence为real的概率。</p>
+<h3 id="一些细节-一些延伸"><a href="#一些细节-一些延伸" class="headerlink" title="一些细节 + 一些延伸"></a>一些细节 + 一些延伸</h3><p>到目前为止，基本理解了seqGAN的大部分细节，需要看看源码消化下。  </p>
+<p>接下来会有更多的细节和改进可先参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/29168803">Role of RL in Text Generation by GAN(强化学习在生成对抗网络文本生成中扮演的角色)</a></p>
+<h3 id="seagan-代码学习"><a href="#seagan-代码学习" class="headerlink" title="seagan 代码学习"></a>seagan 代码学习</h3><h4 id="TensorArray-和-基于lstm的MDP模拟文本生成"><a href="#TensorArray-和-基于lstm的MDP模拟文本生成" class="headerlink" title="TensorArray 和 基于lstm的MDP模拟文本生成"></a>TensorArray 和 基于lstm的MDP模拟文本生成</h4><p>这也是seqgan的核心，用Monte Carlo search代替sampling来选择next token.在看具体代码之前先了解下 tensorarray.</p>
+<h4 id="TensorArray"><a href="#TensorArray" class="headerlink" title="TensorArray"></a>TensorArray</h4><blockquote>
+<p>Class wrapping dynamic-sized, per-time-step, write-once Tensor arrays</p>
+</blockquote>
+<p>This class is meant to be used with dynamic iteration primitives such as while_loop and map_fn. It supports gradient back-propagation via special “flow” control flow dependencies.</p>
+<p>一个封装了动态大小、per-time-step 写入一次的 tensor数组的类。在序列生成中，序列的长度通常是不定的，所以会需要使用动态tensorarray.</p>
+<h5 id="类初始化"><a href="#类初始化" class="headerlink" title="类初始化"></a>类初始化</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               dtype,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               size=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               dynamic_size=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               clear_after_read=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               tensor_array_name=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               handle=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               flow=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               infer_shape=<span class="literal">True</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               element_shape=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               colocate_with_first_write_call=<span class="literal">True</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">               name=<span class="literal">None</span></span>):</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><p>size: int32 scalar <code>Tensor</code>, 动态数组的大小</p>
+</li>
+<li><p>dynamic_size: Python bool, 是否可以增长，默认false</p>
+</li>
+</ul>
+<h5 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h5><ul>
+<li>stack</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stack</span>(<span class="params">self, name=<span class="literal">None</span></span>):</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;&quot;&quot;Return the values in the TensorArray as a stacked `Tensor`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &quot;&quot;&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>将动态数组 stack 起来，得到最终的 tensor.</p>
+<ul>
+<li>concat</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">concat</span>(<span class="params">self, name=<span class="literal">None</span></span>):</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;&quot;&quot;Return the values in the TensorArray as a concatenated `Tensor`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &quot;&quot;&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>将动态数组 concat 起来，得到最终的 tensor.</p>
+<ul>
+<li>read  </li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">read</span>(<span class="params">self, index, name=<span class="literal">None</span></span>):</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;&quot;&quot;Read the value at location `index` in the TensorArray.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  读过一次之后会清0. 不能读第二次。但可以再次写入之后。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &quot;&quot;&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>write  </li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write</span>(<span class="params">self, index, value, name=<span class="literal">None</span></span>):</span></span><br><span class="line"></span><br><span class="line">  <span class="string">&quot;&quot;&quot;Write `value` into index `index` of the TensorArray.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">  - index: int32 scalar <span class="keyword">with</span> the index to write to.</span><br><span class="line"></span><br><span class="line">  - value: tf.Tensor</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><p>gather  </p>
+</li>
+<li><p>unstack  </p>
+</li>
+<li><p>split  </p>
+</li>
+<li><p>scatter  </p>
+</li>
+</ul>
+<h5 id="tf-while-loop"><a href="#tf-while-loop" class="headerlink" title="tf.while_loop"></a>tf.while_loop</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">while_loop_v2</span>(<span class="params">cond,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">                  body,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">                  loop_vars,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">                  shape_invariants=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">                  parallel_iterations=<span class="number">10</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">                  back_prop=<span class="literal">True</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">                  swap_memory=<span class="literal">False</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">                  maximum_iterations=<span class="literal">None</span>,</span></span></span><br><span class="line"><span class="params"><span class="function"></span></span></span><br><span class="line"><span class="params"><span class="function">                  name=<span class="literal">None</span></span>):</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;Repeat `body` while the condition `cond` is true.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">- cond: <span class="built_in">callable</span>, <span class="keyword">return</span> boolean scalar tensor. 参数个数必须和 loop_vars 一致。  </span><br><span class="line"></span><br><span class="line">- body: vallable. 循环执行体，参数个数必须和 loop_vars 一致.</span><br><span class="line"></span><br><span class="line">- loop_vars: 循环变量，<span class="built_in">tuple</span>, namedtuple <span class="keyword">or</span> <span class="built_in">list</span> of numpy array.</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="example"><a href="#example" class="headerlink" title="example:"></a>example:</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">matrix = tf.random.normal(shape=[<span class="number">5</span>, <span class="number">1</span>], dtype=tf.float32)</span><br><span class="line"></span><br><span class="line">sequence_length = <span class="number">5</span></span><br><span class="line"></span><br><span class="line">gen_o = tf.TensorArray(dtype=tf.float32, size=sequence_length,</span><br><span class="line"></span><br><span class="line">                       dynamic_size=<span class="literal">False</span>, infer_shape=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">init_state = (<span class="number">0</span>, gen_o)</span><br><span class="line"></span><br><span class="line">condition = <span class="keyword">lambda</span> i, _: i &lt; sequence_length</span><br><span class="line"></span><br><span class="line">body = <span class="keyword">lambda</span> i, gen_o : (i+<span class="number">1</span>, gen_o.write(i, matrix[i] * <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">n, gen_o = tf.while_loop(condition, body, init_state)</span><br><span class="line"></span><br><span class="line">gen_o_stack = gen_o.stack()</span><br><span class="line"></span><br><span class="line">gen_o_concat = gen_o.concat()用 LSTM 模拟马尔科夫决策过程</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gen_o)                     <span class="comment"># TensorArray object</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gen_o_stack)               <span class="comment"># tf.Tensor(), [5,]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gen_o_concat)              <span class="comment"># tf.Tensor(), [5,1]</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gen_o.read(<span class="number">3</span>))             <span class="comment"># -0.22972003, tf.Tensor  读过一次就被清0了</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gen_o.write(<span class="number">3</span>, tf.constant([<span class="number">0.22</span>], dtype=tf.float32)))  <span class="comment"># TensorArray object</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gen_o.concat())            <span class="comment"># tf.Tensor([-2.568663 0.09471891 1.2042408 0.22 0.2832177 ], shape=(5,), dtype=float32)</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gen_o.read(<span class="number">3</span>))             <span class="comment"># tf.Tensor([0.22], shape=(1,), dtype=float32)</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(gen_o.read(<span class="number">3</span>))             <span class="comment"># Could not read index 3 twice because it was cleared after a previous read</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="用-LSTM-模拟马尔科夫决策过程"><a href="#用-LSTM-模拟马尔科夫决策过程" class="headerlink" title="用 LSTM 模拟马尔科夫决策过程"></a>用 LSTM 模拟马尔科夫决策过程</h4><ul>
+<li><p>current time t state: $(y_1,…,y_t)$. 但是马尔科夫决策过程的原理告诉我们<strong>一旦当前状态确定后，所有的历史信息都可以扔掉了。这个状态足够去预测 future.</strong> 所以在LSTM里面就是隐藏状态 $h_{t-1}$. 以及当前可观测信息 $x_t$.  </p>
+</li>
+<li><p>action a: 选择 next token $y_t$.</p>
+</li>
+<li><p>policy: $G_{\theta}(y_t|Y_{1:t-1})$. 也就是生成next token的策略。下面代码的方法 $o_t \rightarrow log(softmax(o_t))$. 然后基于这个 log-prob 的分布进行 sample. 问题是这个过程不可导呀？  </p>
+</li>
+</ul>
+<h5 id="generator"><a href="#generator" class="headerlink" title="generator"></a>generator</h5><p>这是生成器生成sample的过程，初始状态是 $h_0$.</p>
+<p>g_recurrence 就是step-by-step的过程，next_token是通过tf.multinomial采样得到的，其采样的distribution是 log_prob [tf.log(tf.nn.softmax(o_t))]。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Generator</span>(<span class="params">tf.keras.Model</span>):</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  self.h0 = tf.zeros([self.batch_size, self.hidden_dim])</span><br><span class="line"></span><br><span class="line">  self.h0 = tf.stack([self.h0, self.h0])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment"># define variables</span></span><br><span class="line"></span><br><span class="line">  self.g_embeddings = tf.Variable(self.init_matrix([self.vocab_size, self.emb_dim]))</span><br><span class="line"></span><br><span class="line">  self.g_params.append(self.g_embeddings)</span><br><span class="line"></span><br><span class="line">  self.g_recurrent_unit = self.create_recurrent_unit(self.g_params)  <span class="comment"># maps h_&#123;t-1&#125; to h_t for generator</span></span><br><span class="line"></span><br><span class="line">  self.g_output_unit = self.create_output_unit(self.g_params)  <span class="comment"># maps h_t to o_t (output token logits)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">_unsuper_generate</span>(<span class="params">self</span>):</span></span><br><span class="line"></span><br><span class="line">      <span class="string">&quot;&quot;&quot; unsupervised generate. using in rollout policy.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      :return: 生成得到的 token index</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">      <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      :param input_x:  [batch, seq_len]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      :param rewards:  [batch, seq_len]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      :return:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">      gen_o = tf.TensorArray(dtype=tf.float32, size=self.sequence_length,</span><br><span class="line"></span><br><span class="line">                             dynamic_size=<span class="literal">False</span>, infer_shape=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line">      gen_x = tf.TensorArray(dtype=tf.int32, size=self.sequence_length,</span><br><span class="line"></span><br><span class="line">                             dynamic_size=<span class="literal">False</span>, infer_shape=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">def</span> <span class="title">_g_recurrence</span>(<span class="params">i, x_t, h_tm1, gen_o, gen_x</span>):</span></span><br><span class="line"></span><br><span class="line">          h_t = self.g_recurrent_unit(x_t, h_tm1)  <span class="comment"># hidden_memory_tuple</span></span><br><span class="line"></span><br><span class="line">          o_t = self.g_output_unit(h_t)  <span class="comment"># [batch, vocab] , logits not prob</span></span><br><span class="line"></span><br><span class="line">          log_prob = tf.log(tf.nn.softmax(o_t))</span><br><span class="line"></span><br><span class="line">          <span class="comment">#tf.logging.info(&quot;unsupervised generated log_prob:&#123;&#125;&quot;.format(log_prob[0]))</span></span><br><span class="line"></span><br><span class="line">          next_token = tf.cast(tf.reshape(tf.multinomial(logits=log_prob, num_samples=<span class="number">1</span>),</span><br><span class="line"></span><br><span class="line">                                          [self.batch_size]), tf.int32)</span><br><span class="line"></span><br><span class="line">          x_tp1 = tf.nn.embedding_lookup(self.g_embeddings, next_token)  <span class="comment"># [batch, emb_dim]</span></span><br><span class="line"></span><br><span class="line">          gen_o = gen_o.write(i, tf.reduce_sum(tf.multiply(tf.one_hot(next_token, self.vocab_size, <span class="number">1.0</span>, <span class="number">0.0</span>),</span><br><span class="line"></span><br><span class="line">                                                           tf.nn.softmax(o_t)), <span class="number">1</span>))  <span class="comment"># [batch_size] , prob</span></span><br><span class="line"></span><br><span class="line">          gen_x = gen_x.write(i, next_token)  <span class="comment"># indices, batch_size</span></span><br><span class="line"></span><br><span class="line">          <span class="keyword">return</span> i + <span class="number">1</span>, x_tp1, h_t, gen_o, gen_x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      _, _, _,  <span class="function"><span class="keyword">def</span> <span class="title">_super_generate</span>(<span class="params">self, input_x</span>):</span></span><br><span class="line"></span><br><span class="line">      <span class="string">&quot;&quot;&quot; supervised generate.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      :param input_x:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      :return: 生成得到的是 probability [batch * seq_len, vocab_size]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">with</span> tf.device(<span class="string">&quot;/cpu:0&quot;</span>):</span><br><span class="line"></span><br><span class="line">          self.processed_x = tf.transpose(tf.nn.embedding_lookup(self.g_embeddings, input_x),</span><br><span class="line"></span><br><span class="line">                                          perm=[<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>])  <span class="comment"># [seq_len, batch_size, emb_dim]</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># supervised pretraining for generator</span></span><br><span class="line"></span><br><span class="line">      g_predictions = tf.TensorArray(</span><br><span class="line"></span><br><span class="line">          dtype=tf.float32, size=self.sequence_length,</span><br><span class="line"></span><br><span class="line">          dynamic_size=<span class="literal">False</span>, infer_shape=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      ta_emb_x = tf.TensorArray(</span><br><span class="line"></span><br><span class="line">          dtype=tf.float32, size=self.sequence_length)</span><br><span class="line"></span><br><span class="line">      ta_emb_x = ta_emb_x.unstack(self.processed_x) self.gen_o, self.gen_x = tf.while_loop(</span><br><span class="line"></span><br><span class="line">          cond=<span class="keyword">lambda</span> i, _1, _2, _3, _4: i &lt; self.sequence_length,</span><br><span class="line"></span><br><span class="line">          body=_g_recurrence,</span><br><span class="line"></span><br><span class="line">          loop_vars=(tf.constant(<span class="number">0</span>, dtype=tf.int32),</span><br><span class="line"></span><br><span class="line">                     tf.nn.embedding_lookup(self.g_embeddings, self.start_token),</span><br><span class="line"></span><br><span class="line">                     self.h0, gen_o, gen_x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      self.gen_x = self.gen_x.stack()  <span class="comment"># [seq_length, batch_size]</span></span><br><span class="line"></span><br><span class="line">      self.gen_x = tf.transpose(self.gen_x, perm=[<span class="number">1</span>, <span class="number">0</span>])  <span class="comment"># [batch_size, seq_length]</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> self.gen_x</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>所以是通过monte carlo的形式生成fake sample，作为discriminator的输入吗？那这个过程也不可导呀。其实不是这样的。我们再看对抗学习中更新generator的代码:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen_reward_train_step</span>(<span class="params">x_batch, rewards</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line"></span><br><span class="line">        g_loss = generator._get_generate_loss(x_batch, rewards)</span><br><span class="line"></span><br><span class="line">        g_gradients, _ = tf.clip_by_global_norm(</span><br><span class="line"></span><br><span class="line">            tape.gradient(g_loss, generator.trainable_variables), clip_norm=<span class="number">5.0</span>)</span><br><span class="line"></span><br><span class="line">        g_optimizer.apply_gradients(<span class="built_in">zip</span>(g_gradients, generator.trainable_variables))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> g_loss</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">tf.logging.info(<span class="string">&quot;------------------ 6. start Adversarial Training...--------------------------&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> total_batch <span class="keyword">in</span> <span class="built_in">range</span>(TOTAL_BATCH):</span><br><span class="line"></span><br><span class="line">    <span class="comment"># fix discriminator, and train the generator for one step</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> it <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>):</span><br><span class="line"></span><br><span class="line">        samples = generator._unsuper_generate()</span><br><span class="line"></span><br><span class="line">        <span class="comment">#tf.logging.info(&quot;unsuper generated samples:&#123;&#125;&quot;.format(samples[0]))</span></span><br><span class="line"></span><br><span class="line">        rewards = rollout.get_reward(samples, rollout_num=<span class="number">2</span>, discriminator=discriminator)  <span class="comment"># 基于 monte carlo 采样16，计算并累计 reward.</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">#tf.logging.info(&quot;reward:&#123;&#125;&quot;.format(rewards[0]))</span></span><br><span class="line"></span><br><span class="line">        gen_reward_train_step(samples, rewards)        <span class="comment"># update generator.</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Update roll-out parameters</span></span><br><span class="line"></span><br><span class="line">    rollout.update_params()   <span class="comment"># update roll-out policy.</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>这儿采用的是 <code>generator._get_generate_loss</code>， 所以它对generator的参数都是可导的吗？ 我们再看这个生成器中这个function的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Generator</span>(<span class="params">tf.keras.Model</span>):</span></span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">_super_generate</span>(<span class="params">self, input_x</span>):</span></span><br><span class="line"></span><br><span class="line">      <span class="string">&quot;&quot;&quot; supervised generate.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      :param input_x:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      :return: 生成得到的是 probability [batch * seq_len, vocab_size]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">      &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">with</span> tf.device(<span class="string">&quot;/cpu:0&quot;</span>):</span><br><span class="line"></span><br><span class="line">          self.processed_x = tf.transpose(tf.nn.embedding_lookup(self.g_embeddings, input_x),</span><br><span class="line"></span><br><span class="line">                                          perm=[<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>])  <span class="comment"># [seq_len, batch_size, emb_dim]</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># supervised pretraining for generator</span></span><br><span class="line"></span><br><span class="line">      g_predictions = tf.TensorArray(</span><br><span class="line"></span><br><span class="line">          dtype=tf.float32, size=self.sequence_length,</span><br><span class="line"></span><br><span class="line">          dynamic_size=<span class="literal">False</span>, infer_shape=<span class="literal">True</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      ta_emb_x = tf.TensorArray(</span><br><span class="line"></span><br><span class="line">          dtype=tf.float32, size=self.sequence_length)</span><br><span class="line"></span><br><span class="line">      ta_emb_x = ta_emb_x.unstack(self.processed_x)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_pretrain_recurrence</span>(<span class="params">i, x_t, h_tm1, g_predictions</span>):</span></span><br><span class="line"></span><br><span class="line">        h_t = self.g_recurrent_unit(x_t, h_tm1)</span><br><span class="line"></span><br><span class="line">        o_t = self.g_output_unit(h_t)</span><br><span class="line"></span><br><span class="line">        g_predictions = g_predictions.write(i, tf.nn.softmax(o_t))  <span class="comment"># [batch, vocab_size]</span></span><br><span class="line"></span><br><span class="line">        x_tp1 = ta_emb_x.read(i)                                    <span class="comment"># supervised learning, teaching forcing.</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> i + <span class="number">1</span>, x_tp1, h_t, g_predictions</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    _, _, _, self.g_predictions = tf.while_loop(</span><br><span class="line"></span><br><span class="line">        cond=<span class="keyword">lambda</span> i, _1, _2, _3: i &lt; self.sequence_length,</span><br><span class="line"></span><br><span class="line">        body=_pretrain_recurrence,</span><br><span class="line"></span><br><span class="line">        loop_vars=(tf.constant(<span class="number">0</span>, dtype=tf.int32),</span><br><span class="line"></span><br><span class="line">                   tf.nn.embedding_lookup(self.g_embeddings, self.start_token),</span><br><span class="line"></span><br><span class="line">                   self.h0, g_predictions))</span><br><span class="line"></span><br><span class="line">    self.g_predictions = tf.transpose(self.g_predictions.stack(),</span><br><span class="line"></span><br><span class="line">                                      perm=[<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>])  <span class="comment"># [batch_size, seq_length, vocab_size]</span></span><br><span class="line"></span><br><span class="line">    self.g_predictions = tf.clip_by_value(</span><br><span class="line"></span><br><span class="line">        tf.reshape(self.g_predictions, [-<span class="number">1</span>, self.vocab_size]), <span class="number">1e-20</span>, <span class="number">1.0</span>)  <span class="comment"># [batch_size*seq_length, vocab_size]</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> self.g_predictions       <span class="comment"># [batch_size*seq_length, vocab_size]</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_get_generate_loss</span>(<span class="params">self, input_x, rewards</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        :param input_x: [batch, seq_len]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        :param rewards: [batch, seq_len]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        self.g_predictions = self._super_generate(input_x)</span><br><span class="line"></span><br><span class="line">        real_target = tf.one_hot(</span><br><span class="line"></span><br><span class="line">            tf.to_int32(tf.reshape(input_x, [-<span class="number">1</span>])),</span><br><span class="line"></span><br><span class="line">            depth=self.vocab_size, on_value=<span class="number">1.0</span>, off_value=<span class="number">0.0</span>)  <span class="comment"># [batch_size * seq_length, vocab_size]</span></span><br><span class="line"></span><br><span class="line">        self.pretrain_loss = tf.nn.softmax_cross_entropy_with_logits(labels=real_target,</span><br><span class="line"></span><br><span class="line">                                                                     logits=self.g_predictions)  <span class="comment"># [batch * seq_length]</span></span><br><span class="line"></span><br><span class="line">        self.g_loss = tf.reduce_mean(self.pretrain_loss * tf.reshape(rewards, [-<span class="number">1</span>]))  <span class="comment"># scalar</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self.g_loss</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>所以seqgan的作者是怎么做的呢，利用 <code>generator._unsuper_generate</code>先生成fake sample，然后再利用 <code>generator._super_generate</code> 得到 <code>g_predictions</code>, 将fake sample作为 <code>real_target</code> 与 <code>g_predictions</code> 做交叉熵求出 <code>pretrain_loss</code>，然后乘以每一个token对应的rewards得到最终的loss. 这个过程是可导的。</p>
+<blockquote>
+<p>通常情况下Monte carlo方法在里面的作用其实就是 collect data. collecting data的过程用到了policy,然后基于reward对policy进行求导。  </p>
+</blockquote>
+<p>但是seqgan的作者在代码中呈现的是另一种trick. 先用generator生成fake样本，然后用rollout policy对该样本进行打分reward.这里并不是直接对reward求导，而是把fake样本作为target进行MLE训练，得到pretrain_loss，reward作为权重乘以pretrain_loss作为最终的损失函数。</p>
+<h5 id="roll-policy"><a href="#roll-policy" class="headerlink" title="roll-policy"></a>roll-policy</h5><p>这个过程比较容易理解，对于给定的 given_num,小于 given_num 的直接 copy，但是 $h_t$ 的计算依旧。大于 given_num 的token采用 <code>generate._unsuper_generate</code>.</p>
+<h3 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h3><p>看了代码总觉得代码写得与论文有出入。</p>
+<p><img src="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/algorithm.png"></p>
+<p>基于policy gradient来更新policy(generator)，按照公式应该是直接对rewards求导才对吧。基于Monte carlo采样的过程可以看作是sample不同的样本，是一种近似模拟 $o_t$ 分布的方法，是不要求可导的。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-05-18T02:25:32.000Z" title="2019/5/18 上午10:25:32">2019-05-18</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.540Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">an hour read (About 8244 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/">从0开始GAN-1-from-GAN-to-WGAN</a></h1><div class="content"><h1 id="From-GAN-to-WGAN"><a href="#From-GAN-to-WGAN" class="headerlink" title="From GAN to WGAN"></a>From GAN to WGAN</h1><p><strong>Reference:</strong>  </p>
+<p><a target="_blank" rel="noopener" href="https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html">From GAN to WGAN</a>  </p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/25071913">令人拍案叫绝的Wasserstein GAN</a></p>
+<p><a href>听李宏毅老师讲段子之 GAN</a></p>
+<p>这是一篇 copy + translate + understand 的学习笔记. NLP 选手总是会听说 GAN 不适合自然语言处理这类任务，但学了才发现，emmmm，真香。。 不管是否适合，但真的好玩！</p>
+<p>纵所周知，GAN非常难训练，在训练时总是会面临训练不稳定，以及难以收敛的情况。这里，作者尝试通过阐述GAN背后的数学原理，来解释为什么GAN不好训练，并且介绍了GAN的另一个版本来更好的解决这些训练难题。</p>
+<h2 id="Kullback–Leibler-and-Jensen–Shannon-Divergence"><a href="#Kullback–Leibler-and-Jensen–Shannon-Divergence" class="headerlink" title="Kullback–Leibler and Jensen–Shannon Divergence"></a>Kullback–Leibler and Jensen–Shannon Divergence</h2><p>在学习GAN之前，先回顾一下如何衡量两个概率分布相似度的标准。</p>
+<h3 id="KL-Kullback–Leibler-divergence"><a href="#KL-Kullback–Leibler-divergence" class="headerlink" title="KL (Kullback–Leibler) divergence"></a>KL (Kullback–Leibler) divergence</h3><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/41252833">如何通俗的解释交叉熵与相对熵?</a></p>
+<p><strong>熵</strong>:  </p>
+<p>信息量可表示为 $log\dfrac{1}{p}$，其可理解为概率为p的随机事件所包含的信息量。比如“太阳明天早上在东边升起”，这个概率p=1，那么其所包含的信息就为0了，意思就是这不是句屁话嘛。。所以信息量与概率p成反比。至于为什么就是 $log\dfrac{1}{p}$ 这种形式，为啥不是 $1/p$，这需要去问香农了。。</p>
+<p>而熵则是 <strong>信息量的期望</strong>，也可以理解为 <strong>随机性的度量</strong>。随机性越大，熵越大。</p>
+<p><strong>交叉熵</strong>  </p>
+<p>两个概率分布p和q，p为真实分布，q为非真实分布。按照真实分布来衡量识别一个样本或者是判断随机事件的准确性的度量，就是熵，也就是信息量的期望 $H(p)=\sum_ip(i) * log\dfrac{1}{p(i)}$,但是事实是，我们无法得知这个真实的分布，只能通过统计来预测这个分布，也就是用非真实分布q去衡量这个熵，$H(p,q)=\sum_ip(i) * log\dfrac{1}{q(i)}$, 注意这里的概率是真实分布 p(i). H(p,q)就是我们的“交叉熵”。  </p>
+<p>当用来预测的非真实分布q越接近真实分布，其随机性越小，准确率也就越高。</p>
+<p><strong>相对熵/KL散度</strong>  </p>
+<p>根据<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Gibbs%27_inequality">Gibbs’ inequality</a>上述例子中的 $H(p,q) &gt;= H(p)$ 恒成立。当且仅当q=p时，这个等号才成立。那么熵H(p,q)相比熵H(q)多出来的部分就是相对熵 $D(p||q)=H(p,q)-H(p)=\sum_ip(i)* log\dfrac{p(i)}{q(i)}$，也称为KL散度(Kullback–Leibler divergence，KLD).</p>
+<p>从机器学习的角度去思考，我们预测得到的非真实分布就是q，当模型越好时，q与p越接近，也就是模型的准确度越高，随机性越小，所以交叉熵/相对熵也就越小。反过来，就可以通过交叉熵/相对熵来训练我们所需的模型了～</p>
+<p>所以：</p>
+<p>$$D_{KL}(p||q)=H(p,q)-H(p)=\sum_ip(i)* log\dfrac{p(i)}{q(i)}=\int_x{p(x)}log\dfrac{p(x)}{q(x)}dx$$</p>
+<p>但是，这里有个问题，p和q并不是完全对称的。显然当p(x)为0，q(x)为非零值时，q(x)的影响就不存在了。反过来呢，q不可能为零。所以当两个概率完全相等时，用KL散度来衡量两个概率的相似度就会存在问题了。</p>
+<h3 id="Jensen–Shannon-Divergence"><a href="#Jensen–Shannon-Divergence" class="headerlink" title="Jensen–Shannon Divergence"></a>Jensen–Shannon Divergence</h3><p>JS散度的范围是[0,1],并且是完全对称的。</p>
+<p>$$D_{JS}(p | q) = \frac{1}{2} D_{KL}(p | \frac{p + q}{2}) + \frac{1}{2} D_{KL}(q | \frac{p + q}{2})$$</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/KL_JS_divergence.png"></p>
+<p>p是均值为 0，方差为 1 的正态分布，q是均值为 1，方差为 1 的正态分布。两者的均值的分布是 m=(p+q)/2.可以看到 $D_{Kl}$ 是非对称的，而 $D_{JS}$ 是对称的。</p>
+<p>[How (not) to Train your Generative Model: Scheduled Sampling, Likelihood, Adversary?</p>
+<p>](<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1511.05101.pdf)%E8%AE%A4%E4%B8%BA">https://arxiv.org/pdf/1511.05101.pdf)认为</a> GAN 能成功的很大一部分原因是用JS散度代替了传统的基于极大似然估计的KL散度。</p>
+<h2 id="Generative-Adversarial-Network-GAN"><a href="#Generative-Adversarial-Network-GAN" class="headerlink" title="Generative Adversarial Network (GAN)"></a>Generative Adversarial Network (GAN)</h2><p>GAN 包含两个模型：  </p>
+<ul>
+<li><p>Discrimator D: 判别器 D 用来估计来自 $p_r$ 或 $p_g$ 的样本是真实样本的概率</p>
+</li>
+<li><p>Generator G: 给定随机输入变量 z（随机 z 带来了多样性, $z\sim p_z$），输出得到合成的样本。G 的训练是通过捕捉真实样本的分布，从而生成尽可能真实的样本 ($G(z)=x\sim p_g$)，换句话说，就是欺骗判别器 D 使得生成的样本获得较高的概率。</p>
+</li>
+</ul>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/table.png"></p>
+<ul>
+<li><p>$p_z$ noise，可以是正态分布，也可以是均匀分布  </p>
+</li>
+<li><p>$p_g$ 通过 sample 生成器生成的样本得到的分布  </p>
+</li>
+<li><p>$p_r$ 通过 sanple 真实样本的 database 得到的分布</p>
+</li>
+</ul>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/GAN.png"></p>
+<p>整个训练过程是迭代进行的：  </p>
+<ol>
+<li><p>固定生成器的参数，训练判别器  </p>
+</li>
+<li><p>固定判别器参数，训练优化器  </p>
+</li>
+<li><p>iteration…</p>
+</li>
+<li><p>何时停止，以及如何判断何时停止，这也是 GAN 需要解决的问题。</p>
+</li>
+</ol>
+<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><p>实际上，可以把神经网络 G 看作是用来定义一个分布，$p_g$, 使得这个分布尽可能的接近真实样本的图像在高维空间中的分布 $p_r$.</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/generator.png"></p>
+<p>所以对于生成器的目标函数是 $G^* =\argmax_{G}Div(P_g,p_r)$</p>
+<p>但是问题在于，如何去评判两个 distributin 的接近程度呢，也就是 $Div(p_g,p_{data})$ 怎么计算？</p>
+<h3 id="Discriminator"><a href="#Discriminator" class="headerlink" title="Discriminator"></a>Discriminator</h3><p>GAN 牛逼的地方就是用另一个神经网络来判断这两个 distribution. 所以可以看作是一个二分类问题了。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/discriminator.png"></p>
+<p>当两个分布很接近的时候，判别器就很难去区分来自于 $p_g$ 和 $p_r$ 的样本。</p>
+<p>所以对于判别器，其目标是尽可能的去区分出 $p_g$ 和 $p_r$，当计算出的 divergence 越大时，D 越好 $D^* =\argmax_{D}Div(D,G)$.</p>
+<p>所以，G 和 D 两个模型在训练中是相互博弈的过程。G 尽可能的去欺骗 D，而 D 则尽可能的不被欺骗。这是一个有趣的zero-sum游戏。</p>
+<h3 id="loss-function"><a href="#loss-function" class="headerlink" title="loss function"></a>loss function</h3><h4 id="从极大似然估计的角度来分析"><a href="#从极大似然估计的角度来分析" class="headerlink" title="从极大似然估计的角度来分析"></a>从极大似然估计的角度来分析</h4><p>根据极大似然估计，二分类判别器 D 的输入样本集 ${(x_1, y_1),(x_2,y_2),…,(x_N, y_N)}$ 的概率最大，而输入到判别器 D 的样本可能来自 real data, $x\sim p_r(x)$，也可能来自生成器 G, $x\sim p_g(x)$.  </p>
+<p>其中对应的 label:  </p>
+<p>$$ y= \begin{cases}</p>
+<p> 1, &amp; \text {$x\sim p_r(x)$} \</p>
+<p> 0, &amp; \text{$x\sim p_g(x)$}</p>
+<p> \end{cases} $$</p>
+<p>似然函数（样本集的概率最大）:</p>
+<p>$$L(\theta)=\prod_iD(y_i=1|x_i)^{y_i}(1-D(y_i=1|x_i))^{(1-y_i)}$$</p>
+<p>对于 $x\sim p_r$, $y_i=1$,所以</p>
+<p>$$logL=\sum_{x\sim p_r} logD(x)$$</p>
+<p>对于 $x\sim p_g$, $y_i=0$, 可以得到：</p>
+<p>$$logL=\sum_{x\sim p_g}log(1-D(x))$$</p>
+<p>所以对于判别器D, 在生成器G固定参数时最优的判别器 D 就是最大化下面这个目标函数：  </p>
+<p>$$E_{x\sim p_r(x)}[logD(x)]+E_{x\sim p_g}[log(1-D(x)]\qquad\text{(1)}$$</p>
+<p>事实上，我们发现，这个目标函数跟 logistic regression 是一样的。。。</p>
+<h4 id="从熵的角度来分析"><a href="#从熵的角度来分析" class="headerlink" title="从熵的角度来分析"></a>从熵的角度来分析</h4><p>我们通过最大化 $E_{x\sim p_r(x)}[logD(x)]$ 来保证判别器 D 在 real data $p_r$上的准确率。与此同时，G 生成得到的 fake 样本，G(z), $z\sim p_z(z)$，判别器D期望对于 fake 样本的概率 D(G(z)) 越接近于 0 越好，也就是最大化 $E_{z\sim p_z(z)}[log(1-D(G(z)))]$.  </p>
+<p>对于生成器，其目的就是让判别器D在 fake 样本上得到的概率更大，Goodfellow一开始提出来一个损失函数，后来又提出了一个改进的损失函数，分别是</p>
+<p>$$E_{z\sim p_z}[log(1-D(G(z))]=E_{x\sim p_g}[log(1-D(x)]\qquad\text{(2)}$$  $$E_{z\sim p_z}[-logD(G(z)]=E_{x\sim p_g}[-logD(x)]\qquad\text{(3)}$$</p>
+<p>这个直观上也很好理解~固定了判别器 G，然后让 $E_{x\sim p_g}[logD(x)]$ 尽可能大，也就是 $E_{x\sim p_g}[log(1-D(x)]$ 或者 $E_{x\sim p_g}[-logD(x)]$ 尽可能小。</p>
+<p>然后把两者（1）和 （2）合并起来（它们有共同的第二项），D和G正在进行的就是一个 minimax game，而我们所需优化的loss function就是：</p>
+<p>$$% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>\min_G \max_D L(D, G)</p>
+<p>&amp; = \mathbb{E}<em>{x \sim p</em>{r}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log(1 - D(G(z)))] \</p>
+<p>&amp; = \mathbb{E}<em>{x \sim p</em>{r}(x)} [\log D(x)] + \mathbb{E}_{x \sim p_g(x)} [\log(1 - D(x)] \quad (1.5)</p>
+<p>\end{aligned} %]]&gt;$$</p>
+<p>对于生成器，需要最小化这个目标函数。对于判别器，需要最大化这个函数。</p>
+<h3 id="如何求关于判别器-D-的最优解"><a href="#如何求关于判别器-D-的最优解" class="headerlink" title="如何求关于判别器 D 的最优解"></a>如何求关于判别器 D 的最优解</h3><p>定义好了 loss function，接下来推导对于 D 的最优解. 上式可以写成积分函数：</p>
+<p>$$L(G,D)=\int_x(p_r(x)log(D(x))+p_g(x)log(1-D(x)))dx\quad (4)$$</p>
+<p>对于判别器 D，我们要求最大化上述目标函数。<strong>假设 D(x) 可以模拟任何函数（事实上 neural network 也是可以的），那么最大化上述函数等同于最大化积分内的函数。</strong> 也就是 given $\forall$ x ，求解其最优的判别器 D*.</p>
+<p>$$p_r(x)log(D(x))+p_g(x)log(1-D(x))$$</p>
+<p>为了简化计算，假设</p>
+<p>$$\tilde x=D(x), A=p_r(x), B=p_g(x)$$</p>
+<p>对积分内部求导（这里可以忽略积分，因为x是采样任何可能的值）：</p>
+<p>$$% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>f(\tilde{x})</p>
+<p>&amp; = A log\tilde{x} + B log(1-\tilde{x}) \</p>
+<p>\frac{d f(\tilde{x})}{d \tilde{x}}</p>
+<p>&amp; = A \frac{1}{ln10} \frac{1}{\tilde{x}} - B \frac{1}{ln10} \frac{1}{1 - \tilde{x}} \</p>
+<p>&amp; = \frac{1}{ln10} (\frac{A}{\tilde{x}} - \frac{B}{1-\tilde{x}}) \</p>
+<p>&amp; = \frac{1}{ln10} \frac{A - (A + B)\tilde{x}}{\tilde{x} (1 - \tilde{x})} \</p>
+<p>\end{aligned} %]]&gt;$$</p>
+<p>然后，令 $\dfrac{df(\tilde x)}{d\tilde x}=0$,可以得到D(x)的最优解：  </p>
+<p>$D^* (x) = \tilde{x}^* = \frac{A}{A + B} = \frac{p_{r}(x)}{p_{r}(x) + p_g(x)} \in [0, 1]\qquad\text{(5)}$</p>
+<p>这个结果从直观上很容易理解，就是看一个样本x来自真实分布和生成分布的可能性的相对比例。如果 $P_r(x) = 0$ 且 $P_g(x) \neq 0$，最优判别器就应该非常自信地给出概率0；如果 $P_r(x) = P_g(x)$，说明该样本是真是假的可能性刚好一半一半，此时最优判别器也应该给出概率0.5。</p>
+<h3 id="如何得到生成器-G-的最优解，也就是全局最优解"><a href="#如何得到生成器-G-的最优解，也就是全局最优解" class="headerlink" title="如何得到生成器 G 的最优解，也就是全局最优解"></a>如何得到生成器 G 的最优解，也就是全局最优解</h3><p>记住我们的目标是训练得到一个生成器，使得其生成的 $P_g$ 分布能尽可能的接近于 $P_r$. 所以当判别器最优时，最小化目标函数就能得到 G*，将 (4) 带入 (5) 式可以得到：</p>
+<p>$$% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>L(G, D^* )</p>
+<p>&amp;= \int_x \bigg( p_{r}(x) \log(D^* (x)) + p_g (x) \log(1 - D^* (x)) \bigg) dx \</p>
+<p>&amp;= \int_x (p_r(x)log\dfrac{p_r}{p_r+p_g} + p_g(x)log\dfrac{p_g}{p_r+p_g})dx \</p>
+<p>&amp;= \int_x(p_xlog\dfrac{\dfrac{1}{2}p_r}{\dfrac{1}{2}(p_r+p_g)} + p_glog\dfrac{\dfrac{1}{2}p_g}{\dfrac{1}{2}(p_r+p_g)})dx\quad\text{上下同时乘以$\dfrac{1}{2}$}\</p>
+<p>&amp;= -2log2 + \int_xp_r(x)log\dfrac{p_r(x)}{\dfrac{1}{2}(p_r(x)+p_g)}dx + \int_xp_g(x)log\dfrac{p_g(x)}{\dfrac{1}{2}(p_r(x)+p_g)}dx \quad\text{(6)}\</p>
+<p>&amp;= -2log2 + D_{KL}(p_r||\dfrac{p_r+p_g}{2}) + D_{KL}(p_g||\dfrac{p_r+p_g}{2})\quad\text{带入 KL 散度公式} \</p>
+<p>&amp;= -2log2 + D_{JS}(p_{r} | p_g)\quad\text{带入 JS 散度公式}</p>
+<p>\end{aligned} %]]&gt;$$</p>
+<p>我们突然发现，诶，卧槽，厉害了。given D* 的条件下，当生成器 G 最优时，通过推导发现，最小化目标函数等同于最小化 $p_r$ 和 $p_g$ 的 JS 散度。所以啊，通过理论证明，让两个分布更接近的话，使用 JS 散度明显要比我们传统上使用的 KL 散度要合理呀~</p>
+<p>所以如何判别两个分布的 Divergence, 通过推导告诉我们，JS 散度更好~</p>
+<p>整个算法流程：</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/algorithm.png"></p>
+<p>这个为什么 D 训练时是多次, 而 G 训练时只需要一次呢？</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/train_generator.png"></p>
+<p>固定判别器为 $D^* $，通过梯度下降训练 $G_0 \rightarrow G_1$, 这里 $G_0$ 和 $G_1$ 不能差距太大. 因为如果 G 变化太大，那么对应的 JS divergence 变化可能就如上图所示，会突然变得很大，而不是我们所预想的减小了。</p>
+<h3 id="Problems-in-GANs"><a href="#Problems-in-GANs" class="headerlink" title="Problems in GANs"></a>Problems in GANs</h3><p>理论上，满足 JS 散度越小，两个分布越接近是可以的。但是要使得 JS 散度越来越小这个有点难度，因为图像是高维空间里面的低维 mainfold. 这也是接下来要讲的问题。</p>
+<p>尽管 GAN 在图像生成上取得了很大的成功，但是其训练并不容易，过程很慢并且不稳定。<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/25071913">令人拍案叫绝的Wasserstein GAN</a> 将原始 GAN 的问题主要分成两部分。</p>
+<ul>
+<li><p>判别器的问题：D 越好，生成器梯度消失越严重。  </p>
+</li>
+<li><p>生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量，导致两个问题，一是梯度不稳定，二是collapse mode即多样性不足。</p>
+</li>
+</ul>
+<h4 id="判别器的问题：判别器越好，生成器梯度消失越严重"><a href="#判别器的问题：判别器越好，生成器梯度消失越严重" class="headerlink" title="判别器的问题：判别器越好，生成器梯度消失越严重"></a>判别器的问题：判别器越好，生成器梯度消失越严重</h4><p>对于前面说到的 JS 散度上。我们会希望如果两个分布之间越接近它们的JS散度越小，我们通过优化JS散度就能将 $p_g$ “拉向” $p_r$，最终以假乱真。这个希望在两个分布有所重叠的时候是成立的，但是如果两个分布完全没有重叠的部分（要么是 $x\sim p_r$, 要么是 $x\sim p_g$），或者它们重叠的部分可忽略（等会儿解释什么叫可忽略），它们的JS散度是多少呢？</p>
+<p>$p_1(x)=0且p_2(x)=0$   </p>
+<p>$p_1(x)\ne0且p_2(x)\ne0$   </p>
+<p>$p_1(x)=0且p_2(x)\ne 0$  </p>
+<p>$p_1(x)\ne 0且p_2(x)=0$  </p>
+<ul>
+<li><p>第一种对计算JS散度无贡献  </p>
+</li>
+<li><p>第二种情况由于重叠部分可忽略,（$p_r和 p_g$ 都是高维空间中的低维流形），所以贡献也为0.  </p>
+</li>
+<li><p>第三种情况，带入公式（6）倒数第三步的的后两项，JS 的散度计算可以得到其值为 log2.   </p>
+</li>
+<li><p>第四种情况同理。</p>
+</li>
+</ul>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/gradient_vanish.png"></p>
+<p>换句话说，无论跟是远在天边，还是近在眼前，只要它们俩没有一点重叠或者重叠部分可忽略，JS散度就固定是常数，而这对于梯度下降方法意味着——梯度为0！此时对于最优判别器来说，生成器肯定是得不到一丁点梯度信息的；即使对于接近最优的判别器来说，生成器也有很大机会面临梯度消失的问题。</p>
+<p>但是 $P_r$ 与 $P_g$ 不重叠或重叠部分可忽略的可能性有多大？不严谨的答案是：非常大。比较严谨的答案是：当 $P_r$ 与 $P_g$ 的支撑集（support）是高维空间中的低维流形（manifold）时，$P_r$ 与 $P_g$ 重叠部分测度（measure）为0的概率为1。</p>
+<p>也就是接下来要说的: low dimensional support 和 gradient vanishing.</p>
+<h5 id="Low-dimensional-supports"><a href="#Low-dimensional-supports" class="headerlink" title="Low dimensional supports"></a>Low dimensional supports</h5><p>有两个数学概念：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Manifold">Manifold</a>: A topological space that locally resembles Euclidean space near each point. Precisely, when this Euclidean space is of dimension n, the manifold is referred as n-manifold.  </li>
+</ul>
+<p>拓扑空间，在每个点附近局部类似于欧几里德空间。 确切地说，当该欧几里德空间具有n维时，该流形被称为n-流形。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Support_(mathematics)">Support</a>: In mathematics, the support of a real-valued function f is the subset of the domain containing those elements which are not mapped to zero.  </li>
+</ul>
+<p>在数学中，实值函数f的支持是包含那些未映射到零的元素的域的子集</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1701.04862.pdf">“Towards principled methods for training generative adversarial networks”.</a> 这篇非常理论的论文讨论了对于 $p_r$ 和 $p_g$ 的support是处于低维的空间，并且这导致了GAN的训练中的不稳定性。</p>
+<p>真实样本空间具有高度的人工特征，因为它的主题一旦确定，其包含的对象也就固定了。比如dog应该有two ears和a tail.一个Skyscraper应该有straight和tall的身体。这些限制使得图像不具备高维空间的形式。</p>
+<p>同样的 $p_g$ 也是在低维流形空间。当给定初始的噪声输入变量为100维，生成器将其作为输入生成较大的图像 $64\times 64$，对于输出的分布 4096 pixels已经被100维随机的向量定义了，所以它也很难去填满整个高维空间。</p>
+<blockquote>
+<p>“撑不满”就会导致真实分布与生成分布难以“碰到面”，这很容易在二维空间中理解：一方面，二维平面中随机取两条曲线，它们之间刚好存在重叠线段的概率为0；另一方面，虽然它们很大可能会存在交叉点，但是相比于两条曲线而言，交叉点比曲线低一个维度，长度（测度）为0，可忽略。三维空间中也是类似的，随机取两个曲面，它们之间最多就是比较有可能存在交叉线，但是交叉线比曲面低一个维度，面积（测度）是0，可忽略。从低维空间拓展到高维空间，就有了如下逻辑：因为一开始生成器随机初始化，所以几乎不可能与有什么关联，所以它们的支撑集之间的重叠部分要么不存在，要么就比和的最小维度还要低至少一个维度，故而测度为0。所谓“重叠部分测度为0”，就是上文所言“不重叠或者重叠部分可忽略”的意思。</p>
+</blockquote>
+<p>因为 $p_r$ 和 $p_g$ 都是处于低维流形，他们很大可能性是不相交的。当他们具备不相交的特性时，我们就很容易找到一个完美的判别器来准确的100%区分fake样本和真实样本。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/low_dim_manifold.png"></p>
+<p>左侧图是两条线在三维空间。右侧是两个平面在三维空间。通过维度的对比来表明相交的可能性。</p>
+<h5 id="Vanishing-gradient"><a href="#Vanishing-gradient" class="headerlink" title="Vanishing gradient"></a>Vanishing gradient</h5><p>当判别器非常完美的时候，$D(x)=1,\forall x\in p_r$, $D(x)=0, \forall x\in p_g$.</p>
+<p>$$L(G,D)=\int_x(p_r(x)log(D(x))+p_g(x)log(1-D(x)))$$</p>
+<p>带入这个公式可以发现，loss function L 会降为0，在迭代过程中，梯度也就无法更新。下图证明了，当判别器越好的时候，梯度消失越快。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/GAN_vanishing_gradient.png"></p>
+<blockquote>
+<p>WGAN前作Figure 2。先分别将DCGAN训练1，20，25个epoch，然后固定生成器不动，判别器重新随机初始化从头开始训练，对于第一种形式的生成器loss产生的梯度可以打印出其尺度的变化曲线，可以看到随着判别器的训练，生成器的梯度均迅速衰减。注意y轴是对数坐标轴。</p>
+</blockquote>
+<h4 id="生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量"><a href="#生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量" class="headerlink" title="生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量"></a>生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量</h4><p>这样会导致两个问题：一是梯度不稳定，二是 mode collapse/dropping 即多样性不足。</p>
+<p>前面说到 Goodfellow 给了两个 generator 的 loss function，也就是公式 （2）和（3）.</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/generator_loss.png"></p>
+<p>Goodfellow 换成第二种 loss function 的理由如上图，因为在训练生成器 G 是，D(x) 肯定是很小的，所以观察上图可以看到 log(1-D(x)) 在 D(x) 偏小的区域梯度很小，所以导致训练很慢。</p>
+<p>但是，换成第二种 loss 会导致 mode collapse. 接下来通过公式推导证明这俩问题。</p>
+<p>通过公式（1.5）和公式（6）可以得到在 $D^* $ 的条件下：</p>
+<p>$$ \mathbb{E}<em>{x \sim p</em>{r}(x)} [\log D^* (x)] + \mathbb{E}<em>{x \sim p_g(x)} [\log(1 - D^* (x)]=-2log2 + D</em>{JS}(p_{r} | p_g)\quad\text{(7)}$$</p>
+<p>我们在算一个 KL 散度:</p>
+<p>$$% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>KL(p_g||p_r)</p>
+<p>&amp;=\mathbb{E}_{x\sim p_g}log(\dfrac{p_g(x)}{p_r(x)})\</p>
+<p>&amp;=\mathbb{E}_{x\sim p_g}[log\dfrac{p_g(x)/(p_g(x)+p_r(x))}{p_r(x)/p_g(x)+p_r(x)}]\</p>
+<p>&amp;=\mathbb{E}_{x\sim p_g}[log\dfrac{1-D^* (x)}{D^* (x)}]\</p>
+<p>&amp;=\mathbb{E}<em>{x\sim p_g}log[1-D^* (x)]-\mathbb{E}</em>{x\sim p_g}logD^* (x)\quad\text{(8)}</p>
+<p>\end{aligned} %]]&gt;$$</p>
+<p>将公式（7）和 （8）带入到第二种 loss（3）中可以得到：</p>
+<p>$$\begin{aligned}</p>
+<p>\mathbb{E}_{x\sim p_g}logD^* (x)</p>
+<p>&amp;=KL(p_g||p_r)-\mathbb{E}_{x\sim p_g}log[1-D^* (x)]\</p>
+<p>&amp;=KL(p_g||p_r)-D_{JS}(p_{r} | p_g)+2log2-\mathbb{E}<em>{x \sim p</em>{r}(x)}\quad\text{(7)}</p>
+<p>\end{aligned}$$</p>
+<p>上式后两项与 G 无关，所以最小化 loss（3）等价于最小化:</p>
+<p>$$KL(p_g||p_r)-D_{JS}(p_{r} | p_g)$$</p>
+<blockquote>
+<p>这个等价最小化目标存在两个严重的问题。第一是它同时要最小化生成分布与真实分布的KL散度，却又要最大化两者的JS散度，一个要拉近，一个却要推远！这在直观上非常荒谬，在数值上则会导致梯度不稳定，这是后面那个JS散度项的毛病。  </p>
+</blockquote>
+<blockquote>
+<p>第二，即便是前面那个正常的KL散度项也有毛病。因为KL散度不是一个对称的衡量，KL(P_g || P_r)与KL(P_r || P_g)是有差别的。以前者为例:  </p>
+</blockquote>
+<p>当 $P_g(x)\rightarrow 0$ 而 $P_r(x)\rightarrow 1$ 时，$P_g(x) \log \frac{P_g(x)}{P_r(x)} \rightarrow 0$，对 $KL(P_g || P_r)$ 贡献趋近0  </p>
+<p>当 $P_g(x)\rightarrow 1$ 而 $P_r(x)\rightarrow 0$ 时，$P_g(x) \log \frac{P_g(x)}{P_r(x)} \rightarrow +\infty$，对 $KL(P_g || P_r)$ 贡献趋近正无穷  </p>
+<p>换言之，KL(P_g || P_r)对于上面两种错误的惩罚是不一样的，第一种错误对应的是“生成器没能生成真实的样本”，惩罚微小；第二种错误对应的是“生成器生成了不真实的样本” ，惩罚巨大。第一种错误对应的是缺乏多样性，第二种错误对应的是缺乏准确性。这一放一打之下，生成器宁可多生成一些重复但是很“安全”的样本，也不愿意去生成多样性的样本，因为那样一不小心就会产生第二种错误，得不偿失。这种现象就是大家常说的collapse mode。  </p>
+<p>第一部分小结：在原始GAN的（近似）最优判别器下，第一种生成器loss面临梯度消失问题，第二种生成器loss面临优化目标荒谬、梯度不稳定、对多样性与准确性惩罚不平衡导致mode collapse这几个问题。</p>
+<p>这位老哥讲的太好了。。直接 copy 了。。</p>
+<h4 id="Mode-collapse"><a href="#Mode-collapse" class="headerlink" title="Mode collapse"></a>Mode collapse</h4><p><strong>mode collapse:</strong> 重复生成一张图片</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/mode_collapse_2.png"></p>
+<p><strong>mode dropping:</strong> G 在迭代时只能生成一类图片。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/mode_collapse_3.png"></p>
+<h4 id="还有一个问题：Lack-of-a-proper-evaluation-metric"><a href="#还有一个问题：Lack-of-a-proper-evaluation-metric" class="headerlink" title="还有一个问题：Lack of a proper evaluation metric"></a>还有一个问题：Lack of a proper evaluation metric</h4><p>GAN 没有一个好的目标函数来描述训练过程。没有好的验证指标，就好比在黑暗中work. 没有信号来提示该在什么时候停止，也没有好的指标来评价多种模型的好坏。</p>
+<h3 id="Improving-GAN-Training"><a href="#Improving-GAN-Training" class="headerlink" title="Improving GAN Training"></a>Improving GAN Training</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://papers.nips.cc/paper/6125-improved-techniques-for-training-gans.pdf">Improve Techniques for Training GANs</a></li>
+</ul>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1701.04862.pdf">Towards principled methods for training generative adversarial networks</a></li>
+</ul>
+<h3 id="Wasserstein-GAN-WGAN"><a href="#Wasserstein-GAN-WGAN" class="headerlink" title="Wasserstein GAN (WGAN)"></a>Wasserstein GAN (WGAN)</h3><p><strong>Wasserstein Distance</strong> 是一种测量两个分布距离的方式。可以类比成 earth mover’s distance.</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/w_distence.png"></p>
+<p>为了简单的理解，可以把两个分布看作是离散的。这里看作是两堆土，Wasserstein distance 就是计算如何移动最少量的土使得两个分布一致。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/em_distence.png"></p>
+<p>所以相比 JS 散度，从分类任务变成了回归任务。即使两个分布完全无交集，也是存在 divergence 更大或者更小的问题，所以也就不存在梯度为零的情况了。</p>
+<p>但是问题来了，怎么计算 Wasserstein distance 呢？</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/EM_distance_discrete.png"></p>
+<p>step1: $p_1 \underrightarrow{2} p_2$, 使得 $p_1和Q_1$ match.</p>
+<p>step2: $p_2 \underrightarrow{2} p_3$, 使得 $p_2和Q_2$ match.</p>
+<p>step3: $Q_3 \underrightarrow{1} Q_4$, 使得 $p_3和Q_3$ match.</p>
+<p>所以总的 W=5.</p>
+<p>对于连续分布，Wasserstein distance：</p>
+<p>$$W(p_r, p_g) = \inf_{\gamma \sim \Pi(p_r, p_g)} \mathbb{E}_{(x, y) \sim \gamma}[| x-y |]$$</p>
+<p>$\Pi(p_r, p_g)$ 是所有可能的联合分布. 其中一种联合分布 $\gamma \sim \Pi(p_r, p_g)$ 表示一种 move plan, 就比如上图中的示例。</p>
+<p>其中,对于任何一个联合分布 $\gamma$,其边缘分布分别是  $p_g(x)=\sum_x\gamma(x,y)$, $p_r(y)=\sum_y\gamma(x,y)$. 在此分布下的移动距离是 $||x-y||$. 那么当前联合分布下的 cost 是 $\gamma(x, y) \cdot | x-y |$. 其期望就是：</p>
+<p>$$\sum_{x, y} \gamma(x, y) | x-y |= \mathbb{E}_{x, y \sim \gamma} | x-y |$$</p>
+<p>而我们需要求的是所有可能的联合分布中的下界, 就定义为 Wasserstein distance.</p>
+<h4 id="Why-Wasserstein-is-better-than-JS-or-KL-divergence"><a href="#Why-Wasserstein-is-better-than-JS-or-KL-divergence" class="headerlink" title="Why Wasserstein is better than JS or KL divergence?"></a>Why Wasserstein is better than JS or KL divergence?</h4><p>Wasserstein 距离的优势在于，即使两个分布没有交集，也能平滑的表示两个分布之间的散度。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wasserstein_simple_example.png"></p>
+<p>$$</p>
+<p>\forall (x, y) \in P, x = 0 \text{ and } y \sim U(0, 1)\</p>
+<p>\forall (x, y) \in Q, x = \theta, 0 \leq \theta \leq 1 \text{ and } y \sim U(0, 1)\</p>
+<p>$$</p>
+<p>当 $\theta\ne 0$ 时，分别计算 KL,JS，WS 散度：</p>
+<p>$$</p>
+<p>% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>D_{KL}(P | Q) &amp;= \sum_{x=0, y \sim U(0, 1)} 1 \cdot \log\frac{1}{0} = +\infty \</p>
+<p>D_{KL}(Q | P) &amp;= \sum_{x=\theta, y \sim U(0, 1)} 1 \cdot \log\frac{1}{0} = +\infty \</p>
+<p>D_{JS}(P, Q) &amp;= \frac{1}{2}(\sum_{x=0, y \sim U(0, 1)} 1 \cdot \log\frac{1}{1/2} + \sum_{x=0, y \sim U(0, 1)} 1 \cdot \log\frac{1}{1/2}) = \log 2\</p>
+<p>W(P, Q) &amp;= |\theta|</p>
+<p>\end{aligned} %]]&gt;</p>
+<p>$$</p>
+<p>当 $\theta = 0$ 时，分别计算 KL,JS，WS 散度：</p>
+<p>$$</p>
+<p>% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>D_{KL}(P | Q) &amp;= D_{KL}(Q | P) = D_{JS}(P, Q) = 0\</p>
+<p>W(P, Q) &amp;= 0 = \lvert \theta \rvert</p>
+<p>\end{aligned} %]]&gt;</p>
+<p>$$</p>
+<p>当两个分布没有交集时，KL 散度的值是 inifity. JS 散度则存在不连续的问题，对于这个例子而言，当 $\theta=0$ 时，JS 散度不可微。只有 WS 距离是可微的，这对于梯度下降而言是非常友好的。</p>
+<h4 id="Use-Wasserstein-distance-as-GAN-loss-function"><a href="#Use-Wasserstein-distance-as-GAN-loss-function" class="headerlink" title="Use Wasserstein distance as GAN loss function"></a>Use Wasserstein distance as GAN loss function</h4><p>但是要穷尽两个联合分布的所有情况来计算 $\inf_{\gamma \sim \Pi(p_r, p_g)}$ 是不可能的。WGAN 的作者给出了一个聪明的转换，可以把公式 (8) 写成：</p>
+<p>$$W(p_g,p_r)=\dfrac{1}{K}sup_{|f|_ L \le K}\mathbb{E}<em>{x\sim p_r}[f(x)]-\mathbb{E}</em>{x\sim p_g}[f(x)]\quad\text{(9)}$$</p>
+<p>这里的意思就是用 f 函数来表示上面说到的任何可能的联合分布。所以 $\mathbb{E}<em>{x\sim p_r}[f(x)]-\mathbb{E}</em>{x\sim p_g}[f(x)]$ 等效于 $\mathbb{E}_{x, y \sim \gamma} | x-y |$.</p>
+<p>然后我们又知道神经网络足够强大，所以用神经网络 D 来代替 f，来表示上面说到的任何可能的联合分布。但是 D 必须像前面提到的 Wasserstein distance 那样足够光滑。这样一来， Wasserstein distance 就转变成了我们想要的 loss function.</p>
+<p>$$V(G,D)=\max_{D\sim \text{1-Lipschitz}}{\mathbb{E}<em>{x\sim p_r}[D(x)]-\mathbb{E}</em>{x\sim p_g}[D(x)]}\quad\text{(10)}$$</p>
+<p>通过采样来计算 V(G,D),我们希望</p>
+<p>这里用一个例子来说明为什么 D 要足够光滑：</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/simple_example.png"></p>
+<p>我们看到要让 V(G,D) 在 real example 上增大，在 fake example 上减小， D 完全可以做到像上图中红色箭头那样。所以这样下来，D 无法收敛。</p>
+<p>怎么保证一个神经网络足够光滑, $D\sim \text{1-Lipschitz}$，貌似听起来很难，毕竟涉及到那么多的参数。</p>
+<p><strong>Lipschitz continuity:</strong></p>
+<p>这里首先需要介绍一个概念——Lipschitz连续。它其实就是在一个连续函数 f 上面额外施加了一个限制，要求存在一个常数 $K\geq 0$ 使得定义域内的任意两个元素 $x_1$ 和 $x_2$ 都满足</p>
+<p>$$|f(x_1) - f(x_2)| \leq K |x_1 - x_2|$$</p>
+<p>此时称函数 f的Lipschitz常数为K。实际上就是 f 函数的导函数的值不能超过 K. Lipschitz 连续条件限制了一个连续函数的最大局部变动幅度。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/lipschitz_func.png"></p>
+<p>在 WGAN 这篇论文中，作者采用了一种特别简单的方法，Weight Clipping. 对于任何参数，使其在 [-c,c] 范围内，就可以保证 K 不会特别大。。</p>
+<p>到此，我们就能把  Wasserstein distance 应用到了 GAN 上，也就是 WGAN. 相比传统的 GAN，其区别在于：  </p>
+<ul>
+<li><p>判别器 D 的任务不是分类，而是回归。所以去掉最后一层 sigmoid.  </p>
+</li>
+<li><p>生成器和判别器的 loss 不取 log，原因是 Wasserstein distance 就是这样呀~  </p>
+</li>
+<li><p>每次更新判别器的参数之后把它们的绝对值截断到不超过一个固定常数c  </p>
+</li>
+<li><p>不要用基于动量的优化算法（包括momentum和Adam），推荐RMSProp，SGD也行  </p>
+</li>
+</ul>
+<p>总的流程就是：  </p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wgan.jpg"></p>
+<ul>
+<li><p>$n_{\text{critic}}$ 表示判别器的训练迭代次数，生成器在一次完整的迭代中只训练一次。  </p>
+</li>
+<li><p>对于判别器的loss就是公式（10）  </p>
+</li>
+</ul>
+<p>$$\mathbb{E}<em>{x\sim p_g}[D(x)]-\mathbb{E}</em>{x\sim p_r}[D(x)]\quad(11)$$</p>
+<p>上图中与这个是相反的，所以上述流程中使用的是梯度上升。如果用公式（11）还是应该是梯度下降。</p>
+<ul>
+<li>生成器的loss是第二项</li>
+</ul>
+<p>$$-\mathbb{E}_{x\sim p_g}[D(x)]\quad(12)$$</p>
+<p>其中 $-\mathbb{E}<em>{x\sim p_g}[D(x)]+\mathbb{E}</em>{x\sim p_r}[D(x)]$ 可以指示训练进程，其数值越小，表示真实分布与生成分布的Wasserstein距离越小，GAN训练得越好。</p>
+<h4 id="improved-WGAN"><a href="#improved-WGAN" class="headerlink" title="improved WGAN"></a>improved WGAN</h4><p>improved WGAN 主要是改进 weight clipping 这一略显粗糙的方式。取代它的是增加一个正则化项，来约束参数的变化。</p>
+<p>$$|\nabla_xD(x)|\le 1$$</p>
+<p>类似于 SVM loss：</p>
+<p>$$-\lambda\mathbb{E}<em>{x\sim p</em>{penalty}}[max(0, |\nabla_xD(x)|- 1)]$$</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/proved_wgan.png"></p>
+<p>其中 $x\sim p_{penalty}$ 这部分表示的是 $p_r和p_g$ 连线上的样本采样。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/x_penalty.png"></p>
+<p>这里顺便把 $max(0, |\nabla_xD(x)|- 1)$ 改进成了 $(|\nabla_xD(x)|- 1)^2$ 以此来惩罚梯度太小的项。</p>
+<blockquote>
+<p>“Simply penalizing overly large gradients also works in theory, but experimentally we found that this approach converged faster and to better optima.”</p>
+</blockquote>
+<h4 id="Spectrum-Norm"><a href="#Spectrum-Norm" class="headerlink" title="Spectrum Norm"></a>Spectrum Norm</h4><p>Spectral Normalization → Keep gradient norm smaller than 1 everywhere [Miyato, et al., ICLR, 2018]</p>
+<p>但其实前面说到的 $(|\nabla_xD(x)|- 1)^2$ 这一正则惩罚项依然是存在问题的。因为任意 sample $p_r 和 p_g$ 中的两点，然后拉进他们俩，实际上并不太合理，因为与 $p_g$ 最接近的 $p_r$ 中的一点并不就是采样到的这个.</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wgan_problem.png"></p>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="潘小榭"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">潘小榭</p><p class="is-size-6 is-block">Blogging is happier than writing essays!</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">110</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">31</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">November 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">October 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">August 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">June 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">May 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/04/"><span class="level-start"><span class="level-item">April 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/03/"><span class="level-start"><span class="level-item">March 2019</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">February 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">January 2019</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">November 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">October 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/09/"><span class="level-start"><span class="level-item">September 2018</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">August 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/07/"><span class="level-start"><span class="level-item">July 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">March 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DL/"><span class="tag">DL</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ESA/"><span class="tag">ESA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN/"><span class="tag">GAN</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN%EF%BC%8CRL/"><span class="tag">GAN，RL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ML/"><span class="tag">ML</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MRC-and-QA/"><span class="tag">MRC and QA</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Machine-Translation/"><span class="tag">Machine Translation</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">14</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TensorFlow/"><span class="tag">TensorFlow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Tensorflow/"><span class="tag">Tensorflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/capsules/"><span class="tag">capsules</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-augmentation/"><span class="tag">data augmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interview/"><span class="tag">interview</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-translation/"><span class="tag">machine translation</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/open-set-recognition/"><span class="tag">open set recognition</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/reinforcement-learning/"><span class="tag">reinforcement learning</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentence-embedding/"><span class="tag">sentence embedding</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentiment-classification/"><span class="tag">sentiment classification</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/text-matching/"><span class="tag">text matching</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/transfer-learning/"><span class="tag">transfer learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="tag">文本分类</span><span class="tag">8</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

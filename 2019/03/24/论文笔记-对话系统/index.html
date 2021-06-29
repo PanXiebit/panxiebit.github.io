@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>论文笔记-对话系统 - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="paperA Survey on Dialogue Systems: Recent Advances and New Frontiers,  Chen et al. 2018 motivation这是一篇关于对话系统的综述。 对话系统主要分为两大类：    任务导向型（task-oriented) 对话系统  非任务导向型（non-task-oriented）对话系统  序列到序列模型 seque"><meta property="og:type" content="blog"><meta property="og:title" content="论文笔记-对话系统"><meta property="og:url" content="http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="paperA Survey on Dialogue Systems: Recent Advances and New Frontiers,  Chen et al. 2018 motivation这是一篇关于对话系统的综述。 对话系统主要分为两大类：    任务导向型（task-oriented) 对话系统  非任务导向型（non-task-oriented）对话系统  序列到序列模型 seque"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/03.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/01.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/02.png"><meta property="article:published_time" content="2019-03-24T04:11:09.000Z"><meta property="article:modified_time" content="2021-06-29T07:43:58.440Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="language model"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/03.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/"},"headline":"论文笔记-对话系统","image":["http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/03.png","http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/01.png","http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/02.png"],"datePublished":"2019-03-24T04:11:09.000Z","dateModified":"2021-06-29T07:43:58.440Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"paperA Survey on Dialogue Systems: Recent Advances and New Frontiers,  Chen et al. 2018 motivation这是一篇关于对话系统的综述。 对话系统主要分为两大类：    任务导向型（task-oriented) 对话系统  非任务导向型（non-task-oriented）对话系统  序列到序列模型 seque"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-24T04:11:09.000Z" title="2019/3/24 下午12:11:09">2019-03-24</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T07:43:58.440Z" title="2021/6/29 下午3:43:58">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/">dialogue system</a></span><span class="level-item">34 minutes read (About 5101 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">论文笔记-对话系统</h1><div class="content"><h2 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h2><p>A Survey on Dialogue Systems: Recent Advances and New Frontiers,  Chen et al. 2018</p>
+<h2 id="motivation"><a href="#motivation" class="headerlink" title="motivation"></a>motivation</h2><p>这是一篇关于对话系统的综述。</p>
+<p>对话系统主要分为两大类：  </p>
+<ul>
+<li><p>任务导向型（task-oriented) 对话系统</p>
+</li>
+<li><p>非任务导向型（non-task-oriented）对话系统</p>
+<ul>
+<li><p>序列到序列模型 sequence-to-sequence models</p>
+</li>
+<li><p>检索式模型 retrieval-based methods</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="task-oriented-dialogue-system"><a href="#task-oriented-dialogue-system" class="headerlink" title="task-oriented dialogue system"></a>task-oriented dialogue system</h2><p>面向任务的系统旨在帮助用户完成实际具体的任务，例如帮助用户找寻商品，预订酒店餐厅等。</p>
+<p>有两种方式：</p>
+<ul>
+<li><p>pipeline methods</p>
+</li>
+<li><p>end-to-end methods</p>
+</li>
+</ul>
+<h3 id="pipeline-methods"><a href="#pipeline-methods" class="headerlink" title="pipeline methods"></a>pipeline methods</h3><p><img src="/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/03.png"></p>
+<p>其流程是4个步骤：</p>
+<ul>
+<li><p>language understanding</p>
+</li>
+<li><p>dialogue state tracking  </p>
+</li>
+<li><p>policy learning  </p>
+</li>
+<li><p>natural language generation</p>
+</li>
+</ul>
+<h4 id="language-understanding"><a href="#language-understanding" class="headerlink" title="language understanding"></a>language understanding</h4><p>第一步是 utterance 理解。将给定的 utterance 映射成对应的语义槽 (semantic slots).</p>
+<blockquote>
+<p>Given an utterance, natural language understanding maps it into semantic slots. The slots are pre-defined according to different scenarios.  </p>
+</blockquote>
+<blockquote>
+<p>slots 都是根据特定的场景定义好的。</p>
+</blockquote>
+<blockquote>
+</blockquote>
+<p><img src="/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/01.png"></p>
+<p>看表格能发现，包含三个任务：  </p>
+<ul>
+<li><p>intent dection: 这个是 utterance-level classification，也就是一个分类任务  </p>
+</li>
+<li><p>domain classification: 也是分类任务  </p>
+</li>
+<li><p>slot filling: 这是 word-level 的任务，可以定义成序列标注问题，输入是一个 utterance，输出是对应每个 word 的 semantic label.</p>
+</li>
+</ul>
+<p>关于 slot filling 的 paper:</p>
+<ul>
+<li><p>CRF baseline</p>
+</li>
+<li><p>DBNs:</p>
+<ul>
+<li><p>Deep belief network based semantic taggers for spoken language understanding</p>
+</li>
+<li><p>Use of kernel deep convex networks and end-to-end learning for spoken language understanding</p>
+</li>
+</ul>
+</li>
+<li><p>RNN:</p>
+<ul>
+<li><p>Investigation of recurrent-neural-network architectures and learning methods for spoken language understanding, 2013</p>
+</li>
+<li><p>Deep belief nets for natural language call-routing. 2011</p>
+</li>
+<li><p>Recurrent neural networks for language understanding, 2013</p>
+</li>
+<li><p>Spoken language understanding using long short-term memory neural networks. 2014</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Dialogue-State-Tracking"><a href="#Dialogue-State-Tracking" class="headerlink" title="Dialogue State Tracking"></a>Dialogue State Tracking</h4><p>对话的状态跟踪，预测每一轮对话 user 的 goal. 对话状态跟踪是确保对话系统健壮性的核心组件。它在对话的每一轮次对用户的目标进行预估，管理每个回合的输入和对话历史，输出当前对话状态。这种典型的状态结构通常称为槽填充或语义框架。</p>
+<blockquote>
+<p>所以对应的 state 是根据场景预定义好了的嘛？比如 online shopping，对应的 state 可能就有 推荐，比较，下单等等？</p>
+</blockquote>
+<p>基于传统方法的有很多，基于 deep learning 的有：</p>
+<ul>
+<li><p>[26] Deep neural network approach for the dialog state tracking challenge. 2013</p>
+</li>
+<li><p>[58] Multi-domain dialog state tracking using recurrent neural networks. 2015</p>
+</li>
+<li><p>[59] Neural belief tracker: Data-driven dialogue state tracking, 2017</p>
+</li>
+</ul>
+<h4 id="Policy-learning"><a href="#Policy-learning" class="headerlink" title="Policy learning"></a>Policy learning</h4><p>根据上一步得到的 state，来制定下一步的 action. 很符合强化学习的理念啊，不过需要解决 热启动 (warm-start) 的问题。</p>
+<ul>
+<li><p>基于规则的监督学习（state 的状态需要规则来定义）:</p>
+<ul>
+<li>[111] Building task-oriented dialogue systems for online shopping,</li>
+</ul>
+</li>
+<li><p>deep reinforcement learning:</p>
+<ul>
+<li>[14] Strategic dialogue management via deep reinforcement learning, 2015  </li>
+</ul>
+</li>
+</ul>
+<p>基于强化学习的方法已经超过监督学习了。</p>
+<h4 id="natural-language-generation"><a href="#natural-language-generation" class="headerlink" title="natural language generation"></a>natural language generation</h4><p>一个好的生成器通常依赖于几个因素:适当性、流畅性、可读性和变化性。传统的NLG方法通常是执行句子计划。它将输入语义符号映射到代表话语的中介形式，如树状或模板结构，然后通过表面实现将中间结构转换为最终响应。深度学习比较成熟的方法是基于LSTM的encoder-decoder形式，将问题信息、语义槽值和对话行为类型结合起来生成正确的答案。同时利用了注意力机制来处理对解码器当前解码状态的关键信息，根据不同的行为类型生成不同的回复。</p>
+<ul>
+<li>[123] Context-aware nat- ural language generation for spoken dialogue systems. Zhou et al, 2016 COLING  </li>
+</ul>
+<blockquote>
+<p>adopted an encoder-decoder LSTM-based structure to incorporate the question information, semantic slot values, and dialogue act type to generate correct answers. It used the attention mechanism to attend to the key information conditioned on the current decoding state of the decoder. Encoding the di- alogue act type embedding, the neural network-based model is able to generate variant answers in response to different act types.</p>
+</blockquote>
+<h3 id="end-to-end-model"><a href="#end-to-end-model" class="headerlink" title="end-to-end model"></a>end-to-end model</h3><p>传统的 pipeline 的方法的缺点：</p>
+<ul>
+<li><p>user 的反馈很难传递到每一个 module</p>
+</li>
+<li><p>每一个 module 都是相互依赖的  (process interde- pendence)</p>
+</li>
+</ul>
+<p>也就是在不同的 domain 或者 scenarios 时，pipeline 设计的对话系统可能就不使用的，因为 slots 和 features 都是 task-specificed，都会相应的改变。而这些过程都需要大量的人工工程。</p>
+<p>因此我们需要 end-to-end model。与传统的 pipeline 模型不同，端到端模型使用一个模块，并与结构化的外部数据库交互。</p>
+<ul>
+<li><p>network-based end-to-end 模型需要大量的标注数据</p>
+<ul>
+<li><p>Learning end-to-end goal-oriented dialog, Bordes et al, 2017 ICLR</p>
+</li>
+<li><p>A network-based end-to-end trainable task-oriented di- alogue system, 2017 ACL</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>end-to-end reinforcement learning 在对话管理中，联合训练 state tracking 和 policy learning， 从而使得模型鲁棒性更强。</p>
+<ul>
+<li>Towards end-to-end learn- ing for dialog state tracking and management us- ing deep reinforcement learning，2016 ACL</li>
+</ul>
+</li>
+<li><p>task-completion neural dialogue system, 其目标就是完成一个任务。</p>
+<ul>
+<li>End-to-end task- completion neural dialogue systems，2017</li>
+</ul>
+</li>
+</ul>
+<p>以任务为导向的对话系统通常还需要查询外部知识库。传统的采用的方法就是通过 semantic parsing 形成一个 query，然后去匹配外部知识库，通过检索得到想要的 entries. 其缺点是：</p>
+<ul>
+<li><p>检索的结果不包含有关语义分析中的不确定性信息</p>
+</li>
+<li><p>检索的过程是不可微的 (non-differentiabl), 因此 semantic parsing 和 dialogue policy 只能分别训练，导致 online end-to-end 的模型很难部署。</p>
+</li>
+</ul>
+<p>解决这个问题的 paper:  </p>
+<ul>
+<li><a href>Key-value retrieval networks for task-oriented dialogue, 2017</a> augmented existing recurrent network architectures with a differentiable attention-based key-value retrieval mechanism over the entries of a knowledge base, which is inspired by key-value memory networks.  </li>
+</ul>
+<ul>
+<li><a href>Towards end-to-end reinforcement learning of dialogue agents for information ac- cess, 2017 ACL</a> replaced symbolic queries with an induced “soft” posterior distribution over the knowledge base that indicates which entities the user is interested in. Integrating the soft retrieval process with a reinforcement learner  </li>
+</ul>
+<ul>
+<li><a href>Hybrid code networks: practical and efficient end-to-end dialog control with supervised and reinforcement learning. 2017 ACL</a> combined an RNNwith domain-specific knowledge encoded as software and system action templates.  </li>
+</ul>
+<h2 id="Non-task-oriented-dialogue-system"><a href="#Non-task-oriented-dialogue-system" class="headerlink" title="Non-task-oriented dialogue system"></a>Non-task-oriented dialogue system</h2><p>非任务导向型对话系统也就是聊天机器人， 是通过生成模型或基于检索的方法实现的。 生成模型能够生成更合适的回复（也就是跟上下文语义更接近），而这些回复可能从来没有出现在语料库中，而基于检索的模型则能得到具有信息充裕 (informative) 和 fluent 的回复。</p>
+<h3 id="Neural-Generative-models"><a href="#Neural-Generative-models" class="headerlink" title="Neural Generative models"></a>Neural Generative models</h3><p>深度学习在机器翻译中的成功应用，即神经机器翻译，激发了人们对神经生成对话研究的热情。</p>
+<p>最开始也有一篇 paper，将对话当最机器翻译来做的 paper. 把对话看作是将 post 翻译成 response。但是区别在于 response 的范围很广，而且 post 和 response 并不像翻译的两个句子之间存在对齐关系。</p>
+<p>目前神经生成模型的热门研究课题，主要是讨论：</p>
+<ul>
+<li><p>response diversity</p>
+</li>
+<li><p>modeling topics and personalities</p>
+</li>
+<li><p>leveraging outside knowledge base</p>
+</li>
+<li><p>the interactive learning</p>
+</li>
+<li><p>evaluation</p>
+</li>
+</ul>
+<h4 id="Sequence-to-Sequence-Models"><a href="#Sequence-to-Sequence-Models" class="headerlink" title="Sequence-to-Sequence Models"></a>Sequence-to-Sequence Models</h4><p><img src="/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/02.png"></p>
+<p>这个就是基本的 seq2seq 模型。好奇的是，如何解决多轮对话，如何结合 history 信息，如何控制对话的状态，这些都需要深入看 paper 吧。</p>
+<h4 id="Dialogue-Context"><a href="#Dialogue-Context" class="headerlink" title="Dialogue Context"></a>Dialogue Context</h4><p>考虑历史对话的历史信息的能力是建立可保持对话活跃的对话系统的关键。</p>
+<ul>
+<li><p>基于 RNN language model 的形式：  </p>
+<ul>
+<li><a href>A neural network approach to context-sensitive generation of conversational responses, ACL 2015</a> 通过连续的表示或单词和短语的嵌入来表示整个对话历史（包括当前消息），类似于 RNN language model 的 decoder 过程，这样就能保证前后生成的 response 是有关系的，后者是依赖于前者。[12] 也是这么干的。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>使用 hierarchical model:</p>
+<ul>
+<li>[68] 先分别对 individual utterance 进行建模，然后将他们整合在一起。<a href>Hierarchical recurrent attention network for response generation, 2017</a> 引入了 attention mechanism, 从而 focus 最相关或者是最重要的部分 word-level or utterance-level. <a href>How to make context more useful? an empirical study on context-aware neural conversational models., ACL 2017</a> 对有无层次结构的模型进行了对比，证明有层次结构的模型效果更好。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Response-Diversity"><a href="#Response-Diversity" class="headerlink" title="Response Diversity"></a>Response Diversity</h4><blockquote>
+<p>A challenging problem in current sequence-to-sequence dialogue systems is that they tend to generate trivial or non-committal, universally relevant responses with little meaning, which are often involving high frequency phrases along the lines of I dont know or Im OK.  </p>
+</blockquote>
+<p>在当前的序列对话系统中，一个具有挑战性的问题是，它们倾向于产生意义不大的普通或不重要的、普适的回答，而这些回答往往涉及到“我不知道”或者“我很好”这样的高频率短语。</p>
+<ol>
+<li>MMI and IDF  </li>
+</ol>
+<p>模型的这种行为可以归咎于模型赋予了 “safe” response 更高的概率。<a href>A diversity-promoting objective function for neural con- versation models. ACL 2016</a> 使用了 Maximum Mutual Information 作为优化目标,这是最初在语音识别领域引入的。 它测量了输入和输出之间的相互依赖关系，并考虑了消息回复的逆向依赖性。 <a href>An attentional neural conversation model with improved speci- ficit, 2016</a> 结合逆文档频率（IDF）到训练过程来评价回复的多样性。（在不同的 document 中出现的回复次数越多，其相应的权重越低）。</p>
+<ol start="2">
+<li>beam-search</li>
+</ol>
+<p>一些研究表明，解码的过程也是回复冗余的另一个缘由。[86][72][42] 发现 beam-search 在生成候选答案时中缺乏多样性。[86] 提出了一种衡量不同回复之间的相似度的方法，类似于正则惩罚项吧，来增强 beam-search 的目标函数。[72] 提出了一种随机 beam-search 的方法，[42] 则使用了一个惩罚项来惩罚来自同一父节点中的子节点的展开。</p>
+<ol start="3">
+<li>re-ranking</li>
+</ol>
+<p>[38][77][72] 结合全局特征，重新执行 re-ranking 的步骤，从而避免生成 dull or generic 的回复。</p>
+<ol start="4">
+<li>PMI  </li>
+</ol>
+<p>[57] 猜测问题不仅仅在于解码和 respones 的频率，而且消息本身也缺乏足够的信息。 它提出使用逐点互信息（PMI）来预测名词作为关键词，反映答复的主要依据，然后生成一个包含给定关键字的答复.</p>
+<ol start="5">
+<li>latent variable   </li>
+</ol>
+<p>另一系列工作着重于通过引入随机隐变量来产生更多不同的输出。 他们表明，自然对话不是确定性的 —— 对同一信息的答复可能会因人而异。 但是，当前回复是从确定性 encoder-decoder 模型中采样的。 通过整合隐变量，这些模型的优点是，在生成时，他们可以通过首先对隐变量的分配进行采样，然后确定性地进行解码，从分布中采样回复。</p>
+<ul>
+<li><p><a href>A hierarchical latent vari- able encoder-decoder model for generating dialogues, AAAI 2019</a> 将因变量引入到 hierachical dialogue model framework，The latent variable is designed to make high-level decisions like topic or sentiment.      </p>
+</li>
+<li><p><a href>A conditional variational framework for dialog generation. ACL 2017</a>  conditioned the latent variable on explicit attributes to make the latent variable more interpretable. These attributes can be either manually assigned or automatically detected such topics, and personality.</p>
+</li>
+</ul>
+<h4 id="Topic-and-Personality"><a href="#Topic-and-Personality" class="headerlink" title="Topic and Personality"></a>Topic and Personality</h4><p>明确对话的内在属性是提高对话多样性和保证一致性的另一种方法。在不同的属性中，主题和个性被广泛地进行研究探讨。</p>
+<ol>
+<li><a href>Topic aware neural response generation, AAAI 2017</a> 注意到人们经常把他们的对话与主题相关的概念联系起来，并根据这些概念做出他们的回复。他们使用Twitter LDA模型来获取输入的主题，将主题信息和输入表示输入到一个联合注意模块中，并生成与主题相关的响应。</li>
+</ol>
+<ol start="2">
+<li><a href>Multiresolution recurrent neural networks: An application to dialogue response generation. AAAI 2017</a> 对粗粒度的 tokens sequence 和 dialogue generation 进行联合建模，粗粒度的 tokens 主要是用来探索 high-level 的语义信息，通常是 name entity 或 nouns.</li>
+</ol>
+<ol start="3">
+<li><a href>Emotional chatting machine: Emotional conversation generation with internal and external memory</a> 将情感 embedding 融入到了对话生成中。<a href>Affective neural response generation, 2017</a> 通过三种方式增强回复的情感：  </li>
+</ol>
+<ul>
+<li><p>incorporating cognitive engineered affective word embeddings  </p>
+</li>
+<li><p>augmenting the loss objective with an affect-constrained objective function  </p>
+</li>
+<li><p>injecting affective dissimilarity in diverse beam-search inference procedure  </p>
+</li>
+</ul>
+<ol start="6">
+<li><a href>Assigning personality/identity to a chatting machine for coherent conversation generation</a> 让对话个性化，并且保持一致性。<a href>Neural per- sonalized response generation as domain adaptation</a> 提出了一种两阶段的训练方法，使用大规模数据对模型进行初始化，然后对模型进行微调，生成个性化响应。</li>
+</ol>
+<ol start="7">
+<li><a href>Personalizing a dialogue system with transfer reinforcement learning</a> 使用强化学习来消除对话的前后不一致性。</li>
+</ol>
+<h4 id="Outside-Knowledge-Base"><a href="#Outside-Knowledge-Base" class="headerlink" title="Outside Knowledge Base"></a>Outside Knowledge Base</h4><p>人类对话与对话系统之间的一个重要区别是它是否与现实相结合。结合外部知识库(KB)是一种很有前途的方法，可以弥补背景知识之间的差距，即对话系统和人之间的差距。记忆网络（Memory Network）是一种以知识库处理问题的经典方法。因此，它非常直接的别用于在对话生成中。实际研究表明，所提出的模型能够通过参考知识库中的事实来生成对问题的自然和正确答案。</p>
+<ul>
+<li><p><a href>A knowledge-grounded neural conversation model, 2017</a>  </p>
+</li>
+<li><p><a href>A neural network approach for knowledge-driven response generation. COLING 2016</a>  </p>
+</li>
+<li><p><a href>Neural generative question answering,IJCAI 2016</a>  </p>
+</li>
+</ul>
+<h4 id="Interactive-Dialogue-learning"><a href="#Interactive-Dialogue-learning" class="headerlink" title="Interactive Dialogue learning"></a>Interactive Dialogue learning</h4><p>通过交互来学习是对话系统的最终目标之一。<a href>Deep reinforcement learning for dialogue generation, ACL 2016</a> 利用两个虚拟智能体模拟对话。它们定义了对描述一个较好的对话的汇报的一个简单的启发式的估计：好的对话是有前瞻性[1]或者交互式的（当前轮为下一轮对话铺垫），是信息丰富的和连贯的。一个RNN的编码器-解码器所有参数定义了一个在无穷大的动作空间上从所有可能的话语中进行选择的策略。智能体是通过策略梯度方法 <a href>Simple statistical gradient-following al- gorithms for connectionist reinforcement learning, 1992</a> 来优化由开发者定义的长期奖励，而不是通过标准seq2seq的MLE目标函数来学习策略。[32]进一步试图提高机器人从交互中学习的能力。通过对文本和数字反馈使用策略学习和前向预测，该模型可以通过（半）在线方式与人进行交互来提高自身性能。</p>
+<p>由于大多数人类在对答案并不自信时通常会要求提供一些澄清或者提示，所有机器人拥有这种能力也是相当自然的。<a href>Learning through dialogue interactions by asking questions. 2017</a> 定义了机器人在回答问题时遇到困难时的三种情况。与不采用提问的实验结果相比，这种方法在一些情况下有了很大的改进。<a href>Deal or no deal? end-to-end learning of negotiation dialogues, ACL 2017</a> 在谈判任务中进行了探索。由于传统的序列到序列模型模拟人类的对话没有优化具体的目标，这项工作采取了面向目标的训练和解码方法，并展示了一个有价值的视角。</p>
+<h4 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h4><p>评价生成回复的质量是对话系统的一个重要方面。任务导向型的对话系统可以基于人工生成的监督信号进行评估，例如任务完成测试或用户满意度评分等，然而，由于高回复的多样性，自动评估非任务导向的对话系统所产生的响应的质量仍然是一个悬而未决的问题。目前的方法有以下几种：  </p>
+<ul>
+<li><p>BLEU, METEOR, and ROUGE 值，也就是直接计算 word overlap、ground truth和你生成的回复。由于一句话可能存在多种回复，因此从某些方面来看，BLEU 可能不太适用于对话评测。   </p>
+</li>
+<li><p>计算 embedding的距离，这类方法分三种情况：直接相加求平均、先取绝对值再求平均和贪婪匹配。</p>
+</li>
+<li><p>进行图灵测试，用 retrieval 的 discriminator 来评价回复生成。</p>
+</li>
+</ul>
+<h3 id="Retrieval-based-Methods"><a href="#Retrieval-based-Methods" class="headerlink" title="Retrieval-based Methods"></a>Retrieval-based Methods</h3><p>基于检索的方法从候选回复中选择回复。检索方法的关键是消息-回复匹配，匹配算法必须克服消息和回复之间的语义鸿沟。</p>
+<h4 id="single-turn-response-match"><a href="#single-turn-response-match" class="headerlink" title="single-turn response match"></a>single-turn response match</h4><p>$$match(x,y)=x^TAy$$</p>
+<p><a href>Convolutional neu- ral network architectures for matching natural lan- guage sentences, 2014</a> 利用深度卷积神经网络体系结构改进模型，学习消息和响应的表示，或直接学习两个句子的相互作用表示，然后用多层感知器来计算匹配的分数。</p>
+<h4 id="multi-turn-response"><a href="#multi-turn-response" class="headerlink" title="multi-turn response"></a>multi-turn response</h4><ul>
+<li><a href>The ubuntu dialogue corpus: A large dataset for research in unstructured multi-turn dialogue systems, ACL 2015</a> encoded the context (a concatenation of all previous utterances and current message) and candidate response into a context vector and a response vector through a RNN/LSTM based structure, respectively, and then computed the matching degree score based on those two vectors.</li>
+</ul>
+<ul>
+<li><a href>Learning to respond with deep neural networks for retrieval-based human- computer conversation system, ACM 2016</a> selected the previous utterances in different strategies and combined them with current messages to form a reformulated context.</li>
+</ul>
+<ul>
+<li><a href>Multi-view response selection for human-computer conversation. ACL 2016</a> performed context-response matching on not only the general word level context vector but also the utterance level context vector.</li>
+</ul>
+<ul>
+<li><a href>Sequential matching network: A new architecture for multi-turn response selection in retrieval-based chatbots. ACL 2017</a> further improved the leveraging of ut- terances relationship and contextual information by match- ing a response with each utterance in the context on multi- ple levels of granularity with a convolutional neural network, and then accumulated the vectors in a chronological order through a recurrent neural network to model relationships among utterances</li>
+</ul>
+<h3 id="Hybrid-Methods"><a href="#Hybrid-Methods" class="headerlink" title="Hybrid Methods"></a>Hybrid Methods</h3><p>将生成和检索方法结合起来能对系统性能起到显著的提升作用。基于检索的系统通常给出精确但是较为生硬的答案，而基于生成的系统则倾向于给出流畅但却是毫无意义的回答。在集成模型中，被抽取的候选对象和原始消息一起被输入到基于RNN的回复生成器中。这种方法结合了检索和生成模型的优点，这在性能上具备很大的优势。</p>
+<ul>
+<li><p><a href>Two are better than one: An ensemble of retrieval- and generation-based dialog systems, 2016</a>  </p>
+</li>
+<li><p><a href>Alime chat: A sequence to sequence and rerank based chatbot engine. ACL 2017</a></p>
+</li>
+<li><p><a href>A deep reinforcement learning chatbot, 2017</a></p>
+</li>
+</ul>
+<h2 id="展望"><a href="#展望" class="headerlink" title="展望"></a>展望</h2><p>端到端的框架不仅在非面向任务的聊天对话系统中流行，而且在面向任务的对话系统中逐步流行起来。深度学习能够利用大量的数据，从而模糊了任务导向型对话系统和非任务导向型对话系统之间的界限。值得注意的是，目前的端到端模型仍然远非完美。尽管取得了上述成就，但这些问题仍然具有挑战性。接下来，我们将讨论一些可能的研究方向。</p>
+<ul>
+<li>Swift Warm-Up，在一些新的领域，特定领域对话数据的收集和对话系统的构建是比较困难的。未来的趋势是对话模型有能力从与人的交互中主动去学习。  </li>
+</ul>
+<ul>
+<li>Deep Understanding. 深度理解。现阶段基于神经网络的对话系统极大地依赖于大量标注好的数据，结构化的知识库以及对话语料数据。在某种意义上产生的回复仍然缺乏多样性，有时并没有太多的意义，因此对话系统必须能够更加有效地深度理解语言和真实世界。  </li>
+</ul>
+<ul>
+<li>Privacy Protection. 目前广泛应用的对话系统服务于越来越多的人。很有必要注意到的事实是我们使用的是同一个对话助手。通过互动、理解和推理的学习能力，对话助手可以无意中隐蔽地存储一些较为敏感的信息。因此，在构建更好的对话机制时，保护用户的隐私是非常重要的。</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>论文笔记-对话系统</p><p><a href="http://www.panxiaoxie.cn/2019/03/24/论文笔记-对话系统/">http://www.panxiaoxie.cn/2019/03/24/论文笔记-对话系统/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-03-24</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/language-model/">language model</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">论文笔记-无监督机器翻译</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/"><span class="level-item">论文笔记-Using monoligual data in machine transaltion</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://www.panxiaoxie.cn/2019/03/24/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%AF%B9%E8%AF%9D%E7%B3%BB%E7%BB%9F/';
+            this.page.identifier = '2019/03/24/论文笔记-对话系统/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'panxie' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="潘小榭"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">潘小榭</p><p class="is-size-6 is-block">Blogging is happier than writing essays!</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">110</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">31</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">November 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">October 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">August 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">June 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">May 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/04/"><span class="level-start"><span class="level-item">April 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/03/"><span class="level-start"><span class="level-item">March 2019</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">February 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">January 2019</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">November 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">October 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/09/"><span class="level-start"><span class="level-item">September 2018</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">August 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/07/"><span class="level-start"><span class="level-item">July 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">March 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DL/"><span class="tag">DL</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ESA/"><span class="tag">ESA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN/"><span class="tag">GAN</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN%EF%BC%8CRL/"><span class="tag">GAN，RL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ML/"><span class="tag">ML</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MRC-and-QA/"><span class="tag">MRC and QA</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Machine-Translation/"><span class="tag">Machine Translation</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">14</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TensorFlow/"><span class="tag">TensorFlow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Tensorflow/"><span class="tag">Tensorflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/capsules/"><span class="tag">capsules</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-augmentation/"><span class="tag">data augmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interview/"><span class="tag">interview</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-translation/"><span class="tag">machine translation</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/open-set-recognition/"><span class="tag">open set recognition</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/reinforcement-learning/"><span class="tag">reinforcement learning</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentence-embedding/"><span class="tag">sentence embedding</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentiment-classification/"><span class="tag">sentiment classification</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/text-matching/"><span class="tag">text matching</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/transfer-learning/"><span class="tag">transfer learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="tag">文本分类</span><span class="tag">8</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

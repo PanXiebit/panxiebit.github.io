@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>从0开始GAN-1-from-GAN-to-WGAN - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="From GAN to WGANReference:   From GAN to WGAN   令人拍案叫绝的Wasserstein GAN 听李宏毅老师讲段子之 GAN 这是一篇 copy + translate + understand 的学习笔记. NLP 选手总是会听说 GAN 不适合自然语言处理这类任务，但学了才发现，emmmm，真香。。 不管是否适合，但真的好玩！ 纵所周知，GAN非常"><meta property="og:type" content="blog"><meta property="og:title" content="从0开始GAN-1-from-GAN-to-WGAN"><meta property="og:url" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="From GAN to WGANReference:   From GAN to WGAN   令人拍案叫绝的Wasserstein GAN 听李宏毅老师讲段子之 GAN 这是一篇 copy + translate + understand 的学习笔记. NLP 选手总是会听说 GAN 不适合自然语言处理这类任务，但学了才发现，emmmm，真香。。 不管是否适合，但真的好玩！ 纵所周知，GAN非常"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/KL_JS_divergence.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/table.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/GAN.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/generator.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/discriminator.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/algorithm.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/train_generator.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/gradient_vanish.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/low_dim_manifold.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/GAN_vanishing_gradient.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/generator_loss.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/mode_collapse_2.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/mode_collapse_3.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/w_distence.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/em_distence.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/EM_distance_discrete.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wasserstein_simple_example.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/simple_example.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/lipschitz_func.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wgan.jpg"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/proved_wgan.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/x_penalty.png"><meta property="og:image" content="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wgan_problem.png"><meta property="article:published_time" content="2019-05-18T02:25:32.000Z"><meta property="article:modified_time" content="2021-06-29T08:12:08.540Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="GAN"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/KL_JS_divergence.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/"},"headline":"从0开始GAN-1-from-GAN-to-WGAN","image":["http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/KL_JS_divergence.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/table.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/GAN.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/generator.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/discriminator.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/algorithm.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/train_generator.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/gradient_vanish.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/low_dim_manifold.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/GAN_vanishing_gradient.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/generator_loss.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/mode_collapse_2.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/mode_collapse_3.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/w_distence.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/em_distence.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/EM_distance_discrete.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wasserstein_simple_example.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/simple_example.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/lipschitz_func.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wgan.jpg","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/proved_wgan.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/x_penalty.png","http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wgan_problem.png"],"datePublished":"2019-05-18T02:25:32.000Z","dateModified":"2021-06-29T08:12:08.540Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"From GAN to WGANReference:   From GAN to WGAN   令人拍案叫绝的Wasserstein GAN 听李宏毅老师讲段子之 GAN 这是一篇 copy + translate + understand 的学习笔记. NLP 选手总是会听说 GAN 不适合自然语言处理这类任务，但学了才发现，emmmm，真香。。 不管是否适合，但真的好玩！ 纵所周知，GAN非常"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-05-18T02:25:32.000Z" title="2019/5/18 上午10:25:32">2019-05-18</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.540Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/GAN/">GAN</a></span><span class="level-item">an hour read (About 8244 words)</span></div></div><h1 class="title is-3 is-size-4-mobile">从0开始GAN-1-from-GAN-to-WGAN</h1><div class="content"><h1 id="From-GAN-to-WGAN"><a href="#From-GAN-to-WGAN" class="headerlink" title="From GAN to WGAN"></a>From GAN to WGAN</h1><p><strong>Reference:</strong>  </p>
+<p><a target="_blank" rel="noopener" href="https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html">From GAN to WGAN</a>  </p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/25071913">令人拍案叫绝的Wasserstein GAN</a></p>
+<p><a href>听李宏毅老师讲段子之 GAN</a></p>
+<p>这是一篇 copy + translate + understand 的学习笔记. NLP 选手总是会听说 GAN 不适合自然语言处理这类任务，但学了才发现，emmmm，真香。。 不管是否适合，但真的好玩！</p>
+<p>纵所周知，GAN非常难训练，在训练时总是会面临训练不稳定，以及难以收敛的情况。这里，作者尝试通过阐述GAN背后的数学原理，来解释为什么GAN不好训练，并且介绍了GAN的另一个版本来更好的解决这些训练难题。</p>
+<h2 id="Kullback–Leibler-and-Jensen–Shannon-Divergence"><a href="#Kullback–Leibler-and-Jensen–Shannon-Divergence" class="headerlink" title="Kullback–Leibler and Jensen–Shannon Divergence"></a>Kullback–Leibler and Jensen–Shannon Divergence</h2><p>在学习GAN之前，先回顾一下如何衡量两个概率分布相似度的标准。</p>
+<h3 id="KL-Kullback–Leibler-divergence"><a href="#KL-Kullback–Leibler-divergence" class="headerlink" title="KL (Kullback–Leibler) divergence"></a>KL (Kullback–Leibler) divergence</h3><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/41252833">如何通俗的解释交叉熵与相对熵?</a></p>
+<p><strong>熵</strong>:  </p>
+<p>信息量可表示为 $log\dfrac{1}{p}$，其可理解为概率为p的随机事件所包含的信息量。比如“太阳明天早上在东边升起”，这个概率p=1，那么其所包含的信息就为0了，意思就是这不是句屁话嘛。。所以信息量与概率p成反比。至于为什么就是 $log\dfrac{1}{p}$ 这种形式，为啥不是 $1/p$，这需要去问香农了。。</p>
+<p>而熵则是 <strong>信息量的期望</strong>，也可以理解为 <strong>随机性的度量</strong>。随机性越大，熵越大。</p>
+<p><strong>交叉熵</strong>  </p>
+<p>两个概率分布p和q，p为真实分布，q为非真实分布。按照真实分布来衡量识别一个样本或者是判断随机事件的准确性的度量，就是熵，也就是信息量的期望 $H(p)=\sum_ip(i) * log\dfrac{1}{p(i)}$,但是事实是，我们无法得知这个真实的分布，只能通过统计来预测这个分布，也就是用非真实分布q去衡量这个熵，$H(p,q)=\sum_ip(i) * log\dfrac{1}{q(i)}$, 注意这里的概率是真实分布 p(i). H(p,q)就是我们的“交叉熵”。  </p>
+<p>当用来预测的非真实分布q越接近真实分布，其随机性越小，准确率也就越高。</p>
+<p><strong>相对熵/KL散度</strong>  </p>
+<p>根据<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Gibbs%27_inequality">Gibbs’ inequality</a>上述例子中的 $H(p,q) &gt;= H(p)$ 恒成立。当且仅当q=p时，这个等号才成立。那么熵H(p,q)相比熵H(q)多出来的部分就是相对熵 $D(p||q)=H(p,q)-H(p)=\sum_ip(i)* log\dfrac{p(i)}{q(i)}$，也称为KL散度(Kullback–Leibler divergence，KLD).</p>
+<p>从机器学习的角度去思考，我们预测得到的非真实分布就是q，当模型越好时，q与p越接近，也就是模型的准确度越高，随机性越小，所以交叉熵/相对熵也就越小。反过来，就可以通过交叉熵/相对熵来训练我们所需的模型了～</p>
+<p>所以：</p>
+<p>$$D_{KL}(p||q)=H(p,q)-H(p)=\sum_ip(i)* log\dfrac{p(i)}{q(i)}=\int_x{p(x)}log\dfrac{p(x)}{q(x)}dx$$</p>
+<p>但是，这里有个问题，p和q并不是完全对称的。显然当p(x)为0，q(x)为非零值时，q(x)的影响就不存在了。反过来呢，q不可能为零。所以当两个概率完全相等时，用KL散度来衡量两个概率的相似度就会存在问题了。</p>
+<h3 id="Jensen–Shannon-Divergence"><a href="#Jensen–Shannon-Divergence" class="headerlink" title="Jensen–Shannon Divergence"></a>Jensen–Shannon Divergence</h3><p>JS散度的范围是[0,1],并且是完全对称的。</p>
+<p>$$D_{JS}(p | q) = \frac{1}{2} D_{KL}(p | \frac{p + q}{2}) + \frac{1}{2} D_{KL}(q | \frac{p + q}{2})$$</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/KL_JS_divergence.png"></p>
+<p>p是均值为 0，方差为 1 的正态分布，q是均值为 1，方差为 1 的正态分布。两者的均值的分布是 m=(p+q)/2.可以看到 $D_{Kl}$ 是非对称的，而 $D_{JS}$ 是对称的。</p>
+<p>[How (not) to Train your Generative Model: Scheduled Sampling, Likelihood, Adversary?</p>
+<p>](<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1511.05101.pdf)%E8%AE%A4%E4%B8%BA">https://arxiv.org/pdf/1511.05101.pdf)认为</a> GAN 能成功的很大一部分原因是用JS散度代替了传统的基于极大似然估计的KL散度。</p>
+<h2 id="Generative-Adversarial-Network-GAN"><a href="#Generative-Adversarial-Network-GAN" class="headerlink" title="Generative Adversarial Network (GAN)"></a>Generative Adversarial Network (GAN)</h2><p>GAN 包含两个模型：  </p>
+<ul>
+<li><p>Discrimator D: 判别器 D 用来估计来自 $p_r$ 或 $p_g$ 的样本是真实样本的概率</p>
+</li>
+<li><p>Generator G: 给定随机输入变量 z（随机 z 带来了多样性, $z\sim p_z$），输出得到合成的样本。G 的训练是通过捕捉真实样本的分布，从而生成尽可能真实的样本 ($G(z)=x\sim p_g$)，换句话说，就是欺骗判别器 D 使得生成的样本获得较高的概率。</p>
+</li>
+</ul>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/table.png"></p>
+<ul>
+<li><p>$p_z$ noise，可以是正态分布，也可以是均匀分布  </p>
+</li>
+<li><p>$p_g$ 通过 sample 生成器生成的样本得到的分布  </p>
+</li>
+<li><p>$p_r$ 通过 sanple 真实样本的 database 得到的分布</p>
+</li>
+</ul>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/GAN.png"></p>
+<p>整个训练过程是迭代进行的：  </p>
+<ol>
+<li><p>固定生成器的参数，训练判别器  </p>
+</li>
+<li><p>固定判别器参数，训练优化器  </p>
+</li>
+<li><p>iteration…</p>
+</li>
+<li><p>何时停止，以及如何判断何时停止，这也是 GAN 需要解决的问题。</p>
+</li>
+</ol>
+<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><p>实际上，可以把神经网络 G 看作是用来定义一个分布，$p_g$, 使得这个分布尽可能的接近真实样本的图像在高维空间中的分布 $p_r$.</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/generator.png"></p>
+<p>所以对于生成器的目标函数是 $G^* =\argmax_{G}Div(P_g,p_r)$</p>
+<p>但是问题在于，如何去评判两个 distributin 的接近程度呢，也就是 $Div(p_g,p_{data})$ 怎么计算？</p>
+<h3 id="Discriminator"><a href="#Discriminator" class="headerlink" title="Discriminator"></a>Discriminator</h3><p>GAN 牛逼的地方就是用另一个神经网络来判断这两个 distribution. 所以可以看作是一个二分类问题了。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/discriminator.png"></p>
+<p>当两个分布很接近的时候，判别器就很难去区分来自于 $p_g$ 和 $p_r$ 的样本。</p>
+<p>所以对于判别器，其目标是尽可能的去区分出 $p_g$ 和 $p_r$，当计算出的 divergence 越大时，D 越好 $D^* =\argmax_{D}Div(D,G)$.</p>
+<p>所以，G 和 D 两个模型在训练中是相互博弈的过程。G 尽可能的去欺骗 D，而 D 则尽可能的不被欺骗。这是一个有趣的zero-sum游戏。</p>
+<h3 id="loss-function"><a href="#loss-function" class="headerlink" title="loss function"></a>loss function</h3><h4 id="从极大似然估计的角度来分析"><a href="#从极大似然估计的角度来分析" class="headerlink" title="从极大似然估计的角度来分析"></a>从极大似然估计的角度来分析</h4><p>根据极大似然估计，二分类判别器 D 的输入样本集 ${(x_1, y_1),(x_2,y_2),…,(x_N, y_N)}$ 的概率最大，而输入到判别器 D 的样本可能来自 real data, $x\sim p_r(x)$，也可能来自生成器 G, $x\sim p_g(x)$.  </p>
+<p>其中对应的 label:  </p>
+<p>$$ y= \begin{cases}</p>
+<p> 1, &amp; \text {$x\sim p_r(x)$} \</p>
+<p> 0, &amp; \text{$x\sim p_g(x)$}</p>
+<p> \end{cases} $$</p>
+<p>似然函数（样本集的概率最大）:</p>
+<p>$$L(\theta)=\prod_iD(y_i=1|x_i)^{y_i}(1-D(y_i=1|x_i))^{(1-y_i)}$$</p>
+<p>对于 $x\sim p_r$, $y_i=1$,所以</p>
+<p>$$logL=\sum_{x\sim p_r} logD(x)$$</p>
+<p>对于 $x\sim p_g$, $y_i=0$, 可以得到：</p>
+<p>$$logL=\sum_{x\sim p_g}log(1-D(x))$$</p>
+<p>所以对于判别器D, 在生成器G固定参数时最优的判别器 D 就是最大化下面这个目标函数：  </p>
+<p>$$E_{x\sim p_r(x)}[logD(x)]+E_{x\sim p_g}[log(1-D(x)]\qquad\text{(1)}$$</p>
+<p>事实上，我们发现，这个目标函数跟 logistic regression 是一样的。。。</p>
+<h4 id="从熵的角度来分析"><a href="#从熵的角度来分析" class="headerlink" title="从熵的角度来分析"></a>从熵的角度来分析</h4><p>我们通过最大化 $E_{x\sim p_r(x)}[logD(x)]$ 来保证判别器 D 在 real data $p_r$上的准确率。与此同时，G 生成得到的 fake 样本，G(z), $z\sim p_z(z)$，判别器D期望对于 fake 样本的概率 D(G(z)) 越接近于 0 越好，也就是最大化 $E_{z\sim p_z(z)}[log(1-D(G(z)))]$.  </p>
+<p>对于生成器，其目的就是让判别器D在 fake 样本上得到的概率更大，Goodfellow一开始提出来一个损失函数，后来又提出了一个改进的损失函数，分别是</p>
+<p>$$E_{z\sim p_z}[log(1-D(G(z))]=E_{x\sim p_g}[log(1-D(x)]\qquad\text{(2)}$$  $$E_{z\sim p_z}[-logD(G(z)]=E_{x\sim p_g}[-logD(x)]\qquad\text{(3)}$$</p>
+<p>这个直观上也很好理解~固定了判别器 G，然后让 $E_{x\sim p_g}[logD(x)]$ 尽可能大，也就是 $E_{x\sim p_g}[log(1-D(x)]$ 或者 $E_{x\sim p_g}[-logD(x)]$ 尽可能小。</p>
+<p>然后把两者（1）和 （2）合并起来（它们有共同的第二项），D和G正在进行的就是一个 minimax game，而我们所需优化的loss function就是：</p>
+<p>$$% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>\min_G \max_D L(D, G)</p>
+<p>&amp; = \mathbb{E}<em>{x \sim p</em>{r}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log(1 - D(G(z)))] \</p>
+<p>&amp; = \mathbb{E}<em>{x \sim p</em>{r}(x)} [\log D(x)] + \mathbb{E}_{x \sim p_g(x)} [\log(1 - D(x)] \quad (1.5)</p>
+<p>\end{aligned} %]]&gt;$$</p>
+<p>对于生成器，需要最小化这个目标函数。对于判别器，需要最大化这个函数。</p>
+<h3 id="如何求关于判别器-D-的最优解"><a href="#如何求关于判别器-D-的最优解" class="headerlink" title="如何求关于判别器 D 的最优解"></a>如何求关于判别器 D 的最优解</h3><p>定义好了 loss function，接下来推导对于 D 的最优解. 上式可以写成积分函数：</p>
+<p>$$L(G,D)=\int_x(p_r(x)log(D(x))+p_g(x)log(1-D(x)))dx\quad (4)$$</p>
+<p>对于判别器 D，我们要求最大化上述目标函数。<strong>假设 D(x) 可以模拟任何函数（事实上 neural network 也是可以的），那么最大化上述函数等同于最大化积分内的函数。</strong> 也就是 given $\forall$ x ，求解其最优的判别器 D*.</p>
+<p>$$p_r(x)log(D(x))+p_g(x)log(1-D(x))$$</p>
+<p>为了简化计算，假设</p>
+<p>$$\tilde x=D(x), A=p_r(x), B=p_g(x)$$</p>
+<p>对积分内部求导（这里可以忽略积分，因为x是采样任何可能的值）：</p>
+<p>$$% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>f(\tilde{x})</p>
+<p>&amp; = A log\tilde{x} + B log(1-\tilde{x}) \</p>
+<p>\frac{d f(\tilde{x})}{d \tilde{x}}</p>
+<p>&amp; = A \frac{1}{ln10} \frac{1}{\tilde{x}} - B \frac{1}{ln10} \frac{1}{1 - \tilde{x}} \</p>
+<p>&amp; = \frac{1}{ln10} (\frac{A}{\tilde{x}} - \frac{B}{1-\tilde{x}}) \</p>
+<p>&amp; = \frac{1}{ln10} \frac{A - (A + B)\tilde{x}}{\tilde{x} (1 - \tilde{x})} \</p>
+<p>\end{aligned} %]]&gt;$$</p>
+<p>然后，令 $\dfrac{df(\tilde x)}{d\tilde x}=0$,可以得到D(x)的最优解：  </p>
+<p>$D^* (x) = \tilde{x}^* = \frac{A}{A + B} = \frac{p_{r}(x)}{p_{r}(x) + p_g(x)} \in [0, 1]\qquad\text{(5)}$</p>
+<p>这个结果从直观上很容易理解，就是看一个样本x来自真实分布和生成分布的可能性的相对比例。如果 $P_r(x) = 0$ 且 $P_g(x) \neq 0$，最优判别器就应该非常自信地给出概率0；如果 $P_r(x) = P_g(x)$，说明该样本是真是假的可能性刚好一半一半，此时最优判别器也应该给出概率0.5。</p>
+<h3 id="如何得到生成器-G-的最优解，也就是全局最优解"><a href="#如何得到生成器-G-的最优解，也就是全局最优解" class="headerlink" title="如何得到生成器 G 的最优解，也就是全局最优解"></a>如何得到生成器 G 的最优解，也就是全局最优解</h3><p>记住我们的目标是训练得到一个生成器，使得其生成的 $P_g$ 分布能尽可能的接近于 $P_r$. 所以当判别器最优时，最小化目标函数就能得到 G*，将 (4) 带入 (5) 式可以得到：</p>
+<p>$$% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>L(G, D^* )</p>
+<p>&amp;= \int_x \bigg( p_{r}(x) \log(D^* (x)) + p_g (x) \log(1 - D^* (x)) \bigg) dx \</p>
+<p>&amp;= \int_x (p_r(x)log\dfrac{p_r}{p_r+p_g} + p_g(x)log\dfrac{p_g}{p_r+p_g})dx \</p>
+<p>&amp;= \int_x(p_xlog\dfrac{\dfrac{1}{2}p_r}{\dfrac{1}{2}(p_r+p_g)} + p_glog\dfrac{\dfrac{1}{2}p_g}{\dfrac{1}{2}(p_r+p_g)})dx\quad\text{上下同时乘以$\dfrac{1}{2}$}\</p>
+<p>&amp;= -2log2 + \int_xp_r(x)log\dfrac{p_r(x)}{\dfrac{1}{2}(p_r(x)+p_g)}dx + \int_xp_g(x)log\dfrac{p_g(x)}{\dfrac{1}{2}(p_r(x)+p_g)}dx \quad\text{(6)}\</p>
+<p>&amp;= -2log2 + D_{KL}(p_r||\dfrac{p_r+p_g}{2}) + D_{KL}(p_g||\dfrac{p_r+p_g}{2})\quad\text{带入 KL 散度公式} \</p>
+<p>&amp;= -2log2 + D_{JS}(p_{r} | p_g)\quad\text{带入 JS 散度公式}</p>
+<p>\end{aligned} %]]&gt;$$</p>
+<p>我们突然发现，诶，卧槽，厉害了。given D* 的条件下，当生成器 G 最优时，通过推导发现，最小化目标函数等同于最小化 $p_r$ 和 $p_g$ 的 JS 散度。所以啊，通过理论证明，让两个分布更接近的话，使用 JS 散度明显要比我们传统上使用的 KL 散度要合理呀~</p>
+<p>所以如何判别两个分布的 Divergence, 通过推导告诉我们，JS 散度更好~</p>
+<p>整个算法流程：</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/algorithm.png"></p>
+<p>这个为什么 D 训练时是多次, 而 G 训练时只需要一次呢？</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/train_generator.png"></p>
+<p>固定判别器为 $D^* $，通过梯度下降训练 $G_0 \rightarrow G_1$, 这里 $G_0$ 和 $G_1$ 不能差距太大. 因为如果 G 变化太大，那么对应的 JS divergence 变化可能就如上图所示，会突然变得很大，而不是我们所预想的减小了。</p>
+<h3 id="Problems-in-GANs"><a href="#Problems-in-GANs" class="headerlink" title="Problems in GANs"></a>Problems in GANs</h3><p>理论上，满足 JS 散度越小，两个分布越接近是可以的。但是要使得 JS 散度越来越小这个有点难度，因为图像是高维空间里面的低维 mainfold. 这也是接下来要讲的问题。</p>
+<p>尽管 GAN 在图像生成上取得了很大的成功，但是其训练并不容易，过程很慢并且不稳定。<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/25071913">令人拍案叫绝的Wasserstein GAN</a> 将原始 GAN 的问题主要分成两部分。</p>
+<ul>
+<li><p>判别器的问题：D 越好，生成器梯度消失越严重。  </p>
+</li>
+<li><p>生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量，导致两个问题，一是梯度不稳定，二是collapse mode即多样性不足。</p>
+</li>
+</ul>
+<h4 id="判别器的问题：判别器越好，生成器梯度消失越严重"><a href="#判别器的问题：判别器越好，生成器梯度消失越严重" class="headerlink" title="判别器的问题：判别器越好，生成器梯度消失越严重"></a>判别器的问题：判别器越好，生成器梯度消失越严重</h4><p>对于前面说到的 JS 散度上。我们会希望如果两个分布之间越接近它们的JS散度越小，我们通过优化JS散度就能将 $p_g$ “拉向” $p_r$，最终以假乱真。这个希望在两个分布有所重叠的时候是成立的，但是如果两个分布完全没有重叠的部分（要么是 $x\sim p_r$, 要么是 $x\sim p_g$），或者它们重叠的部分可忽略（等会儿解释什么叫可忽略），它们的JS散度是多少呢？</p>
+<p>$p_1(x)=0且p_2(x)=0$   </p>
+<p>$p_1(x)\ne0且p_2(x)\ne0$   </p>
+<p>$p_1(x)=0且p_2(x)\ne 0$  </p>
+<p>$p_1(x)\ne 0且p_2(x)=0$  </p>
+<ul>
+<li><p>第一种对计算JS散度无贡献  </p>
+</li>
+<li><p>第二种情况由于重叠部分可忽略,（$p_r和 p_g$ 都是高维空间中的低维流形），所以贡献也为0.  </p>
+</li>
+<li><p>第三种情况，带入公式（6）倒数第三步的的后两项，JS 的散度计算可以得到其值为 log2.   </p>
+</li>
+<li><p>第四种情况同理。</p>
+</li>
+</ul>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/gradient_vanish.png"></p>
+<p>换句话说，无论跟是远在天边，还是近在眼前，只要它们俩没有一点重叠或者重叠部分可忽略，JS散度就固定是常数，而这对于梯度下降方法意味着——梯度为0！此时对于最优判别器来说，生成器肯定是得不到一丁点梯度信息的；即使对于接近最优的判别器来说，生成器也有很大机会面临梯度消失的问题。</p>
+<p>但是 $P_r$ 与 $P_g$ 不重叠或重叠部分可忽略的可能性有多大？不严谨的答案是：非常大。比较严谨的答案是：当 $P_r$ 与 $P_g$ 的支撑集（support）是高维空间中的低维流形（manifold）时，$P_r$ 与 $P_g$ 重叠部分测度（measure）为0的概率为1。</p>
+<p>也就是接下来要说的: low dimensional support 和 gradient vanishing.</p>
+<h5 id="Low-dimensional-supports"><a href="#Low-dimensional-supports" class="headerlink" title="Low dimensional supports"></a>Low dimensional supports</h5><p>有两个数学概念：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Manifold">Manifold</a>: A topological space that locally resembles Euclidean space near each point. Precisely, when this Euclidean space is of dimension n, the manifold is referred as n-manifold.  </li>
+</ul>
+<p>拓扑空间，在每个点附近局部类似于欧几里德空间。 确切地说，当该欧几里德空间具有n维时，该流形被称为n-流形。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Support_(mathematics)">Support</a>: In mathematics, the support of a real-valued function f is the subset of the domain containing those elements which are not mapped to zero.  </li>
+</ul>
+<p>在数学中，实值函数f的支持是包含那些未映射到零的元素的域的子集</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1701.04862.pdf">“Towards principled methods for training generative adversarial networks”.</a> 这篇非常理论的论文讨论了对于 $p_r$ 和 $p_g$ 的support是处于低维的空间，并且这导致了GAN的训练中的不稳定性。</p>
+<p>真实样本空间具有高度的人工特征，因为它的主题一旦确定，其包含的对象也就固定了。比如dog应该有two ears和a tail.一个Skyscraper应该有straight和tall的身体。这些限制使得图像不具备高维空间的形式。</p>
+<p>同样的 $p_g$ 也是在低维流形空间。当给定初始的噪声输入变量为100维，生成器将其作为输入生成较大的图像 $64\times 64$，对于输出的分布 4096 pixels已经被100维随机的向量定义了，所以它也很难去填满整个高维空间。</p>
+<blockquote>
+<p>“撑不满”就会导致真实分布与生成分布难以“碰到面”，这很容易在二维空间中理解：一方面，二维平面中随机取两条曲线，它们之间刚好存在重叠线段的概率为0；另一方面，虽然它们很大可能会存在交叉点，但是相比于两条曲线而言，交叉点比曲线低一个维度，长度（测度）为0，可忽略。三维空间中也是类似的，随机取两个曲面，它们之间最多就是比较有可能存在交叉线，但是交叉线比曲面低一个维度，面积（测度）是0，可忽略。从低维空间拓展到高维空间，就有了如下逻辑：因为一开始生成器随机初始化，所以几乎不可能与有什么关联，所以它们的支撑集之间的重叠部分要么不存在，要么就比和的最小维度还要低至少一个维度，故而测度为0。所谓“重叠部分测度为0”，就是上文所言“不重叠或者重叠部分可忽略”的意思。</p>
+</blockquote>
+<p>因为 $p_r$ 和 $p_g$ 都是处于低维流形，他们很大可能性是不相交的。当他们具备不相交的特性时，我们就很容易找到一个完美的判别器来准确的100%区分fake样本和真实样本。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/low_dim_manifold.png"></p>
+<p>左侧图是两条线在三维空间。右侧是两个平面在三维空间。通过维度的对比来表明相交的可能性。</p>
+<h5 id="Vanishing-gradient"><a href="#Vanishing-gradient" class="headerlink" title="Vanishing gradient"></a>Vanishing gradient</h5><p>当判别器非常完美的时候，$D(x)=1,\forall x\in p_r$, $D(x)=0, \forall x\in p_g$.</p>
+<p>$$L(G,D)=\int_x(p_r(x)log(D(x))+p_g(x)log(1-D(x)))$$</p>
+<p>带入这个公式可以发现，loss function L 会降为0，在迭代过程中，梯度也就无法更新。下图证明了，当判别器越好的时候，梯度消失越快。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/GAN_vanishing_gradient.png"></p>
+<blockquote>
+<p>WGAN前作Figure 2。先分别将DCGAN训练1，20，25个epoch，然后固定生成器不动，判别器重新随机初始化从头开始训练，对于第一种形式的生成器loss产生的梯度可以打印出其尺度的变化曲线，可以看到随着判别器的训练，生成器的梯度均迅速衰减。注意y轴是对数坐标轴。</p>
+</blockquote>
+<h4 id="生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量"><a href="#生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量" class="headerlink" title="生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量"></a>生成器的问题：最小化生成器loss函数，会等价于最小化一个不合理的距离衡量</h4><p>这样会导致两个问题：一是梯度不稳定，二是 mode collapse/dropping 即多样性不足。</p>
+<p>前面说到 Goodfellow 给了两个 generator 的 loss function，也就是公式 （2）和（3）.</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/generator_loss.png"></p>
+<p>Goodfellow 换成第二种 loss function 的理由如上图，因为在训练生成器 G 是，D(x) 肯定是很小的，所以观察上图可以看到 log(1-D(x)) 在 D(x) 偏小的区域梯度很小，所以导致训练很慢。</p>
+<p>但是，换成第二种 loss 会导致 mode collapse. 接下来通过公式推导证明这俩问题。</p>
+<p>通过公式（1.5）和公式（6）可以得到在 $D^* $ 的条件下：</p>
+<p>$$ \mathbb{E}<em>{x \sim p</em>{r}(x)} [\log D^* (x)] + \mathbb{E}<em>{x \sim p_g(x)} [\log(1 - D^* (x)]=-2log2 + D</em>{JS}(p_{r} | p_g)\quad\text{(7)}$$</p>
+<p>我们在算一个 KL 散度:</p>
+<p>$$% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>KL(p_g||p_r)</p>
+<p>&amp;=\mathbb{E}_{x\sim p_g}log(\dfrac{p_g(x)}{p_r(x)})\</p>
+<p>&amp;=\mathbb{E}_{x\sim p_g}[log\dfrac{p_g(x)/(p_g(x)+p_r(x))}{p_r(x)/p_g(x)+p_r(x)}]\</p>
+<p>&amp;=\mathbb{E}_{x\sim p_g}[log\dfrac{1-D^* (x)}{D^* (x)}]\</p>
+<p>&amp;=\mathbb{E}<em>{x\sim p_g}log[1-D^* (x)]-\mathbb{E}</em>{x\sim p_g}logD^* (x)\quad\text{(8)}</p>
+<p>\end{aligned} %]]&gt;$$</p>
+<p>将公式（7）和 （8）带入到第二种 loss（3）中可以得到：</p>
+<p>$$\begin{aligned}</p>
+<p>\mathbb{E}_{x\sim p_g}logD^* (x)</p>
+<p>&amp;=KL(p_g||p_r)-\mathbb{E}_{x\sim p_g}log[1-D^* (x)]\</p>
+<p>&amp;=KL(p_g||p_r)-D_{JS}(p_{r} | p_g)+2log2-\mathbb{E}<em>{x \sim p</em>{r}(x)}\quad\text{(7)}</p>
+<p>\end{aligned}$$</p>
+<p>上式后两项与 G 无关，所以最小化 loss（3）等价于最小化:</p>
+<p>$$KL(p_g||p_r)-D_{JS}(p_{r} | p_g)$$</p>
+<blockquote>
+<p>这个等价最小化目标存在两个严重的问题。第一是它同时要最小化生成分布与真实分布的KL散度，却又要最大化两者的JS散度，一个要拉近，一个却要推远！这在直观上非常荒谬，在数值上则会导致梯度不稳定，这是后面那个JS散度项的毛病。  </p>
+</blockquote>
+<blockquote>
+<p>第二，即便是前面那个正常的KL散度项也有毛病。因为KL散度不是一个对称的衡量，KL(P_g || P_r)与KL(P_r || P_g)是有差别的。以前者为例:  </p>
+</blockquote>
+<p>当 $P_g(x)\rightarrow 0$ 而 $P_r(x)\rightarrow 1$ 时，$P_g(x) \log \frac{P_g(x)}{P_r(x)} \rightarrow 0$，对 $KL(P_g || P_r)$ 贡献趋近0  </p>
+<p>当 $P_g(x)\rightarrow 1$ 而 $P_r(x)\rightarrow 0$ 时，$P_g(x) \log \frac{P_g(x)}{P_r(x)} \rightarrow +\infty$，对 $KL(P_g || P_r)$ 贡献趋近正无穷  </p>
+<p>换言之，KL(P_g || P_r)对于上面两种错误的惩罚是不一样的，第一种错误对应的是“生成器没能生成真实的样本”，惩罚微小；第二种错误对应的是“生成器生成了不真实的样本” ，惩罚巨大。第一种错误对应的是缺乏多样性，第二种错误对应的是缺乏准确性。这一放一打之下，生成器宁可多生成一些重复但是很“安全”的样本，也不愿意去生成多样性的样本，因为那样一不小心就会产生第二种错误，得不偿失。这种现象就是大家常说的collapse mode。  </p>
+<p>第一部分小结：在原始GAN的（近似）最优判别器下，第一种生成器loss面临梯度消失问题，第二种生成器loss面临优化目标荒谬、梯度不稳定、对多样性与准确性惩罚不平衡导致mode collapse这几个问题。</p>
+<p>这位老哥讲的太好了。。直接 copy 了。。</p>
+<h4 id="Mode-collapse"><a href="#Mode-collapse" class="headerlink" title="Mode collapse"></a>Mode collapse</h4><p><strong>mode collapse:</strong> 重复生成一张图片</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/mode_collapse_2.png"></p>
+<p><strong>mode dropping:</strong> G 在迭代时只能生成一类图片。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/mode_collapse_3.png"></p>
+<h4 id="还有一个问题：Lack-of-a-proper-evaluation-metric"><a href="#还有一个问题：Lack-of-a-proper-evaluation-metric" class="headerlink" title="还有一个问题：Lack of a proper evaluation metric"></a>还有一个问题：Lack of a proper evaluation metric</h4><p>GAN 没有一个好的目标函数来描述训练过程。没有好的验证指标，就好比在黑暗中work. 没有信号来提示该在什么时候停止，也没有好的指标来评价多种模型的好坏。</p>
+<h3 id="Improving-GAN-Training"><a href="#Improving-GAN-Training" class="headerlink" title="Improving GAN Training"></a>Improving GAN Training</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://papers.nips.cc/paper/6125-improved-techniques-for-training-gans.pdf">Improve Techniques for Training GANs</a></li>
+</ul>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1701.04862.pdf">Towards principled methods for training generative adversarial networks</a></li>
+</ul>
+<h3 id="Wasserstein-GAN-WGAN"><a href="#Wasserstein-GAN-WGAN" class="headerlink" title="Wasserstein GAN (WGAN)"></a>Wasserstein GAN (WGAN)</h3><p><strong>Wasserstein Distance</strong> 是一种测量两个分布距离的方式。可以类比成 earth mover’s distance.</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/w_distence.png"></p>
+<p>为了简单的理解，可以把两个分布看作是离散的。这里看作是两堆土，Wasserstein distance 就是计算如何移动最少量的土使得两个分布一致。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/em_distence.png"></p>
+<p>所以相比 JS 散度，从分类任务变成了回归任务。即使两个分布完全无交集，也是存在 divergence 更大或者更小的问题，所以也就不存在梯度为零的情况了。</p>
+<p>但是问题来了，怎么计算 Wasserstein distance 呢？</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/EM_distance_discrete.png"></p>
+<p>step1: $p_1 \underrightarrow{2} p_2$, 使得 $p_1和Q_1$ match.</p>
+<p>step2: $p_2 \underrightarrow{2} p_3$, 使得 $p_2和Q_2$ match.</p>
+<p>step3: $Q_3 \underrightarrow{1} Q_4$, 使得 $p_3和Q_3$ match.</p>
+<p>所以总的 W=5.</p>
+<p>对于连续分布，Wasserstein distance：</p>
+<p>$$W(p_r, p_g) = \inf_{\gamma \sim \Pi(p_r, p_g)} \mathbb{E}_{(x, y) \sim \gamma}[| x-y |]$$</p>
+<p>$\Pi(p_r, p_g)$ 是所有可能的联合分布. 其中一种联合分布 $\gamma \sim \Pi(p_r, p_g)$ 表示一种 move plan, 就比如上图中的示例。</p>
+<p>其中,对于任何一个联合分布 $\gamma$,其边缘分布分别是  $p_g(x)=\sum_x\gamma(x,y)$, $p_r(y)=\sum_y\gamma(x,y)$. 在此分布下的移动距离是 $||x-y||$. 那么当前联合分布下的 cost 是 $\gamma(x, y) \cdot | x-y |$. 其期望就是：</p>
+<p>$$\sum_{x, y} \gamma(x, y) | x-y |= \mathbb{E}_{x, y \sim \gamma} | x-y |$$</p>
+<p>而我们需要求的是所有可能的联合分布中的下界, 就定义为 Wasserstein distance.</p>
+<h4 id="Why-Wasserstein-is-better-than-JS-or-KL-divergence"><a href="#Why-Wasserstein-is-better-than-JS-or-KL-divergence" class="headerlink" title="Why Wasserstein is better than JS or KL divergence?"></a>Why Wasserstein is better than JS or KL divergence?</h4><p>Wasserstein 距离的优势在于，即使两个分布没有交集，也能平滑的表示两个分布之间的散度。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wasserstein_simple_example.png"></p>
+<p>$$</p>
+<p>\forall (x, y) \in P, x = 0 \text{ and } y \sim U(0, 1)\</p>
+<p>\forall (x, y) \in Q, x = \theta, 0 \leq \theta \leq 1 \text{ and } y \sim U(0, 1)\</p>
+<p>$$</p>
+<p>当 $\theta\ne 0$ 时，分别计算 KL,JS，WS 散度：</p>
+<p>$$</p>
+<p>% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>D_{KL}(P | Q) &amp;= \sum_{x=0, y \sim U(0, 1)} 1 \cdot \log\frac{1}{0} = +\infty \</p>
+<p>D_{KL}(Q | P) &amp;= \sum_{x=\theta, y \sim U(0, 1)} 1 \cdot \log\frac{1}{0} = +\infty \</p>
+<p>D_{JS}(P, Q) &amp;= \frac{1}{2}(\sum_{x=0, y \sim U(0, 1)} 1 \cdot \log\frac{1}{1/2} + \sum_{x=0, y \sim U(0, 1)} 1 \cdot \log\frac{1}{1/2}) = \log 2\</p>
+<p>W(P, Q) &amp;= |\theta|</p>
+<p>\end{aligned} %]]&gt;</p>
+<p>$$</p>
+<p>当 $\theta = 0$ 时，分别计算 KL,JS，WS 散度：</p>
+<p>$$</p>
+<p>% &lt;![CDATA[</p>
+<p>\begin{aligned}</p>
+<p>D_{KL}(P | Q) &amp;= D_{KL}(Q | P) = D_{JS}(P, Q) = 0\</p>
+<p>W(P, Q) &amp;= 0 = \lvert \theta \rvert</p>
+<p>\end{aligned} %]]&gt;</p>
+<p>$$</p>
+<p>当两个分布没有交集时，KL 散度的值是 inifity. JS 散度则存在不连续的问题，对于这个例子而言，当 $\theta=0$ 时，JS 散度不可微。只有 WS 距离是可微的，这对于梯度下降而言是非常友好的。</p>
+<h4 id="Use-Wasserstein-distance-as-GAN-loss-function"><a href="#Use-Wasserstein-distance-as-GAN-loss-function" class="headerlink" title="Use Wasserstein distance as GAN loss function"></a>Use Wasserstein distance as GAN loss function</h4><p>但是要穷尽两个联合分布的所有情况来计算 $\inf_{\gamma \sim \Pi(p_r, p_g)}$ 是不可能的。WGAN 的作者给出了一个聪明的转换，可以把公式 (8) 写成：</p>
+<p>$$W(p_g,p_r)=\dfrac{1}{K}sup_{|f|_ L \le K}\mathbb{E}<em>{x\sim p_r}[f(x)]-\mathbb{E}</em>{x\sim p_g}[f(x)]\quad\text{(9)}$$</p>
+<p>这里的意思就是用 f 函数来表示上面说到的任何可能的联合分布。所以 $\mathbb{E}<em>{x\sim p_r}[f(x)]-\mathbb{E}</em>{x\sim p_g}[f(x)]$ 等效于 $\mathbb{E}_{x, y \sim \gamma} | x-y |$.</p>
+<p>然后我们又知道神经网络足够强大，所以用神经网络 D 来代替 f，来表示上面说到的任何可能的联合分布。但是 D 必须像前面提到的 Wasserstein distance 那样足够光滑。这样一来， Wasserstein distance 就转变成了我们想要的 loss function.</p>
+<p>$$V(G,D)=\max_{D\sim \text{1-Lipschitz}}{\mathbb{E}<em>{x\sim p_r}[D(x)]-\mathbb{E}</em>{x\sim p_g}[D(x)]}\quad\text{(10)}$$</p>
+<p>通过采样来计算 V(G,D),我们希望</p>
+<p>这里用一个例子来说明为什么 D 要足够光滑：</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/simple_example.png"></p>
+<p>我们看到要让 V(G,D) 在 real example 上增大，在 fake example 上减小， D 完全可以做到像上图中红色箭头那样。所以这样下来，D 无法收敛。</p>
+<p>怎么保证一个神经网络足够光滑, $D\sim \text{1-Lipschitz}$，貌似听起来很难，毕竟涉及到那么多的参数。</p>
+<p><strong>Lipschitz continuity:</strong></p>
+<p>这里首先需要介绍一个概念——Lipschitz连续。它其实就是在一个连续函数 f 上面额外施加了一个限制，要求存在一个常数 $K\geq 0$ 使得定义域内的任意两个元素 $x_1$ 和 $x_2$ 都满足</p>
+<p>$$|f(x_1) - f(x_2)| \leq K |x_1 - x_2|$$</p>
+<p>此时称函数 f的Lipschitz常数为K。实际上就是 f 函数的导函数的值不能超过 K. Lipschitz 连续条件限制了一个连续函数的最大局部变动幅度。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/lipschitz_func.png"></p>
+<p>在 WGAN 这篇论文中，作者采用了一种特别简单的方法，Weight Clipping. 对于任何参数，使其在 [-c,c] 范围内，就可以保证 K 不会特别大。。</p>
+<p>到此，我们就能把  Wasserstein distance 应用到了 GAN 上，也就是 WGAN. 相比传统的 GAN，其区别在于：  </p>
+<ul>
+<li><p>判别器 D 的任务不是分类，而是回归。所以去掉最后一层 sigmoid.  </p>
+</li>
+<li><p>生成器和判别器的 loss 不取 log，原因是 Wasserstein distance 就是这样呀~  </p>
+</li>
+<li><p>每次更新判别器的参数之后把它们的绝对值截断到不超过一个固定常数c  </p>
+</li>
+<li><p>不要用基于动量的优化算法（包括momentum和Adam），推荐RMSProp，SGD也行  </p>
+</li>
+</ul>
+<p>总的流程就是：  </p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wgan.jpg"></p>
+<ul>
+<li><p>$n_{\text{critic}}$ 表示判别器的训练迭代次数，生成器在一次完整的迭代中只训练一次。  </p>
+</li>
+<li><p>对于判别器的loss就是公式（10）  </p>
+</li>
+</ul>
+<p>$$\mathbb{E}<em>{x\sim p_g}[D(x)]-\mathbb{E}</em>{x\sim p_r}[D(x)]\quad(11)$$</p>
+<p>上图中与这个是相反的，所以上述流程中使用的是梯度上升。如果用公式（11）还是应该是梯度下降。</p>
+<ul>
+<li>生成器的loss是第二项</li>
+</ul>
+<p>$$-\mathbb{E}_{x\sim p_g}[D(x)]\quad(12)$$</p>
+<p>其中 $-\mathbb{E}<em>{x\sim p_g}[D(x)]+\mathbb{E}</em>{x\sim p_r}[D(x)]$ 可以指示训练进程，其数值越小，表示真实分布与生成分布的Wasserstein距离越小，GAN训练得越好。</p>
+<h4 id="improved-WGAN"><a href="#improved-WGAN" class="headerlink" title="improved WGAN"></a>improved WGAN</h4><p>improved WGAN 主要是改进 weight clipping 这一略显粗糙的方式。取代它的是增加一个正则化项，来约束参数的变化。</p>
+<p>$$|\nabla_xD(x)|\le 1$$</p>
+<p>类似于 SVM loss：</p>
+<p>$$-\lambda\mathbb{E}<em>{x\sim p</em>{penalty}}[max(0, |\nabla_xD(x)|- 1)]$$</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/proved_wgan.png"></p>
+<p>其中 $x\sim p_{penalty}$ 这部分表示的是 $p_r和p_g$ 连线上的样本采样。</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/x_penalty.png"></p>
+<p>这里顺便把 $max(0, |\nabla_xD(x)|- 1)$ 改进成了 $(|\nabla_xD(x)|- 1)^2$ 以此来惩罚梯度太小的项。</p>
+<blockquote>
+<p>“Simply penalizing overly large gradients also works in theory, but experimentally we found that this approach converged faster and to better optima.”</p>
+</blockquote>
+<h4 id="Spectrum-Norm"><a href="#Spectrum-Norm" class="headerlink" title="Spectrum Norm"></a>Spectrum Norm</h4><p>Spectral Normalization → Keep gradient norm smaller than 1 everywhere [Miyato, et al., ICLR, 2018]</p>
+<p>但其实前面说到的 $(|\nabla_xD(x)|- 1)^2$ 这一正则惩罚项依然是存在问题的。因为任意 sample $p_r 和 p_g$ 中的两点，然后拉进他们俩，实际上并不太合理，因为与 $p_g$ 最接近的 $p_r$ 中的一点并不就是采样到的这个.</p>
+<p><img src="/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/wgan_problem.png"></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>从0开始GAN-1-from-GAN-to-WGAN</p><p><a href="http://www.panxiaoxie.cn/2019/05/18/从0开始GAN-1-from-GAN-to-WGAN/">http://www.panxiaoxie.cn/2019/05/18/从0开始GAN-1-from-GAN-to-WGAN/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2019-05-18</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/GAN/">GAN</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2019/05/27/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-sequence-generation-by-GAN/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">从0开始GAN-2-sequence generation by GAN</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/"><span class="level-item">论文笔记-无监督机器翻译</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://www.panxiaoxie.cn/2019/05/18/%E4%BB%8E0%E5%BC%80%E5%A7%8BGAN-1-from-GAN-to-WGAN/';
+            this.page.identifier = '2019/05/18/从0开始GAN-1-from-GAN-to-WGAN/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'panxie' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="潘小榭"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">潘小榭</p><p class="is-size-6 is-block">Blogging is happier than writing essays!</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">110</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">31</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">November 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">October 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">August 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">June 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">May 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/04/"><span class="level-start"><span class="level-item">April 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/03/"><span class="level-start"><span class="level-item">March 2019</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">February 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">January 2019</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">November 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">October 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/09/"><span class="level-start"><span class="level-item">September 2018</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">August 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/07/"><span class="level-start"><span class="level-item">July 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">March 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DL/"><span class="tag">DL</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ESA/"><span class="tag">ESA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN/"><span class="tag">GAN</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN%EF%BC%8CRL/"><span class="tag">GAN，RL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ML/"><span class="tag">ML</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MRC-and-QA/"><span class="tag">MRC and QA</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Machine-Translation/"><span class="tag">Machine Translation</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">14</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TensorFlow/"><span class="tag">TensorFlow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Tensorflow/"><span class="tag">Tensorflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/capsules/"><span class="tag">capsules</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-augmentation/"><span class="tag">data augmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interview/"><span class="tag">interview</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-translation/"><span class="tag">machine translation</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/open-set-recognition/"><span class="tag">open set recognition</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/reinforcement-learning/"><span class="tag">reinforcement learning</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentence-embedding/"><span class="tag">sentence embedding</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentiment-classification/"><span class="tag">sentiment classification</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/text-matching/"><span class="tag">text matching</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/transfer-learning/"><span class="tag">transfer learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="tag">文本分类</span><span class="tag">8</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Category: machine translation - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="潘小榭"><meta property="og:url" content="http://www.panxiaoxie.cn/"><meta property="og:site_name" content="潘小榭"><meta property="og:image" content="http://www.panxiaoxie.cn/img/og_image.png"><meta property="article:author" content="Xie Pan"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":null}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">Categories</a></li><li><a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a></li><li class="is-active"><a href="#" aria-current="page">machine translation</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-04-07T09:04:49.000Z" title="2019/4/7 下午5:04:49">2019-04-07</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.200Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/">machine translation</a></span><span class="level-item">13 minutes read (About 1963 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/">论文笔记-无监督机器翻译</a></h1><div class="content"><h2 id="Extract-and-Edit-An-Alternative-to-Back-Translation-for-Unsupervised-Neural-Machine-Translation"><a href="#Extract-and-Edit-An-Alternative-to-Back-Translation-for-Unsupervised-Neural-Machine-Translation" class="headerlink" title="Extract and Edit: An Alternative to Back-Translation for Unsupervised Neural Machine Translation"></a><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1904.02331">Extract and Edit: An Alternative to Back-Translation for Unsupervised Neural Machine Translation</a></h2><p>王威廉老师组的一篇文章，大致看了下跟最近自己做的研究相关性挺大的。文中也简单的介绍了无监督机器翻译的一些方法，所以借这个机会把无监督机器翻译也好好了解下。记得在三星研究院实习时，有个中科院自动化所的师姐（据说是宗成庆老师的学生）说过一句话，2018年是无监督机器翻译元年。但当时我在搞QA，就没怎么深入研究。感觉很多NLP其他方向的做法都是源于 NMT，所以还是很有必要看一下的。</p>
+<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><p>Back-translation 得到的伪平行语料，是基于 pure target sentence 得到 pesudo source sentence，然后把 prue target sentence 作为 label 进行监督学习(保证target 端是pure sentence，source端的sentence可以稍微 noisy)。这实质上就是一个 reconstruction loss.  其缺点在于 pesudo source sentence 质量无法保证，会导致误差累积（pesudo source sentence 并没有得到更新，所以并没有纠正存在的错误）。</p>
+<p>基于此，作者提出了一种新的范式，extract-edit.</p>
+<h2 id="related-work"><a href="#related-work" class="headerlink" title="related work"></a>related work</h2><h3 id="单语语料的选择"><a href="#单语语料的选择" class="headerlink" title="单语语料的选择"></a>单语语料的选择</h3><p>neural-based methods aim to select potential parallel sentences from monolingual corpora in the same domain. However, these neural models need to be trained on a large parallel dataset first, which is not applicable to language pairs with limited supervision.   </p>
+<p>通过平行语料训练翻译模型，进而从单语中选择 domain related sentences. 这并不是完全的无监督，还是需要有限的平行语料得到 NMT 模型之后，去选择合适的单语。</p>
+<ul>
+<li><p>Parallel sentence extraction from comparable corpora with neural network features, LERC 2016  </p>
+</li>
+<li><p>Bilingual word embeddings with bucketed cnn for parallel sentence extraction, ACL 2017  </p>
+</li>
+<li><p>Extracting parallel sentences with bidirectional recurrent neural networks to improve machine translation, COLING 2018</p>
+</li>
+</ul>
+<h3 id="完全的无监督机器翻译"><a href="#完全的无监督机器翻译" class="headerlink" title="完全的无监督机器翻译"></a>完全的无监督机器翻译</h3><p>The main technical protocol of these approaches can be summarized as three steps:   </p>
+<ul>
+<li><p>Initialization  </p>
+</li>
+<li><p>Language Modeling  </p>
+</li>
+<li><p>Back-Translation</p>
+</li>
+</ul>
+<h4 id="Initialization"><a href="#Initialization" class="headerlink" title="Initialization"></a>Initialization</h4><p>Given the ill-posed nature of the unsupervised NMT task, a suitable initialization method can help model the natural priors over the mapping of two language spaces we expect to reach.  </p>
+<p>初始化的目的基于自然语言的一些先验知识来对两种语言的映射关系进行建模。</p>
+<p>there two main initiazation methods:  </p>
+<ul>
+<li><p>bilingual dictionary inference 基于双语词典的推理  </p>
+<ul>
+<li><p>Word translation without parallel data.  Conneau, et al. ICLR 2018  </p>
+</li>
+<li><p>Unsupervised neural machine translation, ICLR 2018  </p>
+</li>
+<li><p>Unsupervised machine translation using monolingual corpora only, ICLR 2018a  </p>
+</li>
+</ul>
+</li>
+<li><p>BPE    </p>
+<ul>
+<li>Phrase-based &amp; neural unsupervised machine translation. emnlp Lample et al. 2018b  </li>
+</ul>
+</li>
+</ul>
+<p>本文作者采用的是 <strong>Conneau, et al. 中的方式，并且类似于 Lample 2018b 中的方式两种语言共享 bpe</strong>(需要在看下相关论文). 这里实际上就是训练得到两种语言的 word embedding，并不是 word2vec 那种对单种语言的无监督，而是训练得到两种语言的 share embedding.</p>
+<h4 id="language-modeling"><a href="#language-modeling" class="headerlink" title="language modeling"></a>language modeling</h4><p>Train language models on both source and target languages. These models express a data-driven prior about the composition of sentences in each language.   </p>
+<p>在初始化之后，在 share embedding 的基础上分别对 source 和 target 的语言进行建模。</p>
+<p>In NMT, language modeling is accomplished via denosing autoencoding, by minimizing:</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/01.png"></p>
+<p>本文作者采用的 Lample 2018a 的方式。共享 encoder 和 decoder 的参数？？？</p>
+<h4 id="Back-Translation"><a href="#Back-Translation" class="headerlink" title="Back-Translation"></a>Back-Translation</h4><ul>
+<li><p>Dual learning for machine translation,  NIPS 2016</p>
+</li>
+<li><p>Improving neural machine translation models with monolingual data. ACL 2016</p>
+</li>
+</ul>
+<h4 id="Extract-Edit"><a href="#Extract-Edit" class="headerlink" title="Extract-Edit"></a>Extract-Edit</h4><ul>
+<li><p>Extract: 先根据前两步得到的 sentence 表示，从 target language space 中选择与 source sentence 最接近的 sentence（依据相似度？）.  </p>
+</li>
+<li><p>Edit: 然后对选择的 sentence 进行 edit.</p>
+</li>
+</ul>
+<p>作者还提出了一个 comparative translation loss。</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/02.png"></p>
+<h5 id="Extract"><a href="#Extract" class="headerlink" title="Extract"></a>Extract</h5><p>因为在 language model 阶段作者已经共享了 encoder 和 decoder，所以在这个场景下对于 two language 的表示，都可以用 encoder 得到。</p>
+<p>在 target language  space 中选择出与 source sentence 最接近的 top-k extracted sentences. 为什么是 top-k 而不是 top-1 呢，确保召回率，并获得更多更相关的 samples.</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/03.png"></p>
+<h5 id="Edit"><a href="#Edit" class="headerlink" title="Edit"></a>Edit</h5><p>简单点就是 max-pooling + decode</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/04.png"></p>
+<p>employ a maxpooling layer to reserve the more significant features between the source sentence embedding $e_s$ and the extracted sentence embedding $e_t$ ($t\in M$), and then decode it into a new sentence $t’$.</p>
+<p>具体是怎么操作的呢，这似乎需要看代码。</p>
+<p>$e_s$: [es_length, encoder_size]  </p>
+<p>$e_t$: [et_length, encoder_size]</p>
+<p>这怎么 max-pooling 呢（句子长度都可能不一样），然后 decode 得到新的 sentence 吧。。</p>
+<h5 id="Evaluate"><a href="#Evaluate" class="headerlink" title="Evaluate"></a>Evaluate</h5><p>虽然 M’ 中可能存在潜在的 parallel sentence 对应 source sentence s. 但是依然不能用  (s, t’) 作为 ground-truth stence pairs 来训练 NMT 模型。因为 NMT 模型对噪声非常敏感。</p>
+<p>作者提出了一个 evaluation network R, 实际上就是多层感知机，也许是个两层神经网络吧，具体没说。two labguage 共享 R.</p>
+<p>$$r_s=f(W_2f(W_1e_s+b_1)+b_2)$$</p>
+<p>$$r_t=f(W_2f(W_1e_t’+b_1)+b_2)$$</p>
+<p>假设是这样，也就是将 t’ 转换成 t* 了。</p>
+<p><strong>理解错了</strong></p>
+<p>其目的是将 s 和 t’ 映射到同一向量空间，然后计算两者的相似度：</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/05.png"></p>
+<p>接下来将 $\alpha$ 转换成概率分布。 也就是计算 top-k 个 extracted-edited 得到的 target sentences t* 与  source sentence s 相似的概率，并且这些概率相加为 1.</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/06.png"></p>
+<p>其中 $\lambda$ 可以看作是 inverse temperature， $\lambda$ 越小，表示所有 t* 平等看待，越大，表示更看重 $\alpha$ 最大的那一句。显然前面的 $\alpha$ 是通过 cosine 计算的，也就是更看重 k 个 t* 中与 s 距离最近的那个 sentence.</p>
+<h5 id="learning"><a href="#learning" class="headerlink" title="learning"></a>learning</h5><p><strong>Comparative Translation</strong></p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/08.png"></p>
+<p>cosine 相似度越大越接近，所以 -logP 越小越好。这里面涉及到的参数 $\theta_{enc}, \theta_R$</p>
+<blockquote>
+<p>Basically, the translation model is trying to minimize the relative distance of the translated sentence t* to the source sentence s compared to the top-k extracted-and-edited sentences in the target language space. Intuitively, we view the top-k extracted-and-edited sentences as the <strong>anchor points</strong> to locate a probable region in the target language space, and iteratively improve the <strong>source-to-target mapping</strong> via the comparative learning scheme.</p>
+</blockquote>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/09.png"></p>
+<p><strong>Adversarial Objective</strong></p>
+<blockquote>
+<p>we can view our translation system as a “generator” that learns to generate a good translation with a higher similarity score than the extracted-and-edited sentences, and the evaluation network R as a “discriminator” that learns to rank the extracted- and-edited sentences (real sentences in the target language space) higher than the translated sentences.  </p>
+</blockquote>
+<p>借助于对抗学习的思想，可以把 translation system 看作是 生成器 generator， 用来学习得到 translated target sentence，使得其优于 extracted-and-edited sentences.</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/11.png"></p>
+<p>把 evalution newtork R 看作是判别器，其目的就是判别 extracted-and-edited sentences 优于 translated target sentences.</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/12.png"></p>
+<p>因此对于 evaluation network R，有</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/13.png"></p>
+<p><strong>final adversarial objective</strong></p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/14.png"></p>
+<h5 id="Model-selection"><a href="#Model-selection" class="headerlink" title="Model selection"></a>Model selection</h5><p>无监督学习因为没有平行语料，所以需要一个指标来表示模型的好坏，也就是翻译质量。</p>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/15.png"></p>
+<blockquote>
+<p>Basically, we choose the hyper-parameters with the maximum expectation of the ranking scores of all translated sentences.</p>
+</blockquote>
+<p><img src="/2019/04/07/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E6%97%A0%E7%9B%91%E7%9D%A3%E6%9C%BA%E5%99%A8%E7%BF%BB%E8%AF%91-Extract-and-Eit/16.png"></p>
+<h3 id="Implementation-details"><a href="#Implementation-details" class="headerlink" title="Implementation details"></a>Implementation details</h3><h4 id="Initialization-1"><a href="#Initialization-1" class="headerlink" title="Initialization"></a>Initialization</h4><p>cross-lingual BPE embedding, set BPE number 60000.</p>
+<p>然后用 Fasttext 训练得到 embedding， 512 dimension. 其中 Fasettext 设置 window size 5 and 10 negative samples</p>
+<h4 id="Model-structure"><a href="#Model-structure" class="headerlink" title="Model structure"></a>Model structure</h4><p>all encoder parameters are shared across two languages. Similarly, we share all decoder parameters across two languages.</p>
+<p>The λ for calculating ranking scores is 0.5. As for the evaluation network R, we use a multilayer perceptron with two hidden layers of size 512.</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2019-03-19T01:25:22.000Z" title="2019/3/19 上午9:25:22">2019-03-19</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-06-29T08:12:08.200Z" title="2021/6/29 下午4:12:08">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/">machine translation</a></span><span class="level-item">6 minutes read (About 881 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/">论文笔记-Using monoligual data in machine transaltion</a></h1><div class="content"><h2 id="Monolingual-Data-in-NMT"><a href="#Monolingual-Data-in-NMT" class="headerlink" title="Monolingual Data in NMT"></a>Monolingual Data in NMT</h2><p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/01.png"></p>
+<h2 id="Why-Monolingual-data-enhancement"><a href="#Why-Monolingual-data-enhancement" class="headerlink" title="Why Monolingual data enhancement"></a>Why Monolingual data enhancement</h2><ul>
+<li>Large scale source-side data:  </li>
+</ul>
+<p>enhancing encoder network to obtain high quality context vector</p>
+<p>representation of source sentence.</p>
+<ul>
+<li>Large scale target-side data:  </li>
+</ul>
+<p>boosting fluency for machine translation when decoding.</p>
+<h2 id="The-methods-of-using-monolingual-data"><a href="#The-methods-of-using-monolingual-data" class="headerlink" title="The methods of using monolingual data"></a>The methods of using monolingual data</h2><p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/02.png"></p>
+<h3 id="Multi-task-learning"><a href="#Multi-task-learning" class="headerlink" title="Multi-task learning"></a>Multi-task learning</h3><p>Target-side language model:  Integrating Language Model into the Decoder</p>
+<p><strong>shallow fusion</strong></p>
+<p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/05.png"></p>
+<p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/06.png"></p>
+<p>both an NMT model (on parallel corpora) as well as a recurrent neural network language model (RNNLM, on larger monolingual corpora) have been pre-trained separately before being integrated.</p>
+<p>Shallow fusion: rescore the probability of the candidate words.</p>
+<p><strong>deep fusion</strong></p>
+<p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/03.png"></p>
+<p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/04.png"></p>
+<p><strong>multi-task learning</strong></p>
+<p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/07.png"></p>
+<p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/08.png"></p>
+<p>Using Target-side Monolingual Data for Neural Machine Translation through Multi-task Learning, EMNLP, 2017</p>
+<p>利用 target-side 的单语多了一个训练语言模型的任务。事实上（b）就是上一张 PPT 中的方法，这篇paper在这个基础上增加了语言模型的 loss。</p>
+<p>$\sigma$ 参数在两个任务训练时都会更新。而 $\theta$ 参数仅仅在训练翻译模型时才会更新参数。</p>
+<h3 id="auto-encoder"><a href="#auto-encoder" class="headerlink" title="auto-encoder"></a>auto-encoder</h3><p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/10.png"></p>
+<p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/11.png"></p>
+<p>通过 自编码 的形式，重构对应的 mono-data，作为辅助任务，与 NMT 模型共享 encoder 参数。</p>
+<p>Semi-Supervised Learning for Neural Machine Translation, ACL, 2016</p>
+<h3 id="Back-translation"><a href="#Back-translation" class="headerlink" title="Back-translation"></a>Back-translation</h3><h4 id="What-is-back-translation"><a href="#What-is-back-translation" class="headerlink" title="What is back-translation?"></a>What is back-translation?</h4><p>Synthetic pseudo parallel data from target-side monolingual data using a reverse translation model.</p>
+<h4 id="why-back-translation-and-motivation"><a href="#why-back-translation-and-motivation" class="headerlink" title="why back-translation and motivation?"></a>why back-translation and motivation?</h4><p>It mitigates the problem of overfitting and fluency by exploiting additional data in the target language.</p>
+<p>目标语言必须始终是真实句子才能让翻译模型翻译的结果更流畅、更准确，而源语言即便有少量用词不当、语序不对、语法错误，只要不影响理解就无所谓。其实人做翻译的时候也是一样的：翻译质量取决于一个人译出语言的水平，而不是源语言的水平（源语言的水平只要足够看懂句子即可）</p>
+<p>Different aspects of the BT which influence the performance of translation:  </p>
+<ul>
+<li><p>Size of the Synthetic Data  </p>
+</li>
+<li><p>Direction of Back-Translation  </p>
+</li>
+<li><p>Quality of the Synthetic Data  </p>
+</li>
+</ul>
+<h4 id="Size-of-the-Synthetic-Data"><a href="#Size-of-the-Synthetic-Data" class="headerlink" title="Size of the Synthetic Data"></a>Size of the Synthetic Data</h4><p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/12.png"></p>
+<h4 id="Direction-of-Back-Translation"><a href="#Direction-of-Back-Translation" class="headerlink" title="Direction of Back-Translation"></a>Direction of Back-Translation</h4><p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/13.png"></p>
+<h4 id="Quality-of-the-Synthetic-Data"><a href="#Quality-of-the-Synthetic-Data" class="headerlink" title="Quality of the Synthetic Data"></a>Quality of the Synthetic Data</h4><p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/14.png"></p>
+<h3 id="copy-mechanism"><a href="#copy-mechanism" class="headerlink" title="copy mechanism"></a>copy mechanism</h3><p><img src="/2019/03/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Using-monoligual-data-in-machine-transaltion/15.png"></p>
+<p>作者的实验设置：用 target-side mono-data 来构建伪平行语料，一部分是直接 copy，另一部分是通过 back-translate 得到的。也就是 mono-data 出现了两次。</p>
+<p>总觉得哪里不对。。。</p>
+<h3 id="Dummy-source-sentence"><a href="#Dummy-source-sentence" class="headerlink" title="Dummy source sentence"></a>Dummy source sentence</h3><p>Pseudo parallel data:</p>
+<p><null> +  target-side mono-data</null></p>
+<p>The downside:</p>
+<p>the network  ‘unlearns’  its conditioning on the source context if the ratio of monolingual training instances is too high.</p>
+<p>Improving Neural Machine Translation Models with Monolingual Data, Sennrich et al, ACL 2016</p>
+<h3 id="Self-learning"><a href="#Self-learning" class="headerlink" title="Self-learning"></a>Self-learning</h3><p>Synthetic target sentences from source-side mono-data:</p>
+<ul>
+<li><p>Build a baseline machine translation (MT) system on parallel data  </p>
+</li>
+<li><p>Translate source-side mono-data into target sentences  </p>
+</li>
+<li><p>Real parallel data + pseudo parallel data</p>
+</li>
+</ul>
+<h2 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h2><ol>
+<li><p>Improving Neural Machine Translation Models with Monolingual Data, Sennrich et al, ACL 2016  </p>
+</li>
+<li><p>Using Monolingual Data in Neural Machine Translation: a Systematic Study, Burlot et al. ACL 2018  </p>
+</li>
+<li><p>Copied Monolingual Data Improves Low-Resource Neural Machine Translation, Currey et al. 2017 In Proceedings of the Second Conference on Machine Translation  </p>
+</li>
+<li><p>Semi-Supervised Learning for Neural Machine Translation, Cheng et al. ACL 2016  </p>
+</li>
+<li><p>Exploiting Source-side Monolingual Data in Neural Machine Translation, Zhang et al. EMNLP 2016  </p>
+</li>
+<li><p>Using Target-side Monolingual Data for Neural Machine Translation through Multi-task Learning, Domhan et al. EMNLP 2018</p>
+</li>
+</ol>
+<p>On Using Monolingual Corpora in Neural Machine Translation, Gulcehre, 2015  </p>
+<ol start="7">
+<li><p>Back-Translation Sampling by Targeting Difficult Words in Neural Machine Translation, EMNLP 2018  </p>
+</li>
+<li><p>Understanding Back-Translation at Scale, Edunov et al. EMNLP 2018  </p>
+</li>
+</ol>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="潘小榭"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">潘小榭</p><p class="is-size-6 is-block">Blogging is happier than writing essays!</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">110</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">31</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Follow</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">34</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/11/"><span class="level-start"><span class="level-item">November 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/10/"><span class="level-start"><span class="level-item">October 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/08/"><span class="level-start"><span class="level-item">August 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/06/"><span class="level-start"><span class="level-item">June 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/05/"><span class="level-start"><span class="level-item">May 2019</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/04/"><span class="level-start"><span class="level-item">April 2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/03/"><span class="level-start"><span class="level-item">March 2019</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/02/"><span class="level-start"><span class="level-item">February 2019</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/01/"><span class="level-start"><span class="level-item">January 2019</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/11/"><span class="level-start"><span class="level-item">November 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/10/"><span class="level-start"><span class="level-item">October 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/09/"><span class="level-start"><span class="level-item">September 2018</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/08/"><span class="level-start"><span class="level-item">August 2018</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/07/"><span class="level-start"><span class="level-item">July 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">16</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/03/"><span class="level-start"><span class="level-item">March 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DL/"><span class="tag">DL</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ESA/"><span class="tag">ESA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN/"><span class="tag">GAN</span><span class="tag">9</span></a></div><div class="control"><a class="tags has-addons" href="/tags/GAN%EF%BC%8CRL/"><span class="tag">GAN，RL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ML/"><span class="tag">ML</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MRC-and-QA/"><span class="tag">MRC and QA</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Machine-Translation/"><span class="tag">Machine Translation</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">14</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TensorFlow/"><span class="tag">TensorFlow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Tensorflow/"><span class="tag">Tensorflow</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/capsules/"><span class="tag">capsules</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/data-augmentation/"><span class="tag">data augmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interview/"><span class="tag">interview</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-translation/"><span class="tag">machine translation</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/open-set-recognition/"><span class="tag">open set recognition</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/python/"><span class="tag">python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/reinforcement-learning/"><span class="tag">reinforcement learning</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentence-embedding/"><span class="tag">sentence embedding</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/sentiment-classification/"><span class="tag">sentiment classification</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/text-matching/"><span class="tag">text matching</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/transfer-learning/"><span class="tag">transfer learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="tag">文本分类</span><span class="tag">8</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Subscribe for updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Subscribe"></div></div></form></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
