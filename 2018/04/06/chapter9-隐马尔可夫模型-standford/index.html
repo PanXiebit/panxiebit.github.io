@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>chapter9 隐马尔可夫模型 - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="chapter6: 隐马尔科夫模型 standford tutorial, 可以说是看过的关于隐马尔科夫最好的教程了。要是看英文原版能和看中文一样easy该多好，可惜文化差异的情况下，即使是单词都认识，理解起来也会有点困难。对此，只能自己重新总结一下吧～ 可以说，斯坦福从未让人失望过，太赞了！ 也是无意中在google上看到这篇文章，才发现了这么好的一本书, Speech and language"><meta property="og:type" content="blog"><meta property="og:title" content="chapter9 隐马尔可夫模型"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/04/06/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="chapter6: 隐马尔科夫模型 standford tutorial, 可以说是看过的关于隐马尔科夫最好的教程了。要是看英文原版能和看中文一样easy该多好，可惜文化差异的情况下，即使是单词都认识，理解起来也会有点困难。对此，只能自己重新总结一下吧～ 可以说，斯坦福从未让人失望过，太赞了！ 也是无意中在google上看到这篇文章，才发现了这么好的一本书, Speech and language"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm1.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm2.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm0.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm3.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm4.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm5.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm6.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm7.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm8.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm9.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm10.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm11.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm12.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm13.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm15.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm16.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm17.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm18.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm19.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm20.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm21.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm7.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm24.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm23.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm22.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm25.png"><meta property="article:published_time" content="2018-04-06T04:27:53.000Z"><meta property="article:modified_time" content="2021-06-29T05:19:29.390Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="NLP"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm1.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/04/06/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/"},"headline":"chapter9 隐马尔可夫模型","image":["http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm1.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm2.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm0.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm3.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm4.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm5.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm6.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm7.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm8.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm9.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm10.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm11.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm12.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm13.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm15.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm16.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm17.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm18.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm19.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm20.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm21.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm7.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm24.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm23.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm22.png","http://www.panxiaoxie.cn/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm25.png"],"datePublished":"2018-04-06T04:27:53.000Z","dateModified":"2021-06-29T05:19:29.390Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"chapter6: 隐马尔科夫模型 standford tutorial, 可以说是看过的关于隐马尔科夫最好的教程了。要是看英文原版能和看中文一样easy该多好，可惜文化差异的情况下，即使是单词都认识，理解起来也会有点困难。对此，只能自己重新总结一下吧～ 可以说，斯坦福从未让人失望过，太赞了！ 也是无意中在google上看到这篇文章，才发现了这么好的一本书, Speech and language"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/04/06/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2018-04-06T04:27:53.000Z" title="2018/4/6 下午12:27:53">2018-04-06</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2021-06-29T05:19:29.390Z" title="2021/6/29 下午1:19:29">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/NLP/">NLP</a></span><span class="level-item">39 minutes lesen (Über 5907 Wörter)</span></div></div><h1 class="title is-3 is-size-4-mobile">chapter9 隐马尔可夫模型</h1><div class="content"><p>chapter6: 隐马尔科夫模型 standford tutorial, 可以说是看过的关于隐马尔科夫最好的教程了。要是看英文原版能和看中文一样easy该多好，可惜文化差异的情况下，即使是单词都认识，理解起来也会有点困难。对此，只能自己重新总结一下吧～</p>
+<p>可以说，斯坦福从未让人失望过，太赞了！</p>
+<p>也是无意中在google上看到这篇文章，才发现了这么好的一本书, Speech and language processing.</p>
+<span id="more"></span>
+
+
+
+<p><strong>前言：</strong> 隐马尔可夫模型马尔可夫模型的后裔，它是一个序列模型(sequence model). 对于一个序列模型，它的工作是给序列中的每一个小单元分配标签label或是类别class.其中包括：part-of-speech tagging, named entity tagging, and speech recognition.</p>
+<h3 id="马尔可夫链-Markov-chains"><a href="#马尔可夫链-Markov-chains" class="headerlink" title="马尔可夫链 Markov chains"></a>马尔可夫链 Markov chains</h3><p>马尔可夫链和隐马尔科夫模型都是有限自动机(finite automation)的拓展。可以将他们看作是有权重的有限自动机(weighted finite automation),包括一些列状态和状态之间的转移关系，其中从一个状态到另一个状态的转移弧线是有权重的。在马尔可夫链中，这样的权重代表着概率，且从一个节点出来的概率之和为1.</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm1.png"></p>
+<p>上图中不仅包括了状态之间的转移概率，还包括了start和end两种特定的状态。</p>
+<p>| states | hot1     | cold2    | warm3    |</p>
+<p>| —— | ——– | ——– | ——– |</p>
+<p>| hot1   | $a_{11}$ | $a_{12}$ | $a_{13}$ |</p>
+<p>| cold2  | $a_{21}$ | $a_{22}$ | $a_{23}$ |</p>
+<p>| warm3  | $a_{31}$ | $a_{32}$ | $a_{33}$ |</p>
+<p>start0: {$a_{01},a_{02},a_{03}$}</p>
+<p>end4: {$a_{14},a_{24},a_{34}$}</p>
+<p>根据图9.1，马尔可夫链可以看做是一个概率图模型，其中包括以下几部分：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm2.png"></p>
+<p>Q代表状态集合，A是状态转移矩阵， $a_{ij}$ 表示从状态 $q_i$ 到状态 $q_j$ 的概率,那么有 $\sum_{j=1}^na_{ij}=1,i=1,2…N$</p>
+<p>$q_0$ 和 $q_F$是初始状态和终止状态。</p>
+<p><strong>做两个重要的假设：</strong> 以简化模型</p>
+<p>(1) The Limited horiqon assumption 齐次假设</p>
+<p>对于t时刻的状态，只取决于之前的一个状态。</p>
+<p>$$ Markov Assumption: P(q_i|q_1…q_{i-1})=P(q_i|q_{i-1})$$</p>
+<p>也就是一阶马尔科夫链(a first-order Markov)。</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm0.png"></p>
+<p>图中的 $x_i$ 表示可观测时的 $q_i$</p>
+<p>(2) Stationary process assumption 静态过程假设</p>
+<p>the conditional distribution</p>
+<p>over next state given current state does not change over time. 对于状态之间的条件概率不会随时间的变化而改变，也就是状态转移矩阵只有一个～</p>
+<p>$$P(q_t|q_{t-1})=P(q_2|q_1);t \in 2…T$$</p>
+<p>在很多其他的论文中，用 $\pi$ 来表示初始状态</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm3.png"></p>
+<p>都是一样的，不过这篇教程中用第一种表示方法。</p>
+<h3 id="隐马尔可夫模型"><a href="#隐马尔可夫模型" class="headerlink" title="隐马尔可夫模型"></a>隐马尔可夫模型</h3><p>为了更形象的描述隐马尔可夫模型，文章举了这样的一个栗子：</p>
+<blockquote>
+<p>Imagine that you are a climatologist in the year 2799 studying the history of global warming. You cannot find any records of the weather in Baltimore, Maryland, for the summer of 2007, but you do find Jason Eisner’s diary, which lists how many ice creams Jason ate every day that summer. Our goal is to use these observations to estimate the temperature every day. We’ll simplify this weather task by assuming there are only two kinds of days: cold (C) and hot (H). So the Eisner task is as follows:</p>
+</blockquote>
+<blockquote>
+<p>Given a sequence of observations O, each observation an integer corresponding to the number of ice creams eaten on a given day, figure</p>
+</blockquote>
+<p>out the correct ‘hidden’ sequence Q of weather states (H or C) which caused Jason to eat the ice cream.</p>
+<p>总结下就是，观察到的序列是每天吃的冰淇淋数目2,3,1,2,3,….，从而判断每天的天气是hot or cold这两种状态中的哪一种。</p>
+<p>定义一个隐马尔可夫模型，有以下组成部分：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm4.png"></p>
+<p><strong>两个假设</strong></p>
+<p>(1)一阶马尔科夫模型：</p>
+<p>$$ Markov Assumption: P(q_i|q_1…q_{i-1})=P(q_i|q_{i-1})$$</p>
+<p>(2)条件独立，在状态 $q_i$ 的条件下，观测 $o_i$ 只取决于 $q_i$， 而与其他的状态和观测值够无关</p>
+<p>$$Output Indepence: P(o_i|q_1…q_i,…,q_T,o_1,…,o_i,…,o_T)=P(o_i|q_i)$$</p>
+<p>对ice cream task.问题的描述如下图：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm5.png"></p>
+<p>注意到，图中所有的概率都不为零，这种HMM模型叫做 fully connected 或是 ergodic HMM. 但并不是所有状态都可以互相转移的，比如 <strong>left-to-right HMM,又称Bakis HMMs</strong>,通常用于语音处理。</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm6.png"></p>
+<p>左图表示Bakis HMM，右图是ergodic HMM.</p>
+<p><strong>关于隐马尔可夫模型的三个问题：</strong></p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm7.png"></p>
+<ol>
+<li>问题1：计算似然概率。</li>
+</ol>
+<ul>
+<li>前向/后向算法</li>
+</ul>
+<ol start="2">
+<li>问题2：解码问题，又称预测问题，已知模型参数和观测序列，求最有可能的状态序列</li>
+</ol>
+<ul>
+<li>维特比算法</li>
+</ul>
+<ol start="3">
+<li>问题3：学习问题，已知观测序列，估计模型参数使得该模型下观测序列的概率最大。</li>
+</ol>
+<ul>
+<li>极大似然估计，Baum-Welch, EM算法</li>
+</ul>
+<h3 id="概率计算：前向算法"><a href="#概率计算：前向算法" class="headerlink" title="概率计算：前向算法"></a>概率计算：前向算法</h3><h4 id="状态已知的话，是监督学习"><a href="#状态已知的话，是监督学习" class="headerlink" title="状态已知的话，是监督学习"></a>状态已知的话，是监督学习</h4><p>以图9.3为例，观测序列为（3,1,3）假如我们知道隐藏状态是（hot, hot, cold）的话，在此基础上计算似然概率就很简单了。</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm8.png"></p>
+<p>也就是说，已知观测序列 $O=o_1,o_2,…,o_T$. 且隐藏状态序列已知 $Q=q_0,q_1,…,q_T$,那么似然概率为：</p>
+<p>$$P(O|Q)=\prod_{i=1}^TP(o_i|q_i)$$</p>
+<h4 id="状态无法观测，无监督学习"><a href="#状态无法观测，无监督学习" class="headerlink" title="状态无法观测，无监督学习"></a>状态无法观测，无监督学习</h4><p>但大多数情况下，状态是不知道的，因为我们需要取计算出现观测序列 (3,1,3) 的所有可能的隐藏状态序列。</p>
+<p>观测序列 $O=o_1,o_2,…,o_T$，假定存在一个特定的隐藏状态序列  $Q=q_0,q_1,…,q_T$，那么联合概率分布：</p>
+<p>$$P(O,Q)=P(O|Q)\times P(Q)=\prod_{i=1}^Tp(o_i|q_i)\times \prod_{i=1}^TP(q_i|q_{i-1})\tag{9.10}$$</p>
+<p>所以隐马尔科夫是一个双重随机过程。</p>
+<p>那么观察序列为（3,1,1）和状态序列为（hot, hot, cold）的联合概率为：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm9.png"></p>
+<p>这样我们知道了怎么求一个特定的隐藏序列和观测序列的联合概率，那么所有可能隐藏序列的类和就是观测序列的总似然概率了。</p>
+<p>$$P(O)=\sum_QP(O,Q)=\sum_QP(O|Q)P(Q)\tag{9.12}$$</p>
+<p>对冰淇淋的例子，如果观测序列是（3,1,3），那么似然概率为：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm10.png"></p>
+<p>如果有N中状态的话，对于长度为T的序列，其计算复杂度就是 $O(N^T)$ 这就太大了，所以得寻求更简单的解法。</p>
+<h4 id="forward-algorithm"><a href="#forward-algorithm" class="headerlink" title="forward algorithm"></a>forward algorithm</h4><p>前向算法是一种动态规划算法，其计算复杂度是 $O(N^2T)$</p>
+<blockquote>
+<p>The forward algorithm is a kind of <strong>dynamic programming algorithm</strong>, that is, an algorithm that uses a table to store intermediate values as it builds up the probability of the observation sequence. The forward algorithm computes the observation probability by summing over the probabilities of all possible hidden state paths that could generate the observation sequence, <strong>but it does so efficiently by implicitly folding each of these paths into a single forward trellis</strong>.</p>
+</blockquote>
+<p>之所以高效的原因，是它将所有的路径都隐式的折叠到一个前向网格中。。</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm11.png"></p>
+<p>前向网格(forward trellis)中的每一个单元(cell) $\alpha_t(j)$ 表示给定模型 $\lambda$，t时刻观测序列为 $o_1,o_2,…,o_t$,状态为j的概率。</p>
+<p>$$\alpha_t(j)=P(o_1,o_2,…,o_t,q_t=j|\lambda)\tag{9.13}$$</p>
+<p>其中， $\alpha_t(j)$ 的计算是叠加所有可能的路径。</p>
+<p>$$\alpha_t(j)=[\sum_{i=1}^N\alpha_{t-1}a_{ij}]b_j(o_t)$$</p>
+<p>表示t时刻状态为j,从t-1时刻到t时刻，有N条路径，叠加～</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm12.png"></p>
+<p>以图9.7中的第二时间步和状态2为例，</p>
+<p>$$\alpha_2(1)=\alpha_1(1)×P(H|H)×P(1|H) + α_1(2)×P(H|C)×P(1|H)$$</p>
+<p>下图描述了前向网格中计算一个cell的步骤：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm13.png"></p>
+<p>整个似然概率的计算过程，伪代码：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm15.png"></p>
+<p>真的讲的太好了太清楚了！！！感动哭。。。说真的，要不中国的大学都改成英文教学吧。。看着那些翻译过来的书籍都头疼。。这么好的英文教学材料，为什么翻译过来之后就那么难理解了。。感觉很多老师可能自己懂了，但是讲出来的课或是写出来的书，完全就是应付任务的吧。。</p>
+<p>好吧，回到主题。伪代码中：</p>
+<p>概率矩阵 forward [N+2,T] 是包括了初始状态start和结束状态end,那么 forward[s,t]表示 $\alpha_t(s)$</p>
+<ol>
+<li>initialization step:</li>
+</ol>
+<p>$$\alpha_1(j)=a_{0j}b_j(o_1),1\le j \le N$$</p>
+<p>伪代码中：forward[s,1] &lt;– $a_{0,s}* b_s(o_1)$</p>
+<p>是从状态0到t=1时刻的状态s</p>
+<ol start="2">
+<li>Recursion (since states 0 anf F are non-emittinf):</li>
+</ol>
+<p>$$\alpha_t(j)=[\sum_{i=1}^N\alpha_{t-1}(i)a_{ij}]b_j(o_t)$$</p>
+<p>在伪代码中有两个循环，分别是对时间步2到T，以及每个时间步，其中的状态从1到N</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">for each time step from 2 to T do:</span><br><span class="line"></span><br><span class="line">  for each state s from 1 to N do:</span><br><span class="line"></span><br><span class="line">    forward[s,t] = sum_&#123;s&#x27;=1&#125;^N forward[s&#x27;, t-1] * a_&#123;s&#x27;,s&#125; * b_s&#123;o_t&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>$forward[s,t] = sum_{s’=1}^N forward[s’, t-1] * a_{s’,s}$</p>
+<p>可以发现，概率矩阵forward中的每一个值表示的是t时刻状态为s的概率，也就是 $\alpha_t(s)$</p>
+<ol start="3">
+<li>Termination:</li>
+</ol>
+<p>$$P(O|\lambda)=\alpha_T(q_F)=\sum_{i=1}^N\alpha_T(i)a_{iF}$$</p>
+<p>伪代码中：</p>
+<p>forward[$q_F$,T] = $\sum_{s=1}^N$ forward[s,T] * $a_{s,q_F}$</p>
+<p>return forward[$q_F$,T]  T时刻状态为 $q_F$的概率。感觉应该是T+1时刻吧。。。？？？</p>
+<h3 id="预测问题：维特比算法"><a href="#预测问题：维特比算法" class="headerlink" title="预测问题：维特比算法"></a>预测问题：维特比算法</h3><p>Decoding: The Viterbi Algorithm</p>
+<p>解码问题（预测问题）：给定HMM模型 $\lambda=(A,B)$ 和观察序列 $O=o_1,o_2,…,o_T$, 找出概率最大的隐藏状态序列 $Q=q_1q_2…q_T$</p>
+<p>在前向算法中，我们知道了怎么计算特定隐藏状态序列和观测序列的联合概率，也就是公式（9.13），然后找出其中概率最大的序列就可以了对吧？但是我们知道状态序列有 $N^2$ 个，这样计算就太复杂了。于是，有了 Viterbi algorithm. 维特比算法是一种动态规划算法，类似于最小化编辑距离。</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm16.png"></p>
+<p>上图展示了，冰淇淋例子中，HMM模型参数已知，观测序列为（3,1,3）的情况下，计算最大隐藏状态序列的过程。Viterbi网格中每一个cell为 $v_T(j)$ 表示t时刻，观察序列为 $o_1,o_2,…,o_t$， 隐藏状态为j，前t-1的状态序列为 $q_1q_2…q_{t-1}$ 的概率。</p>
+<p>$$v_t(j)=P(q_0q_1…q_{t-1},o_1,o_2,…,o_t,q_t=j|\lambda)$$</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm17.png"></p>
+<p>换句话说，t-1时刻的状态序列是这样 $q_1q_2…q_{t-1}$，有N个这样的序列（因为t-1时刻的状态有N个），然后计算出这N个序列中到t时刻状态为j的概率，找出其中最大值，就是从开始到t时刻状态为j的最大概率序列。</p>
+<p>$$v_t(j)=max_{i=1}^N v_{t-1}(i)a_{ij}b_j(o_t)$$</p>
+<p>对应到图（9.10）中，以 $v_2(2)$为例，</p>
+<p>$$v_2(2)=max(v_1(1)* a_{12}* b_2(1),v_1(2)* a_{22}* b_2(1))$$</p>
+<p>$$v_2(2)=max(v_1(1)* P(H|C)* P(1|H), v_1(2)* P(H|H)* P(1|H))$$</p>
+<p>维特比算法的整个过程，伪代码如下：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm18.png"></p>
+<p>我们发现Viterbi算法跟前向算法非常相似，除了前向算法是计算的sum，而Viterbi是计算的max，同时我们也发现，Viterbi相比前向算法多了一个部分：<strong>backpointers</strong>. 原因是因为前向算法只需要计算出最后的似然概率，但Viterbi不仅要计算出最大的概率，还要得到对应的状态序列。因此，在类似于前向算法计算概率的同时，记录下路径，并在最后backtracing最大概率的路径。</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm19.png"></p>
+<p>The Viterbi backtrace.</p>
+<ol>
+<li>initialization:</li>
+</ol>
+<p>$$v_1(j)=a_{0j}b_j(o_1)\tag{9.20}$$</p>
+<p>$$b_{t1}(j)=0\tag{9.21}$$</p>
+<p>初始状态只有一个节点start，可确定为0</p>
+<ol start="2">
+<li>Recursion(recall that states 0 and $q_F$ are non-emitting):</li>
+</ol>
+<p>$$v_t(j)=max_{i=1}^Nv_{t-1}(i)a_{ij}b_j(o_t);1\le j \le N, 1\le t\le T\tag{9.22}$$</p>
+<p>$$b_{t_t}(j)=argmax_{i=1}^Nv_{t-1}(i)a_{ij}b_i(o_t);1\le j \le N, 1\le t\le T\tag{9.23}$$</p>
+<p>$b_{t_t}(j)表示t时刻状态为j的所有N个路径 $(q_1,q_2,…,q_{t-1})$$ 概率最大的路径的第k-1个节点。</p>
+<p>以图9.12为例，对于t=2，状态为1的节点，其max()中有2项，分别是 $v_1(1)* a_{11}* b_1(1)$ 和 $v_1(2)* a_{21}* b_1(1)$,其中较大的项的节点就是 $max_{i=1}^Nv_{t-1}(i)a_{ij}b_i(o_t)$, 但t时刻也有N个节点，所以也需要记录，因此用arg</p>
+<ol start="3">
+<li>Termination:</li>
+</ol>
+<p>The best score:</p>
+<p>$$P*=v_T(q_F)=max_{i=1}^Nv_T(i)* a_{iF}\tag{9.24}$$</p>
+<p>计算出T时刻到end状态的最大概率，也就是所有路径中的最大概率。</p>
+<p>The start of backtrace:</p>
+<p>$$q_T*=b_{t_T}(q_F)=argmax_{i=1}^Nv_T(i)* a_{iF}\tag{9.25}$$</p>
+<p>表示T时刻中N个路径中概率最大的结点。</p>
+<p>其实Viterbi算法的路径数量和前向算法的路径数量是一模一样的，只是一个是max，一个是sum，因此也可以参考图9.8.</p>
+<h3 id="学习问题：HMM-Training-The-Forward-Backward-Algorithm"><a href="#学习问题：HMM-Training-The-Forward-Backward-Algorithm" class="headerlink" title="学习问题：HMM Training: The Forward-Backward Algorithm"></a>学习问题：HMM Training: The Forward-Backward Algorithm</h3><p><strong>Learning: Given an observation sequence O and the set of possible states in the HMM, learn the HMM parameters A and B.</strong></p>
+<p>第三个问题，给定观测序列 $O=(o_1,o_2,…,o_T)$, 估计模型参数使得在该HMM模型下，观测序列的概率 $P(O|\lambda)$ 概率最大，即用极大似然估计的方法估计参数。</p>
+<h4 id="先考虑马尔可夫链"><a href="#先考虑马尔可夫链" class="headerlink" title="先考虑马尔可夫链"></a>先考虑马尔可夫链</h4><p>马尔可夫链其状态是可观察的，可以看作是退化的隐马尔可夫模型。即没有发射概率(emmision probablities) B.因此，我们需要学习的参数只有状态转移矩阵（probability matrix）A.</p>
+<p>其中 $a_ij$ 表示从状态i转移到状态j的概率，可以用大数定律来计算。 $C(i\rightarrow)$ 表示观察到的序列中从状态i转移到状态j的数量。然后除以所有从状态i转移的总数量。</p>
+<p>$$a_{ij}=\dfrac{C(i\rightarrow j)}{\sum_{q\in Q}C(i\rightarrow q)}\tag{9.26}$$</p>
+<p>显然分母不包括最后 T 时刻出现状态 i，因为end不属于Q.</p>
+<h4 id="隐马尔可夫模型：-Baum-Welch算法"><a href="#隐马尔可夫模型：-Baum-Welch算法" class="headerlink" title="隐马尔可夫模型： Baum-Welch算法"></a>隐马尔可夫模型： Baum-Welch算法</h4><blockquote>
+<p>The Baum-Welch algorithm uses two neat intuitions to solve this problem. The first idea is to iteratively estimate the counts. We will start with an estimate for the transition and observation probabilities and then use these estimated probabilities to derive better and better probabilities. The second idea is that we get our estimated probabilities by computing the forward probability for an observation and then dividing that probability mass among all the different paths that contributed to this forward probability.</p>
+</blockquote>
+<p>其实就是EM算法～</p>
+<p>在此之前，先了解一下后向算法，可以看做反向的前向算法。</p>
+<h5 id="后向算法"><a href="#后向算法" class="headerlink" title="后向算法"></a>后向算法</h5><p>对应的后向概率（Backward probability）$\beta_t(i)$ 表示给定hmm模型 $\lambda$, 在 t 时刻状态为 i 的条件下，t+1 时刻的观测序列为 $o_{t+1},o_{t+2},…,o_T$的概率.</p>
+<p>$$\beta_t(i)=P(o_{t+1},o_{t+2},…,0_T|q_t=i,\lambda)\tag{9.27}$$</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm20.png"></p>
+<ol>
+<li>initialization:</li>
+</ol>
+<p>$$\beta_T(i)=a_{iF},1\le i \le N$$</p>
+<p>在李航老师的《统计学习导论》这本书上 $\beta_T(i)=1$. $\beta_T(i)$ 的定义表示在T时刻状态为i，观测到序列为 $o_{T+1}$, 这东西不存在，可以看做是end吧，所以从T到end其概率应该是 $a_{iF}$,但是在李航老师的书上只有初始状态的概率 $\pi=a_{01}$,而没有 $a_{iF}$. 感觉跟具体在什么场景下有关系。。</p>
+<ol start="2">
+<li>Recursion(again since stetes 0 and $q_F$ are non-emitting)</li>
+</ol>
+<p>$$\beta_t(i)=\sum_{j=1}^N\beta_{t+1}(j)a_{ij}b_j(o_{t+1}),1\le j \le N, 1\le t\le T$$</p>
+<p>根据定义很好理解。$\beta_{t+1}(j)$ 表示给定hmm模型 $\lambda$, 在t+1时刻状态为j的条件下，t+1时刻的观测序列为 $o_{t+2},o_{t+3},…,o_T$的概率.那么就可以得到 $\beta_t(i)$ 了。</p>
+<ol start="3">
+<li>Termination:</li>
+</ol>
+<p>$$P(O|\lambda)=\alpha_T(q_F)=\beta_1(q_0)=\sum_{j=1}^N\beta_1(j)a_{0j}b_j(o_1)$$</p>
+<h4 id="在初始模型参数下，用大数定律估计新的模型参数，也就是极大似然估计"><a href="#在初始模型参数下，用大数定律估计新的模型参数，也就是极大似然估计" class="headerlink" title="在初始模型参数下，用大数定律估计新的模型参数，也就是极大似然估计"></a>在初始模型参数下，用大数定律估计新的模型参数，也就是极大似然估计</h4><p>根据公式(9.26)我们可以知道，状态ｉ到ｊ的概率：</p>
+<p>$$\hat a_{ij}=\dfrac{expected\ number\  of\  transitions\  from\  state\  i \ to\  state\  j}{expected\ number\ of\ transitions\ from\ state\ i}$$</p>
+<p>然而怎么计算这些numerator？试想，如果我们知道特定时刻t，从状态i转移到j的概率，那么就能计算所有时刻t的从i转移到j的数量。</p>
+<p>定义 $\zeta_t$ 表示在给定模型参数和观察序列条件下，t时刻状态为i，t+1时刻状态为j的概率。</p>
+<p>$$\zeta_t(i,j)=P(q_t=i,q_{t+1}=j|O,\lambda)\tag{9.32}$$</p>
+<p>但是模型参数我们不知道呀，也是我们需要学习得到的。</p>
+<p>这样我们先计算一个和 $\zeta_t$ 相似的概率。</p>
+<p>$$not-quite-\zeta_t(i,j)=P(q_t=i,q_{t+1}=j,O|\lambda)\tag{9.33}$$</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm21.png"></p>
+<p>$\alpha_t(i)$ 和 $\beta_t(j)$ 是前向/后向算法中的定义。我们先看下前向算法计算的条件：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm7.png"></p>
+<p>也就是problem1中的条件，给定 $\lambda$ 和 观察序列，求 $P(O|\lambda)$</p>
+<p>我们可以用 $\alpha_t(i)$ 和 $\beta_t(j)$ ，来表示 $\zeta_t$, 是因为我们在计算 $\zeta_t$ 时是先假定有这个一个模型参数，比如初始参数～</p>
+<p>那么：</p>
+<p>$$not-quite-\zeta_t=\alpha_t(i)a_{ij}b_j(o_{t+1})\beta_{t+1}(j)\tag{9.34}$$</p>
+<p>根据bayes公式：</p>
+<p>$$P(X|Y,Z)=\dfrac{P(X,Y,Z)}{P(Y,Z)}=\dfrac{P(X,Y,Z)}{P(Z)P(Y|Z)}=\dfrac{P(X,Y|Z)}{P(Y|Z)}\tag{9.35}$$</p>
+<p>对应起来就是：</p>
+<p>$$P(q_t=i,q_{t+1}=j|O,\lambda)=\dfrac{P(q_t=i,q_{t+1}=j,O|\lambda)}{P(O|\lambda)}=\dfrac{not-quite-\zeta_t}{P(O|\lambda)}\tag{9.36}$$</p>
+<p>其中：</p>
+<p>$$P(O|\lambda)=\alpha_T(q_F)=\beta_1(q_0)=\sum_{j=1}^N\alpha_t(j)\beta_t(j)\tag{9.37}$$</p>
+<p>这一步最后面一个式子的理解可以看做是前向算法和后向算法在时刻t相遇。</p>
+<p>看到这里会发现，李航老师书中179页，公式25-26的推导就有点逻辑不通了。</p>
+<p>因此，现在就可以推导出 $\zeta_t$：</p>
+<p>$$\zeta_t{i,j}=\dfrac{\alpha_t(i)a_{ij}b_j(o_{t+1})\beta_{t+1}(j)}{\alpha_T(q_F)}\tag{9.37}$$</p>
+<p>$\zeta_t$ 表示的是某一个时刻t，那么对于参数 $a_{ij}$ 的估计就是所有的时刻中i到j的总数除以i到k(k=1,2…N)的总数</p>
+<p>$$\hat a_{ij}=\dfrac{\sum_{t=1}^{T-1}\zeta_t(i,j)}{\sum_{t=1}^{T-1}\sum_{k=1}^N\zeta_t(i,k)}\tag{9.38}$$</p>
+<p>同样的道理，我们可以推理得到发射矩阵B的参数估计 $b_j(v_k)$</p>
+<p>状态为j，观察得到 $v_k,v_k\in V$的概率：</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm24.png"></p>
+<p>在t时刻状态为j的概率，定义为 $\gamma_t(j)$</p>
+<p>$$\gamma_t(j)=P(q_t=j|O,\lambda)\tag{9.40}$$</p>
+<p>同样的道理：</p>
+<p>$$\gamma_t(j)=\dfrac{P(q_t=j,O|\lambda)}{P(O|\lambda)}\tag{9.41}$$</p>
+<p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm23.png"></p>
+<p>同公式（9.37）一样，前向后向算法在t时刻相遇：</p>
+<p>$$\gamma_t(j)=\dfrac{\alpha_t(j)\beta_t(j)}{P(O|\lambda)}$$</p>
+<p>然后求整个时间段内的j到 $v_k$的总数，除以状态为j的总数。</p>
+<p>$$\hat b_j(v_k)=\dfrac{\sum_{t=1,o_t=v_k}^T}{\sum_{t=1}^T}\gamma_t(j)$$</p>
+<p>仔细回顾以下这个过程，在初始模型参数和观测序列的条件下，根据大数定律对模型参数进行更新。其实就是在初始模型参数下，根据极大似然估计求得观测序列的极大似然估计，然后在似然概率最大的条件下求得相应的模型参数。</p>
+<p>可以看到这里直接用大数定律和李航老师书上，使用极大似然估计，然后求导得到的公式是一样的。</p>
+<h4 id="EM算法"><a href="#EM算法" class="headerlink" title="EM算法"></a>EM算法</h4><p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm22.png"></p>
+<p>E step:</p>
+<ul>
+<li>根据初始模型参数或是M step得到的模型参数，得到后验概率。</li>
+</ul>
+<p>M step:</p>
+<ul>
+<li>根据E step中得到的概率，估计出新的模型参数。这里直接用大数定律得到的，其实其本质原理就是极大似然估计，也就是求出使得概率最大的模型参数。</li>
+</ul>
+<p><strong>那么迭代条件呢？什么情况下终止？在GMM中有log函数，这里呢。。</strong></p>
+<ul>
+<li>这里应该就是 $P(O|\lambda)$ 吧，在前向算法中有计算到在模型参数和观察序列条件下的极大似然估计。</li>
+</ul>
+<h4 id="根据GMM和HMM对使用EM算法进行参数估计的一点想法："><a href="#根据GMM和HMM对使用EM算法进行参数估计的一点想法：" class="headerlink" title="根据GMM和HMM对使用EM算法进行参数估计的一点想法："></a>根据GMM和HMM对使用EM算法进行参数估计的一点想法：</h4><p>所以EM算法中的E step并不是求期望，而是在对模型参数进行估计时，在初始模型或previous模型的情况下，求得基于观测序列或是训练样本的用极大似然估计或是大数定律求得后验概率。</p>
+<p>然后M STEP就是让这个概率最大的条件下更新模型参数。</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p><img src="/chapter9-%E9%9A%90%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E6%A8%A1%E5%9E%8B-standford/hmm25.png"></p>
+<p>在回顾下隐马尔可夫模型的三个问题：</p>
+<ol>
+<li>第一个问题，计算概率</li>
+</ol>
+<ul>
+<li><p>已知模型参数 $\lambda$ 和观测序列 $O$，求在该模型下，出现观测序列的概率。</p>
+</li>
+<li><p>使用前向算法，一个动态回归的算法，把求长度为T的概率转换为t到t+1的概率sum</p>
+</li>
+<li><p>这一问题其实主要是为后面两个问题铺垫的，因为一般的场景都是状态未知，更不可能知道模型参数了。</p>
+</li>
+</ul>
+<ol start="2">
+<li>预测问题，又称解码问题</li>
+</ol>
+<ul>
+<li><p>已知模型参数 $\lambda$ 和观测序列 $O$, 求概率最大的状态序列。</p>
+</li>
+<li><p>使用Viterbi算法，类似于前向算法，不过每一步不是sum，而是max，并且需要回溯backpointers</p>
+</li>
+<li><p>这个问题的应用场景就比较广了。</p>
+</li>
+</ul>
+<ol start="3">
+<li>学习问题：模型参数估计</li>
+</ol>
+<ul>
+<li><p>已知观测序列 $O$，估计模型参数 $\lambda$, 使得观测序列的概率 $P(O|\lambda)$ 最大。</p>
+</li>
+<li><p>使用Baum-Welch(极大似然估计)或forward-backward(大数定律)算法，并使用EM算法迭代，对参数进行估计，</p>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>chapter9 隐马尔可夫模型</p><p><a href="http://www.panxiaoxie.cn/2018/04/06/chapter9-隐马尔可夫模型-standford/">http://www.panxiaoxie.cn/2018/04/06/chapter9-隐马尔可夫模型-standford/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-04-06</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NLP/">NLP</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Gefällt Ihnen der Artikel? Unterstützen Sie den Autor mit</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Kauf mir einen Kaffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/04/09/chapter2-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E3%80%81%E6%96%87%E6%9C%AC%E6%A0%87%E5%87%86%E5%8C%96%E5%92%8C%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">chapter2:正则表达式、文本标准化和编辑距离</span></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Kommentare</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Your name"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Your name</p><p class="is-size-6 is-block">Your title</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Your location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Seiten</p><a href="/archives"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Kategorien</p><a href="/categories"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">8</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Folgen</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Kategorien</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Letzte Einträge</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archive</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Abonnieren Sie Updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Abonnieren"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Zurück nach oben" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern.",
+          dismiss: "Verstanden!",
+          allow: "Cookies zulassen",
+          deny: "Ablehnen",
+          link: "Mehr erfahren",
+          policy: "Cookie-Richtlinie",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Tippen Sie etwas..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Tippen Sie etwas...","untitled":"(Ohne Titel)","posts":"Seiten","pages":"Pages","categories":"Kategorien","tags":"Tags"});
+        });</script></body></html>

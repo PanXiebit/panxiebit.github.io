@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>chapter4:语言模型和N元语法 - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="N-gram: Markov chain是其中一个特例  验证N-gram模型： 困惑度  预处理：泛化和zeros情况  smoothing：用来处理zeros～  困惑度和交叉熵"><meta property="og:type" content="blog"><meta property="og:title" content="chapter4:语言模型和N元语法"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/04/12/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="N-gram: Markov chain是其中一个特例  验证N-gram模型： 困惑度  预处理：泛化和zeros情况  smoothing：用来处理zeros～  困惑度和交叉熵"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/ngram1.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm4.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm5.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm6.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm7.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm8.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm9.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm10.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm12.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm11.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm13.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm14.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm15.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm16.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm17.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm18.png"><meta property="article:published_time" content="2018-04-12T07:03:39.000Z"><meta property="article:modified_time" content="2021-06-29T05:19:29.449Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="NLP"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/ngram1.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/04/12/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/"},"headline":"chapter4:语言模型和N元语法","image":["http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/ngram1.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm4.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm5.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm6.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm7.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm8.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm9.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm10.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm12.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm11.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm13.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm14.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm15.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm16.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm17.png","http://www.panxiaoxie.cn/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm18.png"],"datePublished":"2018-04-12T07:03:39.000Z","dateModified":"2021-06-29T05:19:29.449Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"N-gram: Markov chain是其中一个特例  验证N-gram模型： 困惑度  预处理：泛化和zeros情况  smoothing：用来处理zeros～  困惑度和交叉熵"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/04/12/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2018-04-12T07:03:39.000Z" title="2018/4/12 下午3:03:39">2018-04-12</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2021-06-29T05:19:29.449Z" title="2021/6/29 下午1:19:29">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/NLP/">NLP</a></span><span class="level-item">an hour lesen (Über 7482 Wörter)</span></div></div><h1 class="title is-3 is-size-4-mobile">chapter4:语言模型和N元语法</h1><div class="content"><ul>
+<li><p>N-gram: Markov chain是其中一个特例</p>
+</li>
+<li><p>验证N-gram模型： 困惑度</p>
+</li>
+<li><p>预处理：泛化和zeros情况</p>
+</li>
+<li><p>smoothing：用来处理zeros～</p>
+</li>
+<li><p>困惑度和交叉熵</p>
+</li>
+</ul>
+<span id="more"></span>
+
+
+
+<p><strong>前言</strong>: 通过实例，简单的介绍了assign probabilities to sequences of words 的重要性，以及在这些方面的应用： <strong>speech recognition</strong>, <strong>handwriting recognition</strong>, <strong>spelling correction</strong>, <strong>augmentative communication</strong>.</p>
+<p>给句子或是词语赋予概率的模型就是语言模型(language models,LM)，这个chapter主要介绍一个简单的语言模型N-grams. 2-gram(bigram), 3-gram(trigram).</p>
+<h3 id="N-grams"><a href="#N-grams" class="headerlink" title="N-grams"></a>N-grams</h3><p>不论是整个句子的概率还是一个序列中预测下一个单词的概率，都要使用概率模型。</p>
+<p>计算一个完整的句子的概率 $P(w_1,w_2,…,w_n)?$ ，我们用 $w_1…w_n 或 w_1^n$ 来表示N个单词组成的句子。可使用链式法则计算概率：</p>
+<p>$$P(w_1…w_n) = P(w_1^n) = P(w_1)P(w_2|w_1)P(w_3|w_1^2)…P(w_n|w_1^{n-1})$$</p>
+<p>$$P(w_1…w_n) = \prod_{k=1}^nP(w_k|w_1^{k-1})$$</p>
+<p>但是 $P(w_n|w_1^{n-1})$ 很难计算,因为：</p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/ngram1.png"></p>
+<p>这样我们引入了N-gram模型，就是考虑预测单词之前的少数单词，而不是之前的所有词。比如 bigram 就是2-gram模型，生成下一个单词只依赖于前一个单词：</p>
+<p>$$P(w_n|w_1^{n-1}) = P(w_n|w_{n-1})$$</p>
+<p>也就是 <strong>Markov假设</strong>～针对语言来说可能不太合理吧，毕竟语言一两个词包含的信息并不多，但对于很多其他的，比如天气，只依赖于前两天是很靠谱的对吧～</p>
+<p>那么怎么估计bigram和N-gram的概率，一个直接的方法是 <strong>极大似然估计(maximum likelihood estimation, MLE).</strong></p>
+<p>$$P(w_n|w_{n-1}) = \dfrac{C(w_{n-1}w_n)}{C(w_{n-1})}$$</p>
+<p>其中我们需要对每个句子加上特殊的begin-symbol&lt; s &gt; 和 end-symbol &lt; /s &gt;.</p>
+<p>对于一般的N元语法，其参数估计为：</p>
+<p>$$P(w_n|w_{n-N+1}^{n-1}) = \dfrac{C(w_{n-N+1}^{n-1}w_n)}{C(w_{n-N+1}^{n-1})}$$</p>
+<p>这里前面N-1个单词同时出现的频度来除整个序列出现的频度，这个比值称为相对频度(relative frequency).在最大似然估计中，相对频度是概率估计的一种方法，即在给定模型M的情况下，计算得到的模型参数能使得训练集T的似然度P(T|M)最大。</p>
+<p><strong>Some pratical issues:</strong></p>
+<ul>
+<li><p>通常使用 trigran，4-gram,甚至是5-gram效果要比bigram更好。但这需要更大的语料库。</p>
+</li>
+<li><p>由于相对概率都是大于0小于1的,概率相乘之后会更小，可能会导致数值下溢(numerical underflow)。因此采用对数概率(log probabilities).</p>
+</li>
+</ul>
+<h3 id="Evaluating-Language-Models"><a href="#Evaluating-Language-Models" class="headerlink" title="Evaluating Language Models"></a>Evaluating Language Models</h3><p><strong>外在评估, extrinsic evaluation .</strong> end-to-end evaluation， 应用到实际，然后去评估模型的好坏，但这太麻烦了。</p>
+<p><strong>内在评估, metric: intrinsic evaluation 内在评估:</strong> : training set or training corpus.</p>
+<p><strong>development test set or devset:</strong> fresh test set</p>
+<p>often: 80% training, 10% development, 10% test.</p>
+<h4 id="Perplexity"><a href="#Perplexity" class="headerlink" title="Perplexity"></a>Perplexity</h4><p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm4.png"></p>
+<p>这里简单的提了一下perplexity(困惑度)：perplexity is a normalized version of the probability of the test set，可以理解为 <strong>weight average barnching factor</strong>. barnching factor是指预测下一个词出现的概率。</p>
+<p>在后面结合信息熵还会再次讲到。这里可以先简单的理解为： 测试集的概率 $P(w_1w_2…w_N)$ 越大，也就是准确率越高，其困惑度就越小。</p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm5.png"></p>
+<p>同时也可以看到，N-gram中N越大，模型提取的信息越多，其困惑度就越小。</p>
+<p>说到这儿，N元语法到底从句子中提取到了什么信息？</p>
+<p>总结下来，还是一个概率性的问题。什么词更容易出现在什么词身后，eat后面更容易出现名词和形容词，这是句法(syntactic)信息;在对话中，I 更容易出现在句首； 还有文化相关的，人们looking for Chinses food的概率比english food大。</p>
+<h4 id="Generalization-and-Zeros"><a href="#Generalization-and-Zeros" class="headerlink" title="Generalization and Zeros"></a>Generalization and Zeros</h4><blockquote>
+<p>The N-gram model, like many statistical models, is dependent on the training corpus. One implication of this is that the probabilities often encode specific facts about a given training corpus. Another implication is that N-grams do a better and better job of modeling the training corpus as we increase the value of N.</p>
+</blockquote>
+<h5 id="the-value-of-N"><a href="#the-value-of-N" class="headerlink" title="the value of N"></a>the value of N</h5><p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm6.png"></p>
+<p>随着N的增加，外在评估效果也越来越好。但在4-gram中 it cannot be but so.这个是直接从 king henry 中得到的，原因是因为在莎士比亚文集中，it cannot be but下面可持续的单词只有5个(that, I, he, thou, so). 所以，语料库相对4-gram太小了。</p>
+<p>在回顾以下整个过程：</p>
+<ul>
+<li><p>在training data中，对语料库中的句子加上&lt;\s&gt;（不需要加 &lt; s &gt;）,这里并没有训练，只是计算了对应的unigram, bigram, trigram的概率.</p>
+</li>
+<li><p>然后在test data上进行验证，来判断哪个模型好，那个坏？这是内在评估</p>
+</li>
+<li><p>然后外在评估就是每一次random一个词，在这个基础上根据概率random下一个词，直到生成&lt;\s&gt;.</p>
+</li>
+</ul>
+<h5 id="the-corpus"><a href="#the-corpus" class="headerlink" title="the corpus"></a>the corpus</h5><p>不同的语料库训练出来的模型，生成得到的序列会相差很远。怎么解决这个问题呢？</p>
+<blockquote>
+<p>How should we deal with this problem when we build N-gram models? One way is to be sure to use a training corpus that has a <strong>similar genre to whatever task</strong> we are trying to accomplish. To build a language model for translating legal documents, we need a training corpus of legal documents. To build a language model for a question-answering system, we need a training corpus of questions.</p>
+</blockquote>
+<h5 id="zeros-这里是个大坑"><a href="#zeros-这里是个大坑" class="headerlink" title="zeros 这里是个大坑"></a>zeros 这里是个大坑</h5><p>测试集中出现了训练集中没有出现的词，或者二元组，这里不是<UNK>,可能offer在其他地方出现过，但在denied the后面出现的次数为0，那么它的概率就是0，然后困惑度perplexity就无穷大了，这显然是不合理的。如下图中所示。</UNK></p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm7.png"></p>
+<p>这是个很重要的问题！后面smoothing算法都是在解决这个问题！</p>
+<h5 id="Unknow-Words"><a href="#Unknow-Words" class="headerlink" title="Unknow Words"></a>Unknow Words</h5><p><strong>closed vocabulary</strong>:测试集中的词也都是来自于词库的(lexicon),比如语音识别和机器翻译，并不会出现unknown词。</p>
+<p>但我们也会需要处理一些我们没有见过的词 **unknow or out of vocabulary(OOV)**， 我们通过给 <strong>open vocabulary</strong> 增加一个 pseudo-word <UNK>.</UNK></p>
+<p>解决这个问题有两种常见的方法：</p>
+<ol>
+<li>第一种就是把问题转换为 closed vocabulary，也就是提前建立一一个词汇表</li>
+</ol>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm8.png"></p>
+<p>话说我不是太理解这个方法，<UNK>应该是只出现在test data中吧，那么在train data中<UNK>的概率就是0啊，那么得到的模型<UNK>的概率也是0啊，那么在test时，首先它肯定不会生成<UNK>,而且碰到<UNK>时，下一个词怎么生成。。。。</UNK></UNK></UNK></UNK></UNK></p>
+<ol start="2">
+<li>第二种方法还好理解一点，就是在train data中把出现字数较少的词当做<UNK>，那么这个时候<UNK>就像普通的词一样也是有它的概率的。但有一个缺点：</UNK></UNK></li>
+</ol>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm9.png"></p>
+<p>it takes some time to be convinced.</p>
+<h3 id="Smoothing-平滑"><a href="#Smoothing-平滑" class="headerlink" title="Smoothing 平滑"></a>Smoothing 平滑</h3><p>主要是针对前面那个坑的，就是zeros的情况。不是<UNK>，但是这个二元组或者是三元组在test data中出现了，在train data中从来没有出现过。</UNK></p>
+<p>解决办法就是：shave off a bit of probability mass from some more frequent events and give it to the events we’ve never seen. This modification is called <strong>smoothing or discounting.</strong></p>
+<p>有以下这些方法：**add-1 smoothing,</p>
+<p>add-k smoothing, Stupid backoff, and Kneser-Ney smoothing.**</p>
+<h4 id="Laplace-Smoothing-拉普拉斯平滑"><a href="#Laplace-Smoothing-拉普拉斯平滑" class="headerlink" title="Laplace Smoothing 拉普拉斯平滑"></a>Laplace Smoothing 拉普拉斯平滑</h4><p>事实上，关于前面一部分极大似然估计和laplace smoothing这一段没看太懂。但是拉普拉斯平滑整体还是能够理解的。</p>
+<p>对于bigram:</p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm10.png"></p>
+<p>下图分别是伯克利餐馆对话的语料库(V=1446)以及加1平滑后的bigram：</p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm12.png"></p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm11.png"></p>
+<p>可以看到，分子是所有的零和非零项都加1，所以对于分母C(w_{n-1})来说，也就是上面二维数组中某一行都加1，也就是增加了一个词表的数量V。理论上来讲是可以的，但总感觉有点问题是吧？</p>
+<p>$$P(want|I) = \dfrac{C(want|I)}{C(I)}\le \dfrac{C(want|I)+1}{C(I)+V}$$</p>
+<p>显然这个数变小了！因为未出现过的trigram占了一定的概率空间，除此之外，p(to|i),p(chinese|i)…这些概率都认为相等也是否合理呢？</p>
+<p>这个博客<a target="_blank" rel="noopener" href="https://blog.csdn.net/baimafujinji/article/details/51297802">blog</a>中提到了我的疑问：</p>
+<blockquote>
+<p>如此一来，训练语料中未出现的n-Gram的概率不再为 0，而是一个大于 0 的较小的概率值。Add-one 平滑算法确实解决了我们的问题，但显然它也并不完美。由于训练语料中未出现n-Gram数量太多，平滑后，所有未出现的n-Gram占据了整个概率分布中的一个很大的比例。因此，在NLP中，<strong>Add-one给训练语料中没有出现过的 n-Gram 分配了太多的概率空间。此外，认为所有未出现的n-Gram概率相等是否合理其实也值得商榷</strong>。而且，对于出现在训练语料中的那些n-Gram，都增加同样的频度值，这是否欠妥，我们并不能给出一个明确的答案。</p>
+</blockquote>
+<h4 id="Add-k-smoothing"><a href="#Add-k-smoothing" class="headerlink" title="Add-k smoothing"></a>Add-k smoothing</h4><p>$$P_{add-k}(w_i|w_{i-n+1}\cdots w_{i-1}) = \frac{C(w_{i-n+1}\cdots w_i)+k}{C(w_{i-n+1}\cdots w_{i-1})+k|V|}$$</p>
+<p>通常，add-k算法的效果会比Add-one好，但是显然它不能完全解决问题。至少在实践中，k 必须人为给定，而这个值到底该取多少却莫衷一是。</p>
+<h4 id="Backoff-and-Interpolation-回退和插值"><a href="#Backoff-and-Interpolation-回退和插值" class="headerlink" title="Backoff and Interpolation 回退和插值"></a>Backoff and Interpolation 回退和插值</h4><h5 id="回退"><a href="#回退" class="headerlink" title="回退"></a>回退</h5><p>通常我们会认为高阶模型更加可靠，前面的例子也表明，当能够获知更多历史信息时，其实就获得了当前推测的更多约束，这样就更容易得出正确的结论。所以在高阶模型可靠时，尽可能的使用高阶模型。但是有时候高级模型的计数结果可能为0，这时我们就转而使用低阶模型来避免稀疏数据的问题。</p>
+<p>回退的三元语法：</p>
+<p>$$\hat P(w_i|w_{i-2}w_{i-1}) =\begin{cases}P(w_i|w_{i-2}w_{i-1})&amp;,if\quad C(w_{i-2}w_{i-1})&gt;0\</p>
+<p>\alpha_1P(w_i|w_{i-1})&amp;,if\quad C(w_{i-1})&gt;0\</p>
+<p>\alpha_2P(w_i)&amp;, otherwise</p>
+<p>\end{cases}$$</p>
+<p>一般性的回退模型,又叫 <strong>Katz backoff</strong> ：</p>
+<p>$$P_BO(w_n|w_{n-N+1}^{n-1}) =\begin{cases} \tilde P(w_n|w_{n-N+1}^{n-1})&amp;, if\quad C(w_{n-N+1 \cdots w_{n-1} }&gt;0)\ \theta(P(w_n|w_{n-N+1}^{n-1}))\alpha  P_BO(w_n|w_{n-N+2}^{n-1})&amp;,otherwise\end{cases}$$</p>
+<p>其中：</p>
+<p>$$\theta(x) =\begin{cases}1&amp;,if\quad x=0\</p>
+<p>0&amp;,otherwise\end{cases}$$</p>
+<p>试想一下：为什么这里要用 $\alpha$ ,没有会怎么样？</p>
+<p>如果没有 $\alpha$ 值，等式就不是一个概率了，因为三元语法是根据相对频度来计算的，原本为0的概率，回退到一个低阶模型后，相当于把多余的概率量加到等式中来，这样一来，单词的总概率就将大于1.</p>
+<p><strong>因此，所有的回退模型都要打折（discounting）.</strong> 其中 $\tilde P$ 用于给最大似然估计MLE的概率打折,也就是直接从计数计算出来的旧的相对频度节省概率量。$\alpha$ 用于保证低阶N元语法概率量之和恰好等于前面 $\tilde p$ 省下来的概率量。</p>
+<h5 id="插值"><a href="#插值" class="headerlink" title="插值"></a>插值</h5><p>插值和回退的思想其实非常相像。设想对于一个trigram的模型，我们要统计语料库中 “like chinese food” 出现的次数，结果发现它没出现过，则计数为0。在回退策略中，将会试着用低阶gram来进行替代，也就是用 “chinese food” 出现的次数来替代。</p>
+<p>在使用插值算法时，我们把不同阶别的n-Gram模型线形加权组合后再来使用。<strong>简单线性插值（Simple Linear Interpolation）</strong> 可以用下面的公式来定义：</p>
+<p>$$\hat P(w_n|w_{n-1}w_{n-1})=\lambda_1P(w_n|w_{n-2}w_{n-1})+\lambda_2P(w_n|w_{n-1})+\lambda_3P(w_n)$$</p>
+<p>其中: $\sum_i\lambda_i=1$</p>
+<p>$\lambda_i$ 可以根据试验凭经验设定，也可以通过应用某些算法确定，例如EM算法。</p>
+<p>在简单单线形插值法中，权值 $\lambda_i$ 是常量。显然，它的问题在于不管高阶模型的估计是否可靠（毕竟有些时候高阶的Gram计数可能并无为 0），低阶模型均以同样的权重被加入模型，这并不合理。一个可以想到的解决办法是让 λi 成为历史的函数。也就是 <strong>条件插值（conditional interpolation）</strong> 则有:</p>
+<p>$$\hat P(w_n|w_{n-1}w_{n-1})=\lambda_1(w_{n-2}w_{n-1})P(w_n|w_{n-2}w_{n-1})+\lambda_2(w_{n-2}w_{n-1})P(w_n|w_{n-1})+\lambda_3(w_{n-2}w_{n-1})P(w_n)$$</p>
+<p>可使用EM算法来训练 $\lambda$ 的值，使得从主语料库中分出来的语料库的似然度最大。具体怎么训练的。。看文献吧，(Jelinek and Mercer, 1980).</p>
+<h3 id="absolute-discounting"><a href="#absolute-discounting" class="headerlink" title="absolute discounting"></a>absolute discounting</h3><p>想想之前的Add-one，以及Add-k算法。我们的策略，本质上说其实是将一些频繁出现的 N-Gram 的概率匀出了一部分，分给那些没有出现的 N-Gram 上。因为所有可能性的概率之和等于1，所以我们只能在各种可能的情况之间相互腾挪这些概率。</p>
+<p>既然我们打算把经常出现的一些N-Gram的概率分一些出来，其实也就等同于将它们出现的次数减去（discount）一部分，那到底该discount多少呢？Church &amp; Gale (1991) 设计了一种非常巧妙的方法。首先他们在一个 <strong>留存语料库（held-out corpus）</strong> 考察那些在训练集中出现了4次的bigrams出现的次数。具体来说，他们首先在一个有2200万词的留存语料库中检索出所有出现了4次的bigrams （例如： “chinese food”，“good boy”，“want to”等），然后再从一个同样有2200万词的训练集中，分别统计这些bigrams出现的次数（例如：C(“chinese food”)=4，C(“good boy”)=3，C(“want to”)=3）。最终，平均下来，他们发现：在第一个2200万词的语料中出现4次的bigrams，在第二个2200万词的语料中出现了3.23次。下面这张表给出了 c 从0到9取值时（也就是出现了 c 次），统计的bigrams在留存集和训练集中出现的次数。</p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm13.png"></p>
+<p>其实你应该已经发现其中的规律了。除了计数为0和为1的bigram之外，held-out set中的平均计数值，都大约相当于training set中的计数值减去0.75。</p>
+<p>基于上面这个实验结果所诱发的直觉，Absolute discounting 会从每一个计数中减去一个（绝对的）数值 d。这样做的道理就在于，对于出现次数比较多的计数我们其实已经得到了一个相对比较好的估计，那么当我们从这个计数值中减去一个较小的数值 d 后应该影响不大。上面的实验结果暗示在实践中，我们通常会对从2到9的计数进行处理。</p>
+<p>$$P_{AbsDiscount}(w_i|w_{i-1})=\frac{C(w_{i-1}w_i)-d}{C(w_{i-1})}+\lambda(w_{i-1})P(w_i)$$</p>
+<p><strong>好好理解下：</strong> 就是通过 held out set 的对比得到的直觉后，我们在train data中，将所有的 $C(w_{i-1}w_i)$ 减去一个数d，分母不变，概率肯定变小了，但只是减去一个很小的数，影响并不大。然后加上 $\lambda(w_{i-1})P(w_i)$，这样一来，原本bigram中为0的概率就不是0了，因为unigram肯定不为0嘛～但后面这一项怎么求，是接下来一部分的内容</p>
+<p>从上一篇文章中，我们已经知道，对于bigram model而言，$P(w_i|w_{i−1})=C(w_{i−1}w_i)/C(w_{i−1})$，所以上述方程等号右侧第一项即表示经过 discounting 调整的概率值，而第二项则相对于一个带权重 λ 的 unigram 的插值项。通常，你可以把 d 值就设为 0.75，或者你也可以为计数为 1 的 bigram 设立一个单独的等于 0.5 的 d 值（这个经验值从上面的表中也能看出来）。</p>
+<h3 id="Kneser-Ney-discounting"><a href="#Kneser-Ney-discounting" class="headerlink" title="Kneser-Ney discounting"></a>Kneser-Ney discounting</h3><p>Kneser-Ney discounting是在absolute discounting的基础上，对低阶gram进行一些处理～</p>
+<p>这个博客对这部分讲的非常清楚：<a target="_blank" rel="noopener" href="https://blog.csdn.net/baimafujinji/article/details/51297802">https://blog.csdn.net/baimafujinji/article/details/51297802</a> ，我就直接贴过来了。。。</p>
+<p>如果我们使用bigram和unigram的插值模型来预测下面这句话的下一个词：</p>
+<p>I can’t see without my reading _______.</p>
+<p>我们的直觉是 glasses，但是如果语料库中出现 Kong 的频率非常高，因为 Hong Kong 是高频词。所以采用unigram模型， Kong 具有更高的权重，所以最终计算机会选择 Kong 这个词（而非glasses）填入上面的空格，尽管这个结果看起来相当不合理。这其实就暗示我们应该调整一下策略，最好仅当前一个词是 Hong 时，我们才给 Kong 赋一个较高的权值，否则尽管在语料库中 Kong 也是高频词，但我们并不打算单独使用它。</p>
+<p>如果说 P(w) 衡量了 w 这个词出现的可能性，那么我们现在想创造一个新的 unigram 模型，叫做 $P_{continuation}$ ，它的意思是将 w 这个词作为一个新的接续的可能性。注意这其实暗示我们要考虑前面一个词（即历史）的影响。或者说，为了评估 $P_{continuation}$ （注意这是一个 unigram 模型），我们其实需要考察使用了 w 这个词来生成的不同 bigram 的数量。注意这里说使用了 w 这个词来生成的不同类型 bigram 的数量，是指当前词为 w ，而前面一个词不同时，就产生了不同的类型。例如：w = “food”, 那么不同的 bigram 类型就可能包括 “chinese food”，“english food”，“japanese food”等。每一个 bigram 类型，当我们第一次遇到时，就视为一个新的接续（novel continuation）。</p>
+<p>也就是说 $P_continuation$ 应该同所有新的接续（novel continuation）构成的集合之势（cardinality）成比例。所以，可知:</p>
+<p>$$P_{continuation}(w_i)\propto \lvert {w_{i-1}:C(w_{i-1}w_i)&gt;0}\rvert$$</p>
+<p>如果你对此尚有困惑，我再来解释一下上面这个公式的意思。当前词是 $w_i$，例如“food”，由此构成的不同类型的 bigram 即为 $w_{i−1}w_i$，其中 $w_{i−1}$ 表示前一个词（preceding word）。显然，所有由 $w_{i−1}w_i$ 构成的集合的势，其实就取决于出现在 $w_i$ 之前的不同的 $w_{i−1}$ 的数量。</p>
+<p>然后，为了把上面这个数变成一个概率，我们需要将其除以一个值，这个值就是所有 bigram 类型的数量，即 $\lvert {(w_{j-1},w_j):C(w_{j-1}w_j)&gt;0}\rvert$,这里大于0的意思就是“出现过”。于是有:</p>
+<p>$$P_{continuation}(w_i)=\frac{\lvert {w_{i-1}:C(w_{i-1}w_i)&gt;0}\rvert}{\lvert{(w_{j-1},w_j):C(w_{j-1}w_j)&gt;0}\rvert}$$</p>
+<p>也可以写成这种形式：</p>
+<p>$$P_{continuation}(w_i)=\frac{\lvert { w_{i-1}:C(w_{i-1}w_i)&gt;0}\rvert}</p>
+<p>{\sum_{w’_ {i-1}} \lvert{w’_ {i-1}:C(w’_ {i-1}w’_ i)&gt;0}\rvert}$$</p>
+<p>其实要理解这个很简单，绝对值里面的看成一个字典 dict,出现 $w_{i-1}w_i$ 了一次它的数量就是1，以 $P_continuation(food)$ 为例，语料库中出现了 chinese food, japan food, english food,那么分子就是计算不同 $w_{i-1}$ 的个数，其大小就是3。 而分母呢，就是所有的bigram，放到dict中，相当于去重，然后它的总数就是分母的值。即所有不同的 bigram 的数量就等于出现在单词 $w’_ i$ 前面的所有不同的词 $w’_ {i−1}$ 的数量，这个计算复杂度应该就是V吧，遍历整个词表即可。</p>
+<p>如此一来，一个仅出现在 Hong 后面的高频词 Kong 只能获得一个较低的接续概率（continuation probability）。由此，再结合前面给出的Absolute Discounting 的概率计算公式，就可以得出 <strong>Interpolated Kneser-Ney Smoothing</strong> 的公式，即</p>
+<p>$$P_{KN}(w_i|w_{i-1})=\frac{max(C(w_{i-1}w_i)-d,0)}{C(w_{i-1})}+\lambda(w_{i-1})P_{continuation}(w_i)\tag{4.33}$$</p>
+<p>其中，$max(C(w_{i−1}w_i)−d,0)$ 的意思是要保证最后的计数在减去一个 d 之后不会变成一个负数。其次，我们将原来的 $P(w_i)$ 替换成了 $P_continuation(w_i)$。此外，**$\lambda$ 是一个正则化常量，用于分配之前discount的概率值**（也就是从高频词中减去的准备分给那些未出现的低频词的概率值）：</p>
+<p>$$\lambda(w_{i-1})=\frac{d}{C(w_{i-1})}\cdot \lvert {w:C(w_{i-1},w)&gt;0}\rvert\tag{4.34}$$</p>
+<p>以 $P_{KN}(Kong|Hong)$ 为例，（4.33）式中第一项是对bigram (Kong|Hong)打了折，那么后面一项应该在此基础上补回来一点。</p>
+<p>（4.34）第一项 $\dfrac{d}{C(w_{i-1})}$ 是折扣归一化（normalized discount）；第二项 $\lvert {w:C(w_{i-1},w)&gt;0}\rvert$ 是打折的次数。</p>
+<p>不太好理解，看原文章：</p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm14.png"></p>
+<p>将上述公式泛化，可用递归表示为：</p>
+<p>$$P_{KN}(w_i|w_{i-n+1}\cdots w_{i-1})=\frac{max(0,C_{KN}(w_{i-n+1} \cdots w_i) - d)}{C_{KN}(w_{i-n+1}\cdots w_{i-1})}</p>
+<p>+\lambda(w_{i-n+1}\cdots w_{i-1})\cdot P_{KN}(w_i|w_{i-n+2}\cdots w_{i-1})$$</p>
+<p>其中 $C_{KN}$ 取决于用什么插值方式，在（4.33）式中只采用了bigram，如果采用trigram，bigram，unigram的联合插值，那么对于最高阶的 trigram 在计数时并不需要使用接续计数（采用普通计数即可），而其他低阶，即 bigram 和 unigram 则需要使用接续计数。这是因为在 unigram 中，我们遇到了一个 Kong，我们可以参考它的 bigram，同理在 bigram，我还可以再参考它的 trigram，但是如果我们的插值组合中最高阶就是 trigram，那么现在没有 4-gram来给我们做接续计数。用公式表示即为：</p>
+<p>$$C_{KN}(\cdot)=\begin{cases}count(\cdot) &amp;,for\ the\ highest\ order\</p>
+<p>continuationcount(\cdot) &amp;,for\ all\ other\ lower\ orders</p>
+<p>\end{cases}$$</p>
+<p>为什么低阶的gram要采用continuation呢？当trigram的概率为0时，使用bigram会增大概率量，所以都要打折，所以对应的bigram也得用continuation才好对吧～</p>
+<p>我们前面提到Kneser-Ney Smoothing 是当前一个标准的、广泛采用的、先进的平滑算法。这里我们所说的先进的平滑算法，其实是包含了其他以 Kneser-Ney 为基础改进、衍生而来的算法。其中，效果最好的Kneser-Ney Smoothing 算法是由Chen &amp; Goodman（1998）提出的 <strong>modified Kneser-Ney Smoothing</strong> 算法，它对 discount d使用不同的值 $d_1,d_2,d_3$ 分别对应于unigram, bigram, trigram等等。很多NLP的开发包和算法库中提供有原始的Kneser-Ney Smoothing（也就是我们前面介绍的），以及modified Kneser-Ney Smoothing 算法的实现。</p>
+<h3 id="The-Web-and-Stupid-Backoff"><a href="#The-Web-and-Stupid-Backoff" class="headerlink" title="The Web and Stupid Backoff"></a>The Web and Stupid Backoff</h3><p>对于特别大的语言模型，效率考虑很重要。 它不是将每个单词存储为一个字符串，而是通常在内存中将其表示为64位散列号，并将单词本身存储起来。通常只使用4-8位（而不是8字节的浮点数）对概率进行量化，并将N-gram存储在反向尝试中。</p>
+<p>N-gram也可以通过修剪来缩小，例如只存储计数大于某个阈值的N-gram（例如用于Google N-gram发布的计数阈值40）或使用熵修剪不太重要的N-grams（Stolcke，1998）。</p>
+<h4 id="stupid-Backoff"><a href="#stupid-Backoff" class="headerlink" title="stupid Backoff"></a>stupid Backoff</h4><p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm15.png"></p>
+<p>没有discounting，没那么多复杂的方法，就是简单的回退到上一阶，所以不是一个概率分布，概率加起来大于1了。如果回退到unigram, $S(w)=\dfrac{count(w)}{N}$,并且 $\lambda$ 使用的0.4.</p>
+<h3 id="Advanced-Perplexity’s-Relation-to-Entropy"><a href="#Advanced-Perplexity’s-Relation-to-Entropy" class="headerlink" title="Advanced: Perplexity’s Relation to Entropy"></a>Advanced: Perplexity’s Relation to Entropy</h3><h4 id="熵-entropy"><a href="#熵-entropy" class="headerlink" title="熵 entropy"></a>熵 entropy</h4><p>困惑度是来自信息论中的交叉熵cross-entroy的概念。</p>
+<p>前面我的一篇博客从信息论的角度提到了交叉熵：<a target="_blank" rel="noopener" href="https://panxiebit.github.io/2018/03/28/PyTorch%E4%B8%AD%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0/#more">blog</a></p>
+<p>对于一个随机变量 $X=(X_1…X_n)$，它的分布是p(x),那么这个随机变量的熵就是：</p>
+<p>$$H(X)=-\sum p(x)logp(x)$$</p>
+<p>对数底数可以为任何数。$-logp(x)$ 是香农定义的信息量，如果我们假设底数为2，那么信息量 $-log_2p(x)$ 表示描述X随机变量取X_1时所需的编码长度，p(X=X_1)概率越大，所需的编码长度越小。那么熵H(X)就表示描述随机变量X编码长度的期望了。</p>
+<p>作者这里用一个例子描述了熵这个概念：</p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm16.png"></p>
+<p>文章中对概率最大的 Horse1,其信息量 $-log_2(1/2)=1$,其用二进制编码就是0， Horse2  其信息量就是 $-log_2(1/4)=2$,其用二进制编码就是 10…. 可以看到概率越大，所需的编码长度越小，也就是信息量越小。可以极端点想，对于一个随机事件，如果其分布是(1,0,0,0)和(1/4,1/4,1/4,1/4)，同样发生10次，可能前者的分布就判断出来了，但后者需要更多。那么用来描述这个随机变量的不确定性的度量，就是熵了，也就是信息量的期望。</p>
+<p><strong>总结下：所谓熵，就是信息量 -logp(x) 的期望。</strong> 信息熵代表的是随机变量或整个系统的不确定性，熵越大，随机变量或系统的不确定性就越大。</p>
+<p>这里引入到语言模型中，对于一个sequence可以看做一个随机变量，$W={ w_0,w_1,…,w_n }$, 对于一个有限长度为n的sequence，其熵为：</p>
+<p>$$H(w_1,w_2,…,w_n)=-log_{w_1^n\in L}p(w_1^n)logp(w_1^n)$$</p>
+<p><strong>entropy rate,</strong> 也可以看作是per-word entropy:</p>
+<p>$$\dfrac{1}{n}H(w_1,w_2,…,w_n)=-\dfrac{1}{n}log_{w_1^n\in L}p(w_1^n)logp(w_1^n)$$</p>
+<h4 id="交叉熵-cross-entropy"><a href="#交叉熵-cross-entropy" class="headerlink" title="交叉熵 cross-entropy"></a>交叉熵 cross-entropy</h4><p>但我们在考虑language的熵时，需要认为sequence是无限长度的。可以把sequences生成的过程看成是一个随机过程stochastic process L, 那么L的熵：</p>
+<p>$$H(L)=-lim_{n\to \infty}\dfrac{1}{n}H(w_1,w_2,…,w_n)=-lim_{n\to \infty}\sum_{W\in L}p(w_1,w_2,…,w_n)logp(w_1,w_2,…,w_n)$$</p>
+<p><strong>cross-entropy:</strong> 但我们不知道生成数据的真实分布p时，可以用分布m来表示：</p>
+<p>$$H(p,m)=lim_{n\to \infty}-\dfrac{1}{n}\sum_{W\in L}p(w_1,w_2,…,w_n)logm(w_1,w_2,…,w_n)$$</p>
+<p>对于静态随机过程(stationary ergodic process),静态假设在HMM中有讲到：下一个词对上一个词的依赖的概率，不会随时间的改变而改变。那么可以认为 $p(w_1,w_2,…,w_n)$ 是一个定值。</p>
+<p>$$H(p,m)=lim_{n\to \infty}-\dfrac{1}{n}\sum_{W\in L}logm(w_1,w_2,…,w_n)\tag{4.47}$$</p>
+<p>又有：$$H(p)\le H(p,m)$$</p>
+<p>因此我们可以用m分布来估计p分布。</p>
+<h5 id="困惑度和交叉熵"><a href="#困惑度和交叉熵" class="headerlink" title="困惑度和交叉熵"></a>困惑度和交叉熵</h5><p>N-gram模型 $M=P(w_i|w_{i-N+1} \cdots w_{i-1})$ 生成序列sequences W, 根据公式(4.47):</p>
+<p>$$H(W) = -\dfrac{1}{N}logP(w_1w_2 \cdots w_N)$$</p>
+<p>基于模型 $M=P(w_i|w_{i-N+1} \cdots w_{i-1})$ 的困惑度perplexity可定义为交叉熵的指数形式：</p>
+<p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm17.png"></p>
+<p>似乎也是有点巧啊，交叉熵和困惑度都可以用来表征p分布是否接近真实分布～厉害了</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="/chapter4-%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8CN%E5%85%83%E8%AF%AD%E6%B3%95/lm18.png"></p>
+<p>###参考：</p>
+<ul>
+<li><p>[1] Speech and Language Processing. Daniel Jurafsky &amp; James H. Martin, 3rd. Chapter 4</p>
+</li>
+<li><p>[2] <a target="_blank" rel="noopener" href="https://blog.csdn.net/baimafujinji/article/details/51297802">自然语言处理中N-Gram模型的Smoothing算法</a></p>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>chapter4:语言模型和N元语法</p><p><a href="http://www.panxiaoxie.cn/2018/04/12/chapter4-语言模型和N元语法/">http://www.panxiaoxie.cn/2018/04/12/chapter4-语言模型和N元语法/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-04-12</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NLP/">NLP</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Gefällt Ihnen der Artikel? Unterstützen Sie den Autor mit</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Kauf mir einen Kaffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/04/14/chapter6-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%92%8C%E6%83%85%E6%84%9F%E5%88%86%E7%B1%BB/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">chapter6-朴素贝叶斯和情感分类</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/04/11/chapter3-%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E8%87%AA%E5%8A%A8%E6%9C%BA/"><span class="level-item">chapter3-有限状态自动机</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Kommentare</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Your name"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Your name</p><p class="is-size-6 is-block">Your title</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Your location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Seiten</p><a href="/archives"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Kategorien</p><a href="/categories"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">8</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Folgen</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Kategorien</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Letzte Einträge</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archive</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Abonnieren Sie Updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Abonnieren"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Zurück nach oben" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern.",
+          dismiss: "Verstanden!",
+          allow: "Cookies zulassen",
+          deny: "Ablehnen",
+          link: "Mehr erfahren",
+          policy: "Cookie-Richtlinie",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Tippen Sie etwas..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Tippen Sie etwas...","untitled":"(Ohne Titel)","posts":"Seiten","pages":"Pages","categories":"Kategorien","tags":"Tags"});
+        });</script></body></html>

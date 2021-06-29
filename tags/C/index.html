@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Tag: C++ - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="潘小榭"><meta property="og:url" content="http://www.panxiaoxie.cn/"><meta property="og:site_name" content="潘小榭"><meta property="og:image" content="http://www.panxiaoxie.cn/img/og_image.png"><meta property="article:author" content="Xie Pan"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":null}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">C++</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2018-12-12T05:34:38.000Z" title="2018/12/12 下午1:34:38">2018-12-12</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2021-06-29T05:19:29.419Z" title="2021/6/29 下午1:19:29">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/C/">C++</a></span><span class="level-item">16 minutes lesen (Über 2395 Wörter)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/12/12/Cplusplus-prime/">C plus plus prime-类</a></h1><div class="content"><h2 id="类定义"><a href="#类定义" class="headerlink" title="类定义"></a>类定义</h2><p>类头、类体、类域</p>
+<h3 id="数据成员"><a href="#数据成员" class="headerlink" title="数据成员"></a>数据成员</h3><p>数据成员声明在类体中，可以是任何类型，eg. 指针，类</p>
+<p>分为：非静态（nonstatic），静态（static）.</p>
+<h3 id="成员函数"><a href="#成员函数" class="headerlink" title="成员函数"></a>成员函数</h3><p>成员函数在类域之外是不可见的。通过 “.” 或 “-&gt;” 来引用。</p>
+<p>注意区分全局域/全局函数，类域/成员函数。</p>
+<h3 id="成员访问"><a href="#成员访问" class="headerlink" title="成员访问"></a>成员访问</h3><p>信息隐藏（information hiding）：类成员的访问限制，通过访问限定符来实现的。</p>
+<ul>
+<li><p>public 公有成员，提供给用户使用的</p>
+</li>
+<li><p>private 只能被成员函数和友元访问  </p>
+</li>
+<li><p>protected 对派生类表现的像 public, 对其他程序表现的像 private.</p>
+</li>
+</ul>
+<h3 id="友元"><a href="#友元" class="headerlink" title="友元"></a>友元</h3><p>关键字 find， 友元可以是一个名字空间函数、一个前面定义的类的一个成员函数、也可以是一个完整的类。</p>
+<p>允许一个类授权其他的函数访问他的非公有成员，通常声明放在类头之后。</p>
+<h3 id="类声明和定义"><a href="#类声明和定义" class="headerlink" title="类声明和定义"></a>类声明和定义</h3><p>类声明，是只有类头，没有类体。无法确定类类型的大小，类成员也是未知的。但是可以声明指向该类类型的指针或引用。</p>
+<p>类定义，是具有完整的类体。</p>
+<p><strong>什么时候用类声明？什么时候用类定义？</strong></p>
+<h2 id="类对象"><a href="#类对象" class="headerlink" title="类对象"></a>类对象</h2><p>类定义不会分配存储区，只有定义了一个类的对象，才会分配。</p>
+<p>类类型，即定义的一个类。通过它定义的对象是有生命期的，生命期根据它在哪个域中被声明的。</p>
+<p>类对象可以被另一个对象初始化或赋值，拷贝一个类对象与拷贝它的成员函数等价。</p>
+<p>当一个类对象被指定为函数实参或函数返回值时，它就被按值传递。我们可以把一个函数参数或返回值声明为一个类类型的指针或引用。（7.3节，7.4节）</p>
+<p><strong>回顾下指针：</strong>  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">int</span> i = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> *p;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span>* p = &amp;i;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> *p = &amp;i;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>p 是指针变量，用来存储地址。注意数组名是 const 地址常量，代表第一个元素的地址。</p>
+<p><strong>指针和引用的区别：</strong>  </p>
+<p>指针：指针是一个变量，只不过这个变量存储的是一个地址，指向内存的一个存储单元；而引用跟原来的变量实质上是同一个东西，只不过是原变量的一个别名而已。如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">int</span> a=<span class="number">1</span>; <span class="keyword">int</span> *p=&amp;a;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> a=<span class="number">1</span>; <span class="keyword">int</span> &amp;b=a;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上面定义了一个整形变量和一个指针变量p，该指针变量指向a的存储单元，即p的值是a存储单元的地址.  </p>
+<p>而下面2句定义了一个整形变量a和这个整形a的引用b，事实上a和b是同一个东西，在内存占有同一个存储单元。</p>
+<ul>
+<li><p>“sizeof引用”得到的是所指向的变量(对象)的大小，而”sizeof指针”得到的是指针本身的大小；  </p>
+</li>
+<li><p>可以有const指针，但是没有const引用；</p>
+</li>
+<li><p>指针的值可以为空，但是引用的值不能为NULL，并且引用在定义的时候必须初始化；  </p>
+</li>
+<li><p>指针的值在初始化后可以改变，即指向其它的存储单元，而引用在进行初始化后就不会再改变了</p>
+</li>
+</ul>
+<p>继续回到类对象作为函数参数时，用成员访问操作符来访问类对象的数据成员或成员函数。点操作符与类对象或引用连用; 箭头访问操作符与类对象的指针连用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta"># <span class="meta-keyword">include</span> <span class="meta-string">&quot;Screen.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isEqual</span><span class="params">(Screen&amp; s1, Screen *s2)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  s1.height ...</span><br><span class="line"></span><br><span class="line">  s2-&gt;height ...</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>isEqual 是非成员函数，如果要直接引用 s1, s2 中的数据成员 height 是不可以的。所以必须借助于 Screen 中的公有成员函数。  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">s2-&gt;height 等价于 (*s2).height</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="类成员函数"><a href="#类成员函数" class="headerlink" title="类成员函数"></a>类成员函数</h2><p>一组操作的集合。</p>
+<h3 id="inline-和-非-inline-成员函数"><a href="#inline-和-非-inline-成员函数" class="headerlink" title="inline 和 非 inline 成员函数"></a>inline 和 非 inline 成员函数</h3><p>内联函数的作用：如果在程序中调用某个函数，不但要拷贝实参，保存机器的寄存器，程序还必须转向一个新的位置，这样会降低效率。  </p>
+<p>而内联函数就是解决这个问题的，在程序的调用节点上，“内联”的展开函数的操作，从而额外的执行开销被消除了。</p>
+<p>类体内定义的成员函数自动的作为内联函数处理。  </p>
+<p>类体内声明，类体外定的函数，需要显示的加上关键字 inline. 同时类体外的定义需要用类名限定修饰(限定修饰符 :: )</p>
+<h3 id="访问类成员"><a href="#访问类成员" class="headerlink" title="访问类成员"></a>访问类成员</h3><p>成员函数的定义可以引用任何一个类成员，无论该成员是私有还是公有。  </p>
+<p>成员函数可以直接访问它所属类的成员，无需访问操作符。这实际上是通过 this 指针实现的。</p>
+<h3 id="私有与公有成员函数"><a href="#私有与公有成员函数" class="headerlink" title="私有与公有成员函数"></a>私有与公有成员函数</h3><p>公有函数集定义了类的接口。私有成员函数为其他成员函数提供支持。</p>
+<h3 id="特殊的成员函数"><a href="#特殊的成员函数" class="headerlink" title="特殊的成员函数"></a>特殊的成员函数</h3><p>构造函数：管理类对象并处理初始化、赋值、内存管理、类型转换、析构等活动。每次定义一个类对象或 new 表达式分配一个类对象都会调用它。  </p>
+<p>构造函数的名字必须与类名相同。</p>
+<h3 id="const-和-volatile-成员函数"><a href="#const-和-volatile-成员函数" class="headerlink" title="const 和 volatile 成员函数"></a>const 和 volatile 成员函数</h3><p>只有被声明为 const 的成员函数才能被一个 const 对象调用。关键字 const 在函数体和参数表之间.</p>
+<p>通常一个类如果想被广泛使用，其中不修改类数据成员的成员函数应该声明为 const 成员函数。</p>
+<p>但是即使声明了，这个成员函数依然有可能修改数据成员，如果这个类含有指针。</p>
+<p>比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">private:</span><br><span class="line"></span><br><span class="line">  char *_text;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>_text</code> 不能被修改，但是它指向的字符却是可以被修改的。所以程序员这个时候就需要注意了。。</p>
+<p>构造函数和析构函数即使不是 const 成员函数，也能被 const 对象调用。</p>
+<p>volatile 跟 const 用法一样，它用来提示编译器该对象的值可能在编译器未被检测到的情况下被修改。因为，编译器不能武断的对引用这些对象的代码进行优化。</p>
+<h3 id="mutable-数据成员"><a href="#mutable-数据成员" class="headerlink" title="mutable 数据成员"></a>mutable 数据成员</h3><p>一旦一个对象被声明为 const，它的内容就不能修改。但是其中某些数据成员，比如索引，被修改之后并没有修改对象本身，这个时候就可以将该数据成员（也就是索引）声明为 mutable.</p>
+<p>那样，即使 const 对象， const 成员函数修改了该数据成员，也不会有编译错误。</p>
+<h2 id="隐含的指针-this"><a href="#隐含的指针-this" class="headerlink" title="隐含的指针 this"></a>隐含的指针 this</h2><p>每个类成员函数都含有一个指向被调用对象的指针。但是一般不需要显示的写出来，如果写出来也是可以的。</p>
+<h3 id="何时使用指针呢？"><a href="#何时使用指针呢？" class="headerlink" title="何时使用指针呢？"></a>何时使用指针呢？</h3><p>当连续使用成员函数时，比如 <code>myVector.find().sort().insert()</code> 时，对应的成员函数返回的值应该是被调用对象本身，也就是 <code>*this</code>.</p>
+<p>还有一种情况， copy 函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Screen::copy</span><span class="params">(<span class="keyword">const</span> Screen&amp; sobj)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span> != &amp;sobj)</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 把 sobj 的值拷贝到 * this 中</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里的 this 指针含有被调用对象的地址。如果 sobj 的地址 &amp;sobj 与 this 相同，那就不需要拷贝了。</p>
+<p>注意这里 &amp; 用法：引用和取地址。</p>
+<h2 id="静态类成员"><a href="#静态类成员" class="headerlink" title="静态类成员"></a>静态类成员</h2><h3 id="静态数据成员"><a href="#静态数据成员" class="headerlink" title="静态数据成员"></a>静态数据成员</h3><p>对于非静态成员，每个类都有一个自己的拷贝。而静态成员对每个类类型只有一个拷贝。静态数据成员只有一份，由该类类型的所有对象共同访问。</p>
+<p>不同于全局对象，它可以隐藏，并且不会与其他全局名字冲突。</p>
+<p>关键字 static. 注意与 const 的区别，没有加 const 意味着是可以更新的。只需要更新一次，所有的类对象对应的值都会更新。</p>
+<p>静态类成员的显示初始化，在类定义之外，用类名限定修饰。在静态数据成员的定义中也可以直接使用私有成员，这与在类成员函数中直接引用私有成员是一样的。</p>
+<p>对于静态数据成员，除了通过类对象使用成员访问操作符访问之外，还可以直接使用类名加限定修饰符访问</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Account::_intersetRate</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="静态成员函数"><a href="#静态成员函数" class="headerlink" title="静态成员函数"></a>静态成员函数</h3><p>静态成员函数，只访问静态数据成员，而不访问任何其他数据成员。所以它们与哪个对象来调用这个函数无关。</p>
+<p>在类体中声明时需要加关键字 static, 类体外不能指定关键字。并且不能设定为 const 和 volatile.</p>
+<h2 id="指向类成员的指针"><a href="#指向类成员的指针" class="headerlink" title="指向类成员的指针"></a>指向类成员的指针</h2><h3 id="普通函数指针-7-9节"><a href="#普通函数指针-7-9节" class="headerlink" title="普通函数指针 7.9节"></a>普通函数指针 7.9节</h3><h3 id="成员函数指针"><a href="#成员函数指针" class="headerlink" title="成员函数指针"></a>成员函数指针</h3></div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Your name"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Your name</p><p class="is-size-6 is-block">Your title</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Your location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Seiten</p><a href="/archives"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Kategorien</p><a href="/categories"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">8</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Folgen</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Kategorien</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Letzte Einträge</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archive</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Abonnieren Sie Updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Abonnieren"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Zurück nach oben" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern.",
+          dismiss: "Verstanden!",
+          allow: "Cookies zulassen",
+          deny: "Ablehnen",
+          link: "Mehr erfahren",
+          policy: "Cookie-Richtlinie",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Tippen Sie etwas..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Tippen Sie etwas...","untitled":"(Ohne Titel)","posts":"Seiten","pages":"Pages","categories":"Kategorien","tags":"Tags"});
+        });</script></body></html>

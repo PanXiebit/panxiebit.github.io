@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>chapter7-logistic回归 - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="logistic regression 模型 p(y|x,w)  针对语言模型的特征处理 $f_i(c,x)$  训练模型  正则化  特征选择：信息增益  分类器选择：bias-variance"><meta property="og:type" content="blog"><meta property="og:title" content="chapter7-logistic回归"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/04/16/chapter7-logistic%E5%9B%9E%E5%BD%92/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="logistic regression 模型 p(y|x,w)  针对语言模型的特征处理 $f_i(c,x)$  训练模型  正则化  特征选择：信息增益  分类器选择：bias-variance"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr1.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr2.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr3.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr4.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr5.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr6.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr7.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr9.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr10.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr11.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr12.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr13.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr14.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr15.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr16.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr17.png"><meta property="article:published_time" content="2018-04-16T08:28:37.000Z"><meta property="article:modified_time" content="2021-06-29T05:19:29.566Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="NLP"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr1.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/04/16/chapter7-logistic%E5%9B%9E%E5%BD%92/"},"headline":"chapter7-logistic回归","image":["http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr1.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr2.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr3.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr4.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr5.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr6.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr7.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr9.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr10.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr11.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr12.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr13.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr14.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr15.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr16.png","http://www.panxiaoxie.cn/chapter7-logistic%E5%9B%9E%E5%BD%92/lr17.png"],"datePublished":"2018-04-16T08:28:37.000Z","dateModified":"2021-06-29T05:19:29.566Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"logistic regression 模型 p(y|x,w)  针对语言模型的特征处理 $f_i(c,x)$  训练模型  正则化  特征选择：信息增益  分类器选择：bias-variance"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/04/16/chapter7-logistic%E5%9B%9E%E5%BD%92/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2018-04-16T08:28:37.000Z" title="2018/4/16 下午4:28:37">2018-04-16</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2021-06-29T05:19:29.566Z" title="2021/6/29 下午1:19:29">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/NLP/">NLP</a></span><span class="level-item">13 minutes lesen (Über 2007 Wörter)</span></div></div><h1 class="title is-3 is-size-4-mobile">chapter7-logistic回归</h1><div class="content"><ul>
+<li><p>logistic regression 模型 p(y|x,w)</p>
+</li>
+<li><p>针对语言模型的特征处理 $f_i(c,x)$</p>
+</li>
+<li><p>训练模型</p>
+</li>
+<li><p>正则化</p>
+</li>
+<li><p>特征选择：信息增益</p>
+</li>
+<li><p>分类器选择：bias-variance</p>
+</li>
+</ul>
+<span id="more"></span>
+
+
+
+<p><strong>前言:</strong> 分类算法：<strong>multinomial logistic regression</strong>, 当应用到NLP时，又称 <strong>maximum entropy, MaxEnt</strong>.</p>
+<p>再一次说到了生成模型和判别模型。上一章已经说了了，就不写了～</p>
+<h3 id="logistic-regression"><a href="#logistic-regression" class="headerlink" title="logistic regression"></a>logistic regression</h3><p>$$\hat y=argmax_yP(y|x)$$</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr1.png"></p>
+<p>这句话可以说解释的很清楚了～</p>
+<p>然鹅，能够直接计算出对应的概率P(y|x)吗？像这样：</p>
+<p>$$P(y|x)?=\sum_{i=1}^Nw_if_i$$</p>
+<p>$$?=w\cdot f$$</p>
+<p>显然，这计算出来的并不是一个合理的概率，因为 $\sum_{i=1}^N$ 的范围是 $-\infty\ to\ \infty$.</p>
+<p>怎么解决这个问题呢？就是让得到的概率在0-1之间。</p>
+<h4 id="对于二分类：-y-in-0-1"><a href="#对于二分类：-y-in-0-1" class="headerlink" title="对于二分类：$y\in {0,1}$"></a>对于二分类：$y\in {0,1}$</h4><p>可以使用sigmoid函数：</p>
+<p>$$\sigma(z)=\dfrac{1}{1+e^{-z}}$$</p>
+<p>将z压缩到0-1范围内。</p>
+<p>则有：</p>
+<p>$$\hat y = \dfrac{1}{1+e^{-w^Tx}}$$</p>
+<p>$$p(y=1|x) = \dfrac{1}{1+e^{-w^Tx}}$$</p>
+<p>$$p(y=0|x) = \dfrac{1}{1+e^{w^Tx}}$$</p>
+<p>根据cross-entroy函数：</p>
+<p>$$L = -p(x)logq(x)$$</p>
+<p>对于单个样本有： $真实分布p(x):(y,1-y),对应的预测分布(\hat y, 1-\hat y)$</p>
+<p>带入可得：</p>
+<p>$$L(\hat y, y)=-ylog(\hat y)-(1-y)log(1-\hat y)$$</p>
+<h4 id="对于多分类"><a href="#对于多分类" class="headerlink" title="对于多分类"></a>对于多分类</h4><p>softmax分类器：</p>
+<p>$$p(c|x)=\dfrac{exp(\sum_{i=1}^Nw_if_i(c,x))}{\sum_{c’\in C}exp(\sum_{i=1}^Nw_if_i(c’,x))}$$</p>
+<p>其中 $f_i(c,x)$ 就是表示在给定样本条件下类别c对应的输入数据处理后的特征i。</p>
+<p>怎么理解 $w_if_i(c,x)$ 呢？how to convince myself~</p>
+<ul>
+<li><p>假设单个样本 $X:$ (3072,1)</p>
+</li>
+<li><p>总共有10个类别 $c\in C$ (10,)</p>
+</li>
+<li><p>则对应的权重： $W$ (10, 3072)</p>
+</li>
+</ul>
+<p>其实可以认为权重W的每一行对应一个分类器 $w_i$，也就是特征提取器。$f_i(c,x)$ 应该就是对不同类别的输入数据进行特征处理吧。</p>
+<p>在图像处理中，可能并不需要提前对输入数据进行处理，但在NLP中先对输入数据进行特征工程是很重要的。</p>
+<h3 id="Features-in-Multinomial-Logistic-Regression"><a href="#Features-in-Multinomial-Logistic-Regression" class="headerlink" title="Features in Multinomial Logistic Regression"></a>Features in Multinomial Logistic Regression</h3><p>假设document x含有词great,其class是 +($f_1$).则对应的 $f_1(c,x)$</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr2.png"></p>
+<p>$w_1(x)$ 表示great作为 class + 的权重。</p>
+<h3 id="Classification-in-Multinomial-Logistic-Regression"><a href="#Classification-in-Multinomial-Logistic-Regression" class="headerlink" title="Classification in Multinomial Logistic Regression"></a>Classification in Multinomial Logistic Regression</h3><p>这是一个简单的二分类positive or negative，其实也可以看起来跟图像是一样的，比如这里有4个词，也就是4个特征, $x = (1,1,1,1)^T$</p>
+<p>$w_+=(0,0,0,1.9)$,$w__ =(0.7,0.9,-0.8)$</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr3.png"></p>
+<p>在预测属于哪一类是，可以简化计算：</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr4.png"></p>
+<h3 id="Learning-Logistic-Regression"><a href="#Learning-Logistic-Regression" class="headerlink" title="Learning Logistic Regression"></a>Learning Logistic Regression</h3><p>怎么计算权重呢？ 训练样本数据通过 <strong>条件极大似然估计（conditional maximum likelihood estimation.）</strong></p>
+<p>对于单个样本 $(x^{(j)},y^{(j)})$ ，优化权重：</p>
+<p>$$\hat w = argamx_w logP(y^{(j)}|x^{(j)})$$</p>
+<p>那么对于整个样本集：</p>
+<p>$$\hat w = argamx_w \sum_jlogP(y^{(j)}|x^{(j)})$$</p>
+<p>通过优化似然概率 $L(w)$ 来学习得到参数w</p>
+<p>$$L(w) = \sum_jlogP(y^{(j)}|x^{(j)})\tag{7.12}$$</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr5.png"></p>
+<p>这里和我们前面讲过的softmax回归有点区别，softmax是先求出 $\hat y$,然后与真实分布y进行比较，最小化差异；而multinomial logistic regression 是直接将真实分布y和观测数据x联合在一起最大化p(y|x).</p>
+<p>同样也是一个凸优化问题（convex optimization problem），通过采用随机梯度上升～</p>
+<p>$L’(w)关于权重求导$</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr6.png"></p>
+<h3 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h3><p>当模型对训练数据过拟合（overfitting）时，给公式（7.12）增加正则化项，用来惩罚权重较大的项。</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr7.png"></p>
+<h4 id="L2正则化"><a href="#L2正则化" class="headerlink" title="L2正则化"></a>L2正则化</h4><p><strong>Euclidean distance</strong></p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr9.png"></p>
+<h4 id="L1正则化"><a href="#L1正则化" class="headerlink" title="L1正则化"></a>L1正则化</h4><p><strong>Manhattan distance</strong></p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr10.png"></p>
+<p>L1正则化和L2正则化都可以通过贝叶斯来解释～</p>
+<ul>
+<li><p>L1正则化可以看作是权重满足<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E5%88%86%E5%B8%83">Laplace分布</a>.</p>
+</li>
+<li><p>L2正则化可以看做是权重满足均值为0的高斯分布</p>
+</li>
+</ul>
+<p>以L2正则化为例，$w_j$服从高斯分布</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr11.png"></p>
+<p>然后假设均值 $\mu=0$，$2\sigma^2=1$,在对数域对w求导可得：</p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr12.png"></p>
+<p>这与公式（7.17）一致～</p>
+<p>知乎上有一篇文章很好的解释了<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/35356992">L1正则化与L2正则化</a></p>
+<h3 id="Feature-Selection-特征选择"><a href="#Feature-Selection-特征选择" class="headerlink" title="Feature Selection 特征选择"></a>Feature Selection 特征选择</h3><p>对于生成模型如 naive bayes 无法使用正则化，因此需要 <strong>feature selection</strong></p>
+<p>如何进行特征选择，就是通过一些metric对特征进行排序，选择重要的特征。</p>
+<p><strong>information gain</strong> 这部分参考宗成庆老师的《统计自然语言处理》</p>
+<p>信息增益（IG）法依据某项特征 $w_i$ 为整个分类所能提供的信息量的多少来衡量该特征项的重要程度。某个特征的信息增益指的是有该特征和没有该特征时，为整个分类所能提供的信息量的差别。其中，信息量的多少由熵来衡量。</p>
+<p>因此信息增益即不考虑任何特征时文档的熵和考虑该特征后文档的熵的插值：</p>
+<p> <img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr13.png"></p>
+<p> $P(c_i)$ 表示训练样本中 $c_i$ 类文档的概率。 $P(w)$ 表示训练样本中包含特征w的文档占总文档数的概率。假设某一个文档中有两个词 ‘great’,那么需要将它数量变为1，这在chapter6中有讲到。 $P(c_i|w)$ 表示文档中包含特征w且类别为 $c_i$ 的概率。</p>
+<p>在李航老师的《统计学习方法》中，决策树这一章中也有讲到使用信息增益来进行特征选择。</p>
+<p>$$H(C|w) = P(w)\sum_{i=1}^CP(c_i|w)logP(c_i|w)$$</p>
+<p>表示在特征w条件下对训练样本进行分类的不确定性，也就是条件熵的期望。</p>
+<p>公式（7.23）中第一项是经验熵，就是对训练数据集进行不确定性的度量。第二项是经验条件熵，也就是在特征w给定的条件下对训练数据集进行分类的不确定性。</p>
+<h3 id="Choosing-a-classifier-and-features"><a href="#Choosing-a-classifier-and-features" class="headerlink" title="Choosing a classifier and features"></a>Choosing a classifier and features</h3><p>显然logistic回归要比naive bayes要好，因为naive bayes中假设特征 $f_1,f_2,…,f$ 相互独立，如果特征 $f_1 和 f_2$ 具有一定的相关性，那么naive bayes就overestimate这个特征。而logistic相比之下对具有相关性的特征的处理鲁棒性要强很多，如果 $f_1,f_2$ 完全正相关，那么他们的权重都会赋值减少为原来的 1/2.</p>
+<blockquote>
+<p>The overly strong conditional independence assumptions of Naive Bayes mean that if two features are in fact correlated naive Bayes will multiply them both in as if they were independent, overestimating the evidence. Logistic regression is much more robust to correlated features; if two features f 1 and f 2 are perfectly correlated, regression will simply assign half the weight to w 1 and half to w 2 .</p>
+</blockquote>
+<p>当特征具有很强的相关性时，logistic的准确率要高于Naive bayes。但当数据集较小时，naive bayes的准确率要高于logistic和SVM，而且naive bayes更容易训练。</p>
+<h4 id="bias-variance-tradeoff"><a href="#bias-variance-tradeoff" class="headerlink" title="bias-variance tradeoff"></a>bias-variance tradeoff</h4><p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr14.png"></p>
+<ul>
+<li><p><strong>偏差bias</strong> 较高: 欠拟合 underfitting</p>
+</li>
+<li><p><strong>方差variance</strong> 较高： 过拟合 overfitting</p>
+</li>
+</ul>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr15.png"></p>
+<p>如何选择各种分类器classifier:</p>
+<ul>
+<li><p>low bias : SVM with polynomial or RBF kernels, downweighting or removing features</p>
+</li>
+<li><p>low variance: naive bayes, add more features</p>
+</li>
+</ul>
+<p><strong>feature interactions</strong> :特征工程很重要。</p>
+<p>常见的分类器有：Support Vector Machines (<strong>SVMs</strong>) with polynomial or RBF kernels, and <strong>random forests</strong>.</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr16.png"></p>
+<p><img src="/chapter7-logistic%E5%9B%9E%E5%BD%92/lr17.png"></p>
+<p>参考：</p>
+<ul>
+<li><p>Speech and language Processing，Chapter7</p>
+</li>
+<li><p>知乎：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/35356992">L1正则化与L2正则化</a></p>
+</li>
+<li><p>宗成庆，《统计自然语言处理》，第13章</p>
+</li>
+<li><p>李航，《统计学习方法》，第5章</p>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>chapter7-logistic回归</p><p><a href="http://www.panxiaoxie.cn/2018/04/16/chapter7-logistic回归/">http://www.panxiaoxie.cn/2018/04/16/chapter7-logistic回归/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-04-16</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NLP/">NLP</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Gefällt Ihnen der Artikel? Unterstützen Sie den Autor mit</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Kauf mir einen Kaffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/04/17/chapter8-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%92%8C%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">chapter8-神经网络和自然语言模型</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/04/14/chapter6-%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%92%8C%E6%83%85%E6%84%9F%E5%88%86%E7%B1%BB/"><span class="level-item">chapter6-朴素贝叶斯和情感分类</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Kommentare</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Your name"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Your name</p><p class="is-size-6 is-block">Your title</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Your location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Seiten</p><a href="/archives"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Kategorien</p><a href="/categories"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">8</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Folgen</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Kategorien</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Letzte Einträge</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archive</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Abonnieren Sie Updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Abonnieren"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Zurück nach oben" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern.",
+          dismiss: "Verstanden!",
+          allow: "Cookies zulassen",
+          deny: "Ablehnen",
+          link: "Mehr erfahren",
+          policy: "Cookie-Richtlinie",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Tippen Sie etwas..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Tippen Sie etwas...","untitled":"(Ohne Titel)","posts":"Seiten","pages":"Pages","categories":"Kategorien","tags":"Tags"});
+        });</script></body></html>

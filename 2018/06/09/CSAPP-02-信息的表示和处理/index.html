@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>SCAPP-02-信息的表示和处理 - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="CSAPP 第二章"><meta property="og:type" content="blog"><meta property="og:title" content="SCAPP-02-信息的表示和处理"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/06/09/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="CSAPP 第二章"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/01.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/02.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/03.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/04.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/06.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/07.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/08.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/09.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/10.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/11.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/12.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/16.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/13.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/14.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/15.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/17.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/18.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/19.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/20.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/21.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/22.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/23.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/24.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/28.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/29.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/30.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/25.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/26.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/27.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/31.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/32.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/33.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/34.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/35.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/36.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/37.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/38.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/40.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/41.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/42.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/43.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/44.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/45.png"><meta property="og:image" content="http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/46.png"><meta property="article:published_time" content="2018-06-09T02:40:22.000Z"><meta property="article:modified_time" content="2021-06-29T05:19:29.419Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="CSAPP"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/01.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/06/09/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/"},"headline":"SCAPP-02-信息的表示和处理","image":["http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/01.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/02.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/03.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/04.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/06.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/07.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/08.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/09.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/10.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/11.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/12.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/16.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/13.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/14.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/15.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/17.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/18.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/19.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/20.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/21.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/22.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/23.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/24.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/28.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/29.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/30.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/25.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/26.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/27.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/31.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/32.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/33.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/34.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/35.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/36.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/37.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/38.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/40.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/41.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/42.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/43.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/44.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/45.png","http://www.panxiaoxie.cn/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/46.png"],"datePublished":"2018-06-09T02:40:22.000Z","dateModified":"2021-06-29T05:19:29.419Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"CSAPP 第二章"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/06/09/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2018-06-09T02:40:22.000Z" title="2018/6/9 上午10:40:22">2018-06-09</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2021-06-29T05:19:29.419Z" title="2021/6/29 下午1:19:29">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/CSAPP/">CSAPP</a></span><span class="level-item">37 minutes lesen (Über 5537 Wörter)</span></div></div><h1 class="title is-3 is-size-4-mobile">SCAPP-02-信息的表示和处理</h1><div class="content"><p>CSAPP 第二章</p>
+<span id="more"></span>
+
+
+
+<h2 id="信息的表示和处理"><a href="#信息的表示和处理" class="headerlink" title="信息的表示和处理"></a>信息的表示和处理</h2><p>三种数字表示：</p>
+<ul>
+<li><p>无符号(unsigned)编码：大于或等于零的数字</p>
+</li>
+<li><p>补码（two’s-complement）编码：表示有符号整数最常见的方式</p>
+</li>
+<li><p>浮点数(floating-point)编码：</p>
+</li>
+</ul>
+<p><strong>溢出（overflow）</strong>:计算机的表示法是用有限数量的位来对一个数字编码。因此结果太大至无法表示时，某些运算就会溢出。</p>
+<h3 id="2-1-信息存储"><a href="#2-1-信息存储" class="headerlink" title="2.1 信息存储"></a>2.1 信息存储</h3><p>计算机使用8位的块，或者字节（byte）。作为最小的可寻址的内存单元，而不是单独的位。</p>
+<p>机器级程序将内存视为一个非常大的数字来标识，称为它的内存。内存的每一个字节都由一个唯一的数字来标识，称为它的地址，所有可能地址的集合称为虚拟地址空间(virtual address space)。</p>
+<p>接下来几章将讲述编译器和运行时系统是如何将存储器空间划分为更可管理的单元，来存放不同的程序对象，即程序数据、指令和控制信息。</p>
+<h4 id="2-1-1-十六进制表示法"><a href="#2-1-1-十六进制表示法" class="headerlink" title="2.1.1 十六进制表示法"></a>2.1.1 十六进制表示法</h4><p>一个字节是8位：</p>
+<ul>
+<li><p>对于二进制表示法，值域是 $00000000_2-11111111_2$</p>
+</li>
+<li><p>对于十进制表示法，值域是 $0_{10}-255_{10}$</p>
+</li>
+<li><p>对十六进制表示法，值域是 $00_{16}-FF_{16}$</p>
+</li>
+</ul>
+<p>练习题 2.1</p>
+<p>A. 将ox39A7F8转换为二进制.  0011 1001 1010 0111 1111 1000</p>
+<p>B. 将二进制 1100 1001 0111 1011 转换为十六进制。 oxE97D</p>
+<p>练习题 2.2</p>
+<p>$2^n=2^{i+4j}$ 可以很容易写成十六进制就是 2^i后面跟着j个0</p>
+<p>比如：</p>
+<ul>
+<li><p>$2^9$ -&gt; $2^{1+2x4}$ -&gt; ox200</p>
+</li>
+<li><p>$2^19$ -&gt; $2^{3+4x4}$ -&gt; ox80000</p>
+</li>
+</ul>
+<p><strong>进制的转换</strong></p>
+<p>将十进制转换为16进制，其实可以理解为将十进制转换为十进制，就是除以10，余数分别是个位、百位…. 同样的道理，转换为16进制就是除以16</p>
+<p>十六进制转换为10进制就更简单了，16的幂乘以每个十六进制数。</p>
+<h4 id="2-1-2-字数据大小"><a href="#2-1-2-字数据大小" class="headerlink" title="2.1.2 字数据大小"></a>2.1.2 字数据大小</h4><p>对于一个字长为w位的机器，虚拟地址的范围为0~$2^w-1$，程序最多访问$2^w$个字节。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/01.png"></p>
+<h4 id="2-1-3-寻址和字节顺序"><a href="#2-1-3-寻址和字节顺序" class="headerlink" title="2.1.3 寻址和字节顺序"></a>2.1.3 寻址和字节顺序</h4><p>在几乎所有的机器上，多字节对象都被存储为连续的字节序列，对象的地址为所使用字节中最小的地址。</p>
+<p>假设变量x的类型为int， 位于地址0x100处，它的十六进制值为0x01234567. 十六进制的两位占一个字节，因此其地址范围 0x100~0x103.</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/02.png"></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> *byte_pointer; <span class="comment">// 字符指针</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 typedef 来命名数据类型</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_bytes</span><span class="params">(byte_pointer start, <span class="keyword">size_t</span> len)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">size_t</span> i;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;len; i++)</span><br><span class="line"></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot; %.2x&quot;</span>, start[i]);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// size_t 表示size type，大小的类型，意味着它是sizeof运算符结果的类型</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在C语言中，可以用指针表示法来引用数组元素。引用start[i]表示我们想要读取以start指向的位置为起始的第i个位置处的字节。</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_int</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">show_bytes</span>((byte_pointer)&amp;x, <span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">int</span>));</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_float</span><span class="params">(<span class="keyword">float</span> x)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">show_bytes</span>((byte_pointer)&amp;x, <span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">float</span>));</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_pointer</span><span class="params">(<span class="keyword">void</span> *x)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">show_bytes</span>((byte_pointer)&amp;x, <span class="built_in"><span class="keyword">sizeof</span></span>(<span class="keyword">void</span> *));</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// C 和 C++ 中独有的操作， C的“取地址”运算符 &amp; 创建一个指针 &amp;x, 这个指针的类型取决于 x 的类型，因此这三个指针类型分别为 int*, float*, void**, 数据类型 void * 是一种特殊类型的指针，没有相关联的类型信息。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// (byte_pointer)&amp;x 表示强制转换，无论 &amp;x 之前是什么类型，现在就是一个指向 unsigned char的指针。但这并不会改变真实的指针，只是编译器以新的数据类型来看待被指向的数据。</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_show_bytes</span><span class="params">(<span class="keyword">int</span> val)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> ival = val;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">float</span> fval = (<span class="keyword">float</span>) ival;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> * pval = &amp;ival;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">show_int</span>(ival);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">show_float</span>(fval);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">show_pointer</span>(pval);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">test_show_bytes</span>(<span class="number">12345</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>我的机器是Linux64，运行结果是这样的：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/03.png"></p>
+<p>分析下为什么是这样: 12345，十六进制为 ox3039, 对于int数据采用的是4字节：</p>
+<ul>
+<li><p>二进制数表示是: 0000 0000 0000 0000 0011 0000 0011 1001</p>
+</li>
+<li><p>在小端法机器的十六进制表示为: 39 30 00 00</p>
+</li>
+<li><p>在大端法机器的十六进制表示为: 00 00 30 39</p>
+</li>
+</ul>
+<p>以一个字节为单位，十六进制一个字节占两位，所以每两个数一个字节。二进制是每8个数一个字节。</p>
+<p>为什么浮点数 12345.0 的十六进制是这样的呢？之后会讲到～</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/04.png"></p>
+<p><strong>练习题 2.5</strong></p>
+<p>十六进制数 ox87654321    小端法： 21 43 65 87  </p>
+<p>A. 小端法： 21    大端法：87</p>
+<p>B. 小:21 43      大： 87 65</p>
+<p>C. 小:21 43 65   大: 87 65 43</p>
+<p><strong>练习题 2.6</strong></p>
+<p>3510593   -&gt; ox00359141 -&gt; 0000 0000 0011 0101 1001 0001 0100 0001</p>
+<p>3510593.0 -&gt; ox4A564504 -&gt; 0100 1010 0101 0110 0100 0101 0000 0100</p>
+<p>最大匹配位数：</p>
+<h4 id="2-1-4-表示字符串"><a href="#2-1-4-表示字符串" class="headerlink" title="2.1.4 表示字符串"></a>2.1.4 表示字符串</h4><p>每个字符对应一个ASCII码。总共有127个ascii码。</p>
+<ul>
+<li><p>十进制数x的ASCII码正好是 0x3x, 比如要显示字符 0，其ASCII码是48，用十六进制就是0x30.</p>
+</li>
+<li><p>‘A’<del>‘Z’的ASCII码十进制表示是 65</del>90，‘a’<del>‘z’十进制是 97</del>122，十六进制是ox61~0x7A.</p>
+</li>
+<li><p>null的ASCII码是 0，也就是0x00.</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">show_bytes</span><span class="params">(byte_pointer start, <span class="keyword">size_t</span> len)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">size_t</span> i;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;len; i++)</span><br><span class="line"></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot; %.2x&quot;</span>, start[i]);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *s = <span class="string">&quot;abcdef&quot;</span>;</span><br><span class="line"></span><br><span class="line">show_bytes((byte_pointer) s, <span class="built_in">strlen</span>(s));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>运行结果： 61 62 63 64 65 66</p>
+<h4 id="2-1-5-表示代码"><a href="#2-1-5-表示代码" class="headerlink" title="2.1.5 表示代码"></a>2.1.5 表示代码</h4><p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/06.png"></p>
+<p>不同机器类型使用不同的且不兼容的指令和编码方式。</p>
+<h4 id="2-1-6-布尔代数简介"><a href="#2-1-6-布尔代数简介" class="headerlink" title="2.1.6 布尔代数简介"></a>2.1.6 布尔代数简介</h4><p>0和1的研究～</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/07.png"></p>
+<p>非、与、或、异或(表示P或者Q为真，但不同时为真时，P^Q为真)</p>
+<p>布尔运算可拓展到位向量的运算：</p>
+<p>a=[0110], b=[1100], 那么 a&amp;b, a|b, a^b, ~b 分别为：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/08.png"></p>
+<p>位向量可以用来表示有限集合。$[a_{w-1},…,a_1,a_0]$（注意是 $a_{w-1}$ 在左边，$a_0$ 在右边） 编码任何子集 $A\in {0,1,2,…,w-1}$. 比如 a=[00101]就表示 A={0,2}. 其实可以把 a 看做多标签的 one-hot向量。。。</p>
+<p>练习题 2.9</p>
+<p>蓝色|绿色 = [001]|[010] = [011] = 蓝绿色</p>
+<p>红色 ^ 红紫色 = [100]^[101] = [001] = 蓝色</p>
+<h4 id="2-1-7-C语言中的位级运算"><a href="#2-1-7-C语言中的位级运算" class="headerlink" title="2.1.7 C语言中的位级运算"></a>2.1.7 C语言中的位级运算</h4><p>布尔位运算。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/09.png"></p>
+<p>从十六进制转换为二进制，进行运算，在转换回十六进制。</p>
+<p><strong>练习题 2.10</strong></p>
+<p>任意一位向量 a，有 a ^ a = 0. 那么 a^a^b=b.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inplace_swap</span><span class="params">(<span class="keyword">int</span> *x, <span class="keyword">int</span> *y)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        * y = * x ^ * y;</span><br><span class="line"></span><br><span class="line">        * x = * x ^ * y;</span><br><span class="line"></span><br><span class="line">        * y = * x ^ * y;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> a=<span class="number">5</span>, b=<span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%p, %p\n&quot;</span>,&amp;a, &amp;b);</span><br><span class="line"></span><br><span class="line">        inplace_swap(&amp;a, &amp;b);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%p, %p\n&quot;</span>,&amp;a, &amp;b);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%i, %i\n&quot;</span>, a, b);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">0x7ffe90686210, 0x7ffe90686214</span><br><span class="line"></span><br><span class="line">0x7ffe90686210, 0x7ffe90686214</span><br><span class="line"></span><br><span class="line">4, 5</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>我们发现这里其实a和b的地址没有改变，是地址对应的值在进行异或运算。 5^4=1, 5^1=4, 4^1=5. 这就是二进制运算，也就是位运算。</p>
+<p>6^5=3, 6^3=5, 5^3=6.</p>
+<p>不过不要误会，跟加减法没关系，原理还是二进制 a^a=0. 所以能进行交换，就是因为 a^b^a=b.</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/10.png"></p>
+<p>结果是：</p>
+<p>step1  a           a^b</p>
+<p>step2  a^(a^b)=b   a^b</p>
+<p>step3  b           b^(a^b)=a</p>
+<p><strong>练习题 2.11</strong></p>
+<p>将 &lt;= 改为 &lt; 即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inplace_swap</span><span class="params">(<span class="keyword">int</span> *x, <span class="keyword">int</span> *y)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        * y = * x ^ * y;</span><br><span class="line"></span><br><span class="line">        * x = * x ^ * y;</span><br><span class="line"></span><br><span class="line">        * y = * x ^ * y;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reverse_array</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> cnt)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> first, last;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (first = <span class="number">0</span>, last = cnt <span class="number">-1</span>; first &lt; last; first++, last--)</span><br><span class="line"></span><br><span class="line">                inplace_swap(&amp;a[first], &amp;a[last]);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> a[] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line"></span><br><span class="line">        reverse_array(a, <span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">5</span>; i++)</span><br><span class="line"></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;%i&quot;</span>, a[i]);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-1-8-C语言中的逻辑运算"><a href="#2-1-8-C语言中的逻辑运算" class="headerlink" title="2.1.8 C语言中的逻辑运算"></a>2.1.8 C语言中的逻辑运算</h4><p>包括 ||, &amp;&amp; 和 !, 逻辑运算认为所有非零参数为TRUE，参数0 表示 FALSE.</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/11.png"></p>
+<p>要注意与位运算区分开来。</p>
+<p><strong>习题 2.15</strong></p>
+<p>if ((x^y)|(x^y))</p>
+<p>  return 1</p>
+<p>else</p>
+<p>  return 0</p>
+<h4 id="2-1-9-C语言中的移位运算"><a href="#2-1-9-C语言中的移位运算" class="headerlink" title="2.1.9 C语言中的移位运算"></a>2.1.9 C语言中的移位运算</h4><p>x &lt;&lt; k: 表示向左移动k位，右边补0</p>
+<p>x &gt;&gt; k: 有两种情况：</p>
+<ul>
+<li><p>逻辑右移：向右移动k位，左边补0</p>
+</li>
+<li><p>算术右移：向右移动k位，左边补最高位的值。</p>
+</li>
+</ul>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/12.png"></p>
+<p>可以看到一定是在一个字节内的，也就是以一个字节为整体。</p>
+<p>对于有符号数：</p>
+<p>在java中 x&gt;&gt;k 是算术右移， x&gt;&gt;&gt;&gt;k 是逻辑右移。</p>
+<p>C语言中没有明确规定，但几乎所有的编译器采用算术右移。也就是补最高位的值。</p>
+<p>对于无符号数，右移必须是逻辑右移。</p>
+<p>移位运算符的优先级低于加法和减法。</p>
+<h3 id="2-2-整数表示"><a href="#2-2-整数表示" class="headerlink" title="2.2 整数表示"></a>2.2 整数表示</h3><p>整数操作术语：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/16.png"></p>
+<h4 id="2-2-1-整型数据类型"><a href="#2-2-1-整型数据类型" class="headerlink" title="2.2.1 整型数据类型"></a>2.2.1 整型数据类型</h4><p>32位机器：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/13.png"></p>
+<p>64位机器：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/14.png"></p>
+<p>跟机器相关的整型数据类型就只有 long，在64位中占8个字节。在32位中占4个字节。</p>
+<p>可以稍微记一下这些数：</p>
+<ul>
+<li><p>有符号字符， 1个字节。 范围 $-2^7=128 \sim 2^7-1=127$</p>
+</li>
+<li><p>无符号字符， 1个字节。 范围 $0 \sim 2^8-1=255$</p>
+</li>
+<li><p>有符号短整型，2个字节。范围 $-2^15=-32768 \sim 2^15-1=32767$</p>
+</li>
+<li><p>无符号短整型，2个字节。范围 $0 \sim 2^16-1=65535$</p>
+</li>
+<li><p>有符号整型， 4个字节。范围 $-2^31=-2 147 483 648 \sim 2^31-1=2 147 483 647$</p>
+</li>
+<li><p>无符号整型， 4个字节。范围 $0 \sim 2^32-1=4 294 967 295$</p>
+</li>
+</ul>
+<blockquote>
+<p>无符号的数值范围是有符号的两倍，是因为有符号数需要拿出一位来表示符号，所以就小了一倍了。比如：一个字符是一个字节，8位，无符号范围就是 $2^8-1=255$, 有符号就是 $2^7-1=127$.</p>
+</blockquote>
+<blockquote>
+<p>然而后面介绍了补码，少一位编码是对的，但是负数的计算并不是这样哈哈哈，打脸了，并没有这么简单啦～～～ 这也解释了为啥负数是 -128， 正数是 127.</p>
+</blockquote>
+<p>C语言标准定义的每种数据类型必须表示的最小的取值范围。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/15.png"></p>
+<h4 id="2-2-2-无符号数的编码"><a href="#2-2-2-无符号数的编码" class="headerlink" title="2.2.2 无符号数的编码"></a>2.2.2 无符号数的编码</h4><p>将二进制写成向量。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/17.png"></p>
+<h4 id="2-2-3-补码编码"><a href="#2-2-3-补码编码" class="headerlink" title="2.2.3 补码编码"></a>2.2.3 补码编码</h4><p>为了标书负数值，最常见的就是补码（two’s-complement）形式， 将字的最高有效位解释为负权（negative weight）.</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/18.png"></p>
+<p>最高位的权重是 $-2^{w-1}$,对该数是正是负取决定性作用。其为1时，为负；其为0时，为正。</p>
+<p>所以w位补码能表示的范围：</p>
+<p>$$-2^{w-1} \sim \sum_{i=1}^{w-1}2^i=2^{w-1}-1$$</p>
+<p><strong>重要的数字:</strong></p>
+<ul>
+<li><p>UMax 表示最大无符号数，UMin没有写，就是0啦</p>
+</li>
+<li><p>TMax 表示最大有符号数，TMin 表示最小有符号数。</p>
+</li>
+</ul>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/19.png"></p>
+<p>可以发现：</p>
+<ul>
+<li><p>补码不对称，$|TMin| = |TMax| + 1$</p>
+</li>
+<li><p>无符号最大值是有符号最大值的2倍大一点。比如一个字节8位为例，(2^8-1) = 2(2^7-1)+1.</p>
+</li>
+</ul>
+<p><strong>练习题2.18 看不懂</strong></p>
+<h4 id="2-2-4-有符号数和无符号数之间的转换"><a href="#2-2-4-有符号数和无符号数之间的转换" class="headerlink" title="2.2.4 有符号数和无符号数之间的转换"></a>2.2.4 有符号数和无符号数之间的转换</h4><p>强制转换保持位值，只是转换了其解释方式。</p>
+<p>比如32为的无符号最大值 4294967295($UMax_32$)，与补码形式的-1的位模式是完全一样的。</p>
+<h5 id="有符号转无符号-T2U-w"><a href="#有符号转无符号-T2U-w" class="headerlink" title="有符号转无符号 $T2U_w$"></a>有符号转无符号 $T2U_w$</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">unsigned</span> u = <span class="number">4294967295u</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> tu = (<span class="keyword">int</span>) u;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;u=%u, tu=%d\n&quot;</span>, u, tu);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>运行结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">u=4294967295, tu=-1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>补码和无符号码之间的关系，以16位为例：</p>
+<p>有符号码：</p>
+<p>12345的二进制：    0011 0000 0011 1001</p>
+<p>-12345的二进制数： 1100 1111 1100 0111</p>
+<p>53191的无符号码和-12345的二进制表示一样。</p>
+<p>可以发现 $12345 + 53919 = 2^{16}$</p>
+<p>其实很容易推导出来, 可以得到如下关系：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/20.png"></p>
+<p>从符号转无符号，如果是负数 u , 假设除了最高位的数表示为 y，那么：</p>
+<p>$-2^{w-1} + y = u$</p>
+<p>现在要求无符号：</p>
+<p>$2^{w-1}+y = u+ 2*2^{w-1}= 2^w + u$</p>
+<h5 id="无符号转有符号-U2T-w"><a href="#无符号转有符号-U2T-w" class="headerlink" title="无符号转有符号 $U2T_w$"></a>无符号转有符号 $U2T_w$</h5><p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/21.png"></p>
+<p>$TMax_{w} = 2^{w-1}-1$</p>
+<p>当 $u &gt; TMax_w$ 时，显然转换为有符号应该是负的。</p>
+<p>无符号：</p>
+<p>$2^{w-1}+y = u$</p>
+<p>有符号：</p>
+<p>$-2^{w-1} +y = u-2*2^{w-1}=u-2^w$</p>
+<h4 id="2-2-5-C语言中的有符号数和无符号数"><a href="#2-2-5-C语言中的有符号数和无符号数" class="headerlink" title="2.2.5 C语言中的有符号数和无符号数"></a>2.2.5 C语言中的有符号数和无符号数</h4><p>一般都默认为是有符号数，要创建一个无符号数，必须加上后缀 ‘u’ 或 ‘U’.</p>
+<p>显示的强制转换：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/22.png"></p>
+<p>隐式的强制转换：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/23.png"></p>
+<p>输出 %d, %u, %x 分别表示十进制、无符号十进制和十六进制。所以在printf输出时，也会发生转换。 总之，记住输出的类型只是一种解释形式，底层的位值是不变的。</p>
+<p>当执行运算时，一个运算数是无符号的，一个是有符号的。那么有符号的会隐式的转换为无符号进行计算。 比如32位机器中 -1 &gt; 0u. 这里的-1是 4294967295u</p>
+<h4 id="2-2-6-拓展一个数字的位表示"><a href="#2-2-6-拓展一个数字的位表示" class="headerlink" title="2.2.6 拓展一个数字的位表示"></a>2.2.6 拓展一个数字的位表示</h4><ul>
+<li>无符号拓展 $B2U_w(\overrightarrow u)=B2U_{w’}=(\overrightarrow u’)$ 在表示的开头添加 w’-w 个0</li>
+</ul>
+<ul>
+<li>有符号拓展 $B2T_w(\overrightarrow x) = B2T_{w’}(\overrightarrow x’)$ 在表示开头添加 w’-w 个 $x_{w-1}$</li>
+</ul>
+<p>对于无符号很好理解，添加0后值不会改变。但对于有符号的负数，添加1之后，其值也是没有改变的。比如有符号 [101] 表示 -4+1=-3. 扩展一位 [1101]= -8+4+1= -3. 这是因为每扩展一位 $-2^w+2^{w-1}=-2^{w-1}$. 所以不变～～</p>
+<h4 id="2-2-7-截断数字"><a href="#2-2-7-截断数字" class="headerlink" title="2.2.7 截断数字"></a>2.2.7 截断数字</h4><h5 id="截断无符号数，其实就是取模运算"><a href="#截断无符号数，其实就是取模运算" class="headerlink" title="截断无符号数，其实就是取模运算"></a>截断无符号数，其实就是取模运算</h5><p>$x=B2U_w(\overrightarrow x), x’=B2U_k(\overrightarrow x’)$</p>
+<p>则 x’=x mod $2^k$. 即对 2^k 取余。</p>
+<h5 id="截断有符号数"><a href="#截断有符号数" class="headerlink" title="截断有符号数"></a>截断有符号数</h5><p>$[x_{w-1},x_{w-2},…,x_0]$</p>
+<p>先按照无符号数截断，也就是对 $2^k$ 取余。然后在转换为有符号数。</p>
+<h4 id="2-2-8-关于有符号数与无符号数的建议"><a href="#2-2-8-关于有符号数与无符号数的建议" class="headerlink" title="2.2.8 关于有符号数与无符号数的建议"></a>2.2.8 关于有符号数与无符号数的建议</h4><p><strong>练习题 2.25</strong></p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/24.png"></p>
+<p>出现错误是因为 length 是无符号数，当length=-1时，会转换为 2^31-1. 循环会无限循环下去。 将 unsigned lenght 修改为 int length 即可。</p>
+<p><strong>练习题2.26</strong></p>
+<p>strlen 返回的 size_t 是unsigned int， 所以 相减为-1之后会转换。 所以改为 int (strlen(s)- strlen(t)) &gt; 0;</p>
+<p>无符号数有时候会很有用的。</p>
+<h3 id="2-3-整数运算"><a href="#2-3-整数运算" class="headerlink" title="2.3 整数运算"></a>2.3 整数运算</h3><h4 id="2-3-1-无符号加法"><a href="#2-3-1-无符号加法" class="headerlink" title="2.3.1 无符号加法"></a>2.3.1 无符号加法</h4><p>x， y是无符号数，0 &lt; x,y &lt; $2^w-1$. 如果溢出，说明 $2^{w} \le x+y &lt; 2^{w+1}-2$. 需要 w+1 位才能表示出来。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/28.png"></p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/29.png"></p>
+<p>s = x + y. 当溢出时，s = x + y - 2^w</p>
+<p>溢出时，w+1位为1，丢弃它相当于从和中减去了 $2^w$。正常情况下，w+1 位为0，不会影响。</p>
+<p>检测无符号溢出的条件：</p>
+<p>如果溢出：$s = x + y -2^w$, 那么 $s = x+(y-2^w) &lt;x$, 同样 $s = y+(x-2^w)&lt;y$</p>
+<p><strong>习题 2.27</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">uadd_ok</span><span class="params">(<span class="keyword">unsigned</span> x, <span class="keyword">unsigned</span> y)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">unsigned</span> s = x + y;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> s &gt;= x;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="无符号数求反"><a href="#无符号数求反" class="headerlink" title="无符号数求反"></a>无符号数求反</h5><p>模数加法形成一种数据结构，称为阿贝尔群，也就是求 x 的逆元 $-^u_w x$. 什么意思呢，就是 这个逆元加上 x 对2^w 取模等于 0.</p>
+<p>所谓模数加法，超过了模 $2^w$, 就是除以模 $2^w$ 的余数</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/30.png"></p>
+<p><strong>练习题2.28</strong></p>
+<p>| x 十六进制 | x 十进制 | $-^u_4x$ 十进制 | $-^u_4x$十六进制 |</p>
+<p>| ———- | ——– | ————— | —————- |</p>
+<p>| 0          | 0        | 0               | 0                |</p>
+<p>| 5          | 5        | 11              | B               |</p>
+<p>| 8          | 8       | 8              | 8                |</p>
+<p>| D          | 13       | 3               | 3                |</p>
+<p>| F          |15       | 1               | 1                |</p>
+<h4 id="2-3-2-补码加法"><a href="#2-3-2-补码加法" class="headerlink" title="2.3.2 补码加法"></a>2.3.2 补码加法</h4><p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/25.png"></p>
+<p>注意跟无符号数正溢出的区别，无符号数溢出之后是去掉 w+1 位，但是有符号数正溢出时，$x+y&lt;2^w$，w位还是要考虑的，只是变为负数了。所以是 $x+y-2*2^{w-1}$, 而不能认为是 $x+y-2^{w-1}$</p>
+<p>但是负溢出，就会溢出到 w+1 位了，那么去掉 w+1 位，就是 $x+y+ 2^w$ 了</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/26.png"></p>
+<p>推导的话，因为不论有符号还是无符号，都是相同的位级表示，二进制的加法也是进位同样的方式。 只是解释方式不一样而已。所以可以将有符号转换为无符号数进行 $+^u_w$ 的模 $2^w$ 的模数加法运算，然后在转换为有符号数即可。</p>
+<p>补码溢出的条件</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/27.png"></p>
+<p><strong>习题 2.30</strong></p>
+<p>补码溢出判断：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tadd_ok</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> sum = x+y;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ((x&gt;<span class="number">0</span> &amp;&amp; y&gt;<span class="number">0</span> &amp;&amp; s&lt;=<span class="number">0</span>) || (x&lt;<span class="number">0</span> &amp;&amp;y&lt;<span class="number">0</span> &amp;&amp; s&gt;=<span class="number">0</span>))</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>习题 2.31</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Determine whether arguments can be added without overflow */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* WARRING: This code is buggy */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tadd_ok</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> sum = x+y;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (sum-x == y) &amp;&amp; (sum-y ==x);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>无论正确与否，都是返回 1. 模数加法形成了一种数据结构，称为阿贝尔群(Abelian group). 因此代码中的判断，无论溢出与否，都是成立的，都返回 1；</p>
+<p>具体推导如下：</p>
+<p>如果 x+y 溢出， $sum = x+y-2^w$,</p>
+<p>那么 $sum-x = y-2^w$.</p>
+<p>因为 $y &lt; 2^{w-1}-1$, 则 $y-2^w&lt; -2^{w-1} -1$, 仍然负溢出。</p>
+<p>所以 $sum-x=  y-2^w+2^w = y$.</p>
+<p><strong>习题 2.32</strong></p>
+<p>x -y 不溢出时，返回1.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Determine whether arguments can be subtracted without overflow */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* WARNNING: This code is buggy. */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tsub_ok</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> tadd_ok(x, -y);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>x 和 y 取什么值是，会产生错误的结果？</p>
+<p>当 $y = TMin_w = -2^{w-1}$ 时， $-y = 2^{w-1}$ 原本应该是正数的，但已经溢出了，转换成了负数。 $-y = y$.</p>
+<p>此时对于 tadd_ok(x, -y) 来说，当 x 为负时都认为溢出，返回 0，而 x 为非负时，都认为没有溢出返回 1。而情况恰恰相反，tsub_ok(x, TMin)，当 x 为 负数时，应认为没有溢出，返回 1，而 x 为非负时，应认为溢出返回 0.</p>
+<h4 id="2-3-3-补码的非"><a href="#2-3-3-补码的非" class="headerlink" title="2.3.3 补码的非"></a>2.3.3 补码的非</h4><p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/31.png"></p>
+<p>因为补码又负数，所以一般情况下，其逆元就是 -x， 而对于 $TMin_w$, $-TMin_w$ 会溢出，就不属于一般情况了。</p>
+<p><strong>练习题 2.33</strong></p>
+<p>| x 十六进制 | x 十进制 | $-^t_4x$ 十进制 | $-^t_4x$十六进制 |</p>
+<p>| ———- | ——– | ————— | —————- |</p>
+<p>| 0          | 0        | 0               | 0                |</p>
+<p>| 5          | 5        | -5              | -5               |</p>
+<p>| 8          | -8       | -8              | 8              |</p>
+<p>| D        |    -3      |   3              |    3              |</p>
+<p>| F          |   -1       |    1             |      1            |</p>
+<h5 id="第二种方法-执行位级补码非，然后加1"><a href="#第二种方法-执行位级补码非，然后加1" class="headerlink" title="第二种方法: 执行位级补码非，然后加1"></a>第二种方法: 执行位级补码非，然后加1</h5><p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/32.png"></p>
+<p>对于无符号数或有符号数，非（或者逆元），他们的位模式是一样的。都是位模式取反+1， 对任意整数 非（逆元）-x 和 其位模式取反（位级补码非）加1 ~x+1 都是一样的。</p>
+<h4 id="2-3-4-无符号乘法"><a href="#2-3-4-无符号乘法" class="headerlink" title="2.3.4 无符号乘法"></a>2.3.4 无符号乘法</h4><p>$0\le x,y \le 2^w-1$, $0\le x\cdot y z^{2w}-2^{w-1}+1$ 需要2w 位来表示。将其截断为 w 位，等价于计算该值模 $2^w$.</p>
+<p>$$x*^u_w y = (x\cdot y)mod\ 2^w$$</p>
+<h4 id="2-3-5-补码乘法"><a href="#2-3-5-补码乘法" class="headerlink" title="2.3.5 补码乘法"></a>2.3.5 补码乘法</h4><p>补码乘法和无符号的乘法运算的位级表示是一样的。</p>
+<p>对于 $TMin_w\le x,y\le TMax_w$ 有：</p>
+<p>$$x*^t_wy=U2T_w((x\cdot y)mod\ 2^w)$$</p>
+<p>原理是：</p>
+<p>$$T2B_w(x<em>^t_wy)=U2B_w(x’</em> ^u_w y’)$$</p>
+<p>x’,y’ 是x，y的无符号转换后的数。</p>
+<p>证明略。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/33.png"></p>
+<p>虽然完整的乘积的位级表示可能不同，但截断后是一样的。</p>
+<p><strong>练习题 2.34</strong></p>
+<p>| 模式   | x        | y        | $x\cdot y$  | 截断后的 $x\cdot y$ |</p>
+<p>| —— | ——– | ——– | ———– | ——————- |</p>
+<p>| 无符号 | [100]=4  | [101]=5  | [10100]=20  | [100]=4             |</p>
+<p>| 补码   | [100]=-4 | [101]=-3 | [1100] = 12 | [100]=-4            |</p>
+<p>| 无符号 | [010]=2  | [111]=7  | [1110]=14   | [110]=6            |</p>
+<p>| 补码   | [010]=2 | [111]=-1 | [110] =-2 | [110]=-2     |</p>
+<p><strong>练习题 2.35</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Determine whether arguments can be multiplied without overflow */</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">tmult_ok</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> p = x*y;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Either x is 0, or dividing p by x gives y * /</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    return !x || p/x == y;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment"></span></span><br></pre></td></tr></table></figure>
+
+<p>见题 2.31，我们不能用减法来检验加法是否溢出，但这里可以用除法为检验乘法是否溢出。</p>
+<p>证明 ？？</p>
+<p><strong>练习题 2.36</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">int tmul_ok(int x, int y)</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    /* Compute product without overflow*/</span><br><span class="line"></span><br><span class="line">    /* 这一行的强制类型转换至关重要。如果写成 int64_t p = x*y; * /</span><br><span class="line"></span><br><span class="line">    /* 就会用 32 位值来计算乘积(可能溢出），再符号扩展到 64 位*/</span><br><span class="line"></span><br><span class="line">    int64_t p = (int64_t) x * y;</span><br><span class="line"></span><br><span class="line">    /* See if casting to int preserves value*/  </span><br><span class="line"></span><br><span class="line">    return (int)p == p;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="2-3-6-乘以常数"><a href="#2-3-6-乘以常数" class="headerlink" title="2.3.6 乘以常数"></a>2.3.6 乘以常数</h4><p>在大多数机器上，整数乘法指令相当慢，需要10个或者多个时钟周期。而加法、减法、位级运算和移位只需要1个时钟周期，因此编译通常把乘法转换为移位和加法的组合运算。</p>
+<p>1.先考虑乘以 2 的幂</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/34.png"></p>
+<p>与2的幂的无符号乘法：</p>
+<p>x &lt;&lt; k 产生数值 $x*^u_w 2^k$</p>
+<p>与2的幂的补码乘法： 补码与无符号的位级操作等价，因此补码运算的2的幂的乘法也类似。</p>
+<p>x &lt;&lt; k 产生数值 $x*^t_w 2^k$</p>
+<p>无论是补码还是无码，都可能溢出。即使溢出，通过移位和乘法的结果也是一致的，截断就好了。</p>
+<p>对任意数的乘法可写成：</p>
+<p>$x<em>14 = x</em>(2^3+2^2+2^1)$</p>
+<p>或者 $x<em>14 = x</em>(2^4-2^1) = (x&lt;&lt;4)-(x&lt;&lt;1)$</p>
+<p><strong>练习题 2.38</strong></p>
+<p>(a&lt;&lt;k)+b， 其中k可以为0,1,2,3, b可为0或a</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">a 的倍数	LEA 指令</span><br><span class="line"></span><br><span class="line">2a	(a&lt;&lt;1)+0</span><br><span class="line"></span><br><span class="line">3a	(a&lt;&lt;1)+a</span><br><span class="line"></span><br><span class="line">4a	(a&lt;&lt;2)+0</span><br><span class="line"></span><br><span class="line">5a	(a&lt;&lt;2)+a</span><br><span class="line"></span><br><span class="line">8a	(a&lt;&lt;3)+0</span><br><span class="line"></span><br><span class="line">9a	(a&lt;&lt;3)+a</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>乘法还可以这么看， x*K. 编译器将k的二进制表达为一组0和1交替的序列。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/35.png"></p>
+<p>n表示第一段开始的n个连续的1，n-1表示第二段连续的1。</p>
+<p>比如以8位为例，14 可以写成 [(0000)(111)(0)],从第3位开始到第1位为连续的1.</p>
+<p>那么 x*14=(x&lt;&lt;3)+(x&lt;&lt;2)+(x&lt;&lt;1)</p>
+<p>或者 x*14=(x&lt;&lt;4)-(x&lt;&lt;1)</p>
+<p>很神奇。。。</p>
+<p><strong>练习题2.40</strong></p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/36.png"></p>
+<p><strong>练习题2.41</strong></p>
+<p>编译器A、B两种形式选择哪一种： 选择操作次数少的。</p>
+<h4 id="2-3-7-除以2的幂"><a href="#2-3-7-除以2的幂" class="headerlink" title="2.3.7 除以2的幂"></a>2.3.7 除以2的幂</h4><p>除法更慢，需要30多个时钟周期。也可以采用移位运算实现。只不过是右移。无符号是逻辑右移（补0），补码是算术右移（补1）</p>
+<p>定义向下取整 $\lfloor a \rfloor=a’.  a’\le a\le a’+1$. 对于非负整数是满足除法的，但 $\lfloor -3.14 \rfloor = -4$ 是不满足的。</p>
+<h5 id="除以2的幂的无符号除法"><a href="#除以2的幂的无符号除法" class="headerlink" title="除以2的幂的无符号除法"></a>除以2的幂的无符号除法</h5><p>x&gt;&gt;k 等价于 $\lfloor x/2^k\rfloor$</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/37.png"></p>
+<h5 id="除以2的幂的补码除法"><a href="#除以2的幂的补码除法" class="headerlink" title="除以2的幂的补码除法"></a>除以2的幂的补码除法</h5><p>算术右移，对与正数来说，最高有效位是0，与无符号的逻辑右移是一样的。</p>
+<p>但对于负数来说，最高有效位是1，右移后效果如下图：</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/38.png"></p>
+<p>$[x_{w-1},..,x_{w-1},x_{w-2},…,x_k]$ 是 $\lfloor x/2^k\rfloor$ 的补码表示，但是它不是向零舍入。需要使用“偏置”来修正这种不合适的舍入。</p>
+<p>(x+(1&lt;&lt;k)-1)&gt;&gt;k 等价于 $x/2^k$ 向上取整。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/40.png"></p>
+<p>偏置技术利用了如下属性： $\lceil x/y \rceil = \lfloor (x+y-1)/y \rfloor$</p>
+<p>推导： 假设 x = qy+r.</p>
+<p>$\lfloor (x+y-1)/y\rfloor=q+\lfloor(r+y-1)/y\rfloor$</p>
+<p>当r=0时，也就是能整除，$\lfloor(r+y-1)/y\rfloor=0$. 这也是要-1的原因，不然对于整除的时候就不符了。</p>
+<p>当r&gt;0时，y&gt;r&gt;1,$\lfloor(r+y-1)/y\rfloor=1$, 结果相当于 q+1</p>
+<p>所以，当 y=2^k 时， (x+(1&lt;&lt;k)-1)&gt;&gt;k = $\lceil x/2^k\rceil$</p>
+<p><strong>总结：</strong> 对于使用算术右移的补码机器，C表达式：</p>
+<p>(x&lt;0 ? x+(1&lt;&lt;k)-1 : x) &gt;&gt; k</p>
+<p><strong>练习题2.42</strong></p>
+<p>写一个函数 div16，对于整数参数 x 返回 x/16 的值。要求不能使用除法、模运算、乘法、条件语句 (if 和 ? : )、比较运算符、循环等。假设 int 为 32 位，补码，算术右移。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">div16</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* (x+bias) &gt;&gt; k</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    对于 x 为正数， bias=0</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    对于 x 为负数， bias=(1&lt;&lt;4)-1=15*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> bias = (x&gt;&gt;<span class="number">31</span>) &amp; <span class="number">0xf</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d&quot;</span>, bias);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (x+bias) &gt;&gt; <span class="number">4</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>练习题 2.43</strong></p>
+<p>下面的代码中，省略了常数 M 和 N 的定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> M    <span class="comment">/* Mystery number 1 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N    <span class="comment">/* Mystery number 2 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">arith</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    result = x*M + y/N;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>用某个 M 和 N 的值编译上面代码后，编译器将优化乘除操作。下面是产生的机器码翻译回 C 的结果：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/* Translation of assembly code for arith */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">optarith</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> t = x;</span><br><span class="line"></span><br><span class="line">    x &lt;&lt;= <span class="number">5</span>;  </span><br><span class="line"></span><br><span class="line">    x -= t;  <span class="comment">/*  x = x*2^5 -x，使用了形式B的优化：(x&lt;&lt;(n+1))-(x&lt;&lt;m)，</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">    这里 n=4, m=0, 从而 M = [11111] = 31*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (y &lt; <span class="number">0</span>) y += <span class="number">7</span>; <span class="comment">/* y + (1&lt;&lt;3)-1*/</span></span><br><span class="line"></span><br><span class="line">    y &gt;&gt;= <span class="number">3</span>;  <span class="comment">/* Arithmetic shift，从而 N 为 2 的 3 次方，即为 8*/</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> x+y;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>M=31, N=8</p>
+<h4 id="2-3-8-关于整数运算的最后思考"><a href="#2-3-8-关于整数运算的最后思考" class="headerlink" title="2.3.8 关于整数运算的最后思考"></a>2.3.8 关于整数运算的最后思考</h4><p>整数运算实际上是一种模运算形式。 整数表示的有限字长限制了运算结果的取值范围，从而可能会溢出。无论是补码表示还是无符号数，它们的加减乘除操作，在位级上都完全一样或非常类似。</p>
+<p>C 中的 unsigned 数据类型变量，在运算中会隐式地要求将其它参数先转换成 unsigned 数据类型再计算，从而会导致难以察觉的 BUG。</p>
+<p><strong>习题2.44</strong></p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/41.png"></p>
+<p>A. x=TMin_w 时为假， $x = -2^{w-1}-1 = -2^{w-1}-1+2^w=2^{w-1}-1 &gt;0$</p>
+<p>B. 举反例就是两边都为假。左边 (x&amp;7)=7=[000…0111], 那么最后三位都为1. 右边 x&lt;&lt;29 &gt;0,那么倒数第三位为0. 所以不存在同时两边都为假的x。</p>
+<p>C. 当 $x=2^31-1$, $x*x=2^62-2$,溢出，截断之后最高位为1，肯定小于0</p>
+<h3 id="2-4-浮点数"><a href="#2-4-浮点数" class="headerlink" title="2.4　浮点数"></a>2.4　浮点数</h3><h4 id="2-4-1-二进制小数"><a href="#2-4-1-二进制小数" class="headerlink" title="2.4.1 二进制小数"></a>2.4.1 二进制小数</h4><p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/42.png"></p>
+<p>小数的二进制表示法只能表示 $x\times 2^y$ 的数，其他的只能近似表示。二进制表示的长度可以提高表示的精度。 例如 $\dfrac{1}{5}$ 可以用十进制0.20精确表示，但并不能准确的用二进制表示。</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/43.png"></p>
+<p>$0.111…1_2$ 表示刚好小于0的数。用 $1.0-\epsilon$ 表示</p>
+<h4 id="2-4-2-IEEE浮点表示"><a href="#2-4-2-IEEE浮点表示" class="headerlink" title="2.4.2 IEEE浮点表示"></a>2.4.2 IEEE浮点表示</h4><ul>
+<li><p>符号位 s</p>
+</li>
+<li><p>阶码（exponent）E的作用是对浮点数加权。</p>
+</li>
+<li><p>n为小数字段 $frac=f_{n-1}\cdots f_1f_0$, 编码出来的也依赖与阶码段的值是否为0</p>
+</li>
+</ul>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/44.png"></p>
+<p>单精度： s, exp, frac字段为 1,8,23 位</p>
+<p>双精度： s,exp, frac字段为 1,11,52 位</p>
+<p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/45.png"></p>
+<p>1.规格化的值</p>
+<p>exp的位模式不全为0，也不全为1。 阶码字段被解释为以偏置形式的有符号整数。</p>
+<p>阶码的值 $E=e-Bias$, e是无符号数，为表示是 $e_{k-1}\cdots e_1e_0$. Bias等于 $2^{k-1}-1$.</p>
+<p>所以单精度范围：</p>
+<p>$e_{max}=2^8-2, e_{min}=1$</p>
+<p>$E_{max}=2^8-2-2^7+1=127$</p>
+<p>$E_{min}=1-(2^7-1)=-126$</p>
+<p>2.非规格化的值</p>
+<p>阶码全为0， E=1-Bias.</p>
+<p>3.特殊值</p>
+<ul>
+<li>当阶码全为1时，小数域全为0，得到的值表示无穷。s=0时是正无穷，s=1是负无穷。</li>
+</ul>
+<ul>
+<li>阶码全为1， 小数域非0，表示NaN.</li>
+</ul>
+<h4 id="2-4-3-数字示例"><a href="#2-4-3-数字示例" class="headerlink" title="2.4.3 数字示例"></a>2.4.3 数字示例</h4><p><img src="/CSAPP-02-%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/46.png"></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>SCAPP-02-信息的表示和处理</p><p><a href="http://www.panxiaoxie.cn/2018/06/09/CSAPP-02-信息的表示和处理/">http://www.panxiaoxie.cn/2018/06/09/CSAPP-02-信息的表示和处理/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-06-09</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/CSAPP/">CSAPP</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Gefällt Ihnen der Artikel? Unterstützen Sie den Autor mit</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Kauf mir einen Kaffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/06/27/chapter27-Question-Answering/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">chapter27-Question Answering</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/06/08/CSAPP-01-A-tour-of-computer-system/"><span class="level-item">CSAPP-01.A tour of computer system</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Kommentare</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Your name"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Your name</p><p class="is-size-6 is-block">Your title</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Your location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Seiten</p><a href="/archives"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Kategorien</p><a href="/categories"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">8</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Folgen</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Kategorien</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Letzte Einträge</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archive</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Abonnieren Sie Updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Abonnieren"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Zurück nach oben" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern.",
+          dismiss: "Verstanden!",
+          allow: "Cookies zulassen",
+          deny: "Ablehnen",
+          link: "Mehr erfahren",
+          policy: "Cookie-Richtlinie",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Tippen Sie etwas..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Tippen Sie etwas...","untitled":"(Ohne Titel)","posts":"Seiten","pages":"Pages","categories":"Kategorien","tags":"Tags"});
+        });</script></body></html>

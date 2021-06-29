@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>chapter10-词性标注 - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="词性分类 clossed class, open Classes  标记集 Tagset  HMM tagging: 生成模型 $p(t_i|w_i)&amp;#x3D;p(w_i|t_i)p(t_i|t_{i-1})$ 有viterbi算法和greedy算法～  MEMM: 判别模型 $p(t_i|w_i,t_{i-1},…f;w)$ 也有Viterbi和greedy两种算法，更新参数w～  双向模型 CRF，"><meta property="og:type" content="blog"><meta property="og:title" content="chapter10-词性标注"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/04/17/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="词性分类 clossed class, open Classes  标记集 Tagset  HMM tagging: 生成模型 $p(t_i|w_i)&amp;#x3D;p(w_i|t_i)p(t_i|t_{i-1})$ 有viterbi算法和greedy算法～  MEMM: 判别模型 $p(t_i|w_i,t_{i-1},…f;w)$ 也有Viterbi和greedy两种算法，更新参数w～  双向模型 CRF，"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pop1.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pop2.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos3.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos4.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos5.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos6.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos7.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos8.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos9.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos10.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos11.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos12.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos13.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos14.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos15.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos16.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos17.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos18.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos19.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos20.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos21.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos22.jpg"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos23.png"><meta property="article:published_time" content="2018-04-17T11:19:55.000Z"><meta property="article:modified_time" content="2021-06-29T05:19:29.404Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="NLP"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pop1.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/04/17/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/"},"headline":"chapter10-词性标注","image":["http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pop1.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pop2.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos3.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos4.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos5.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos6.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos7.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos8.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos9.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos10.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos11.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos12.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos13.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos14.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos15.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos16.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos17.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos18.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos19.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos20.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos21.png","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos22.jpg","http://www.panxiaoxie.cn/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos23.png"],"datePublished":"2018-04-17T11:19:55.000Z","dateModified":"2021-06-29T05:19:29.404Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"词性分类 clossed class, open Classes  标记集 Tagset  HMM tagging: 生成模型 $p(t_i|w_i)&#x3D;p(w_i|t_i)p(t_i|t_{i-1})$ 有viterbi算法和greedy算法～  MEMM: 判别模型 $p(t_i|w_i,t_{i-1},…f;w)$ 也有Viterbi和greedy两种算法，更新参数w～  双向模型 CRF，"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/04/17/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2018-04-17T11:19:55.000Z" title="2018/4/17 下午7:19:55">2018-04-17</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2021-06-29T05:19:29.404Z" title="2021/6/29 下午1:19:29">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/NLP/">NLP</a></span><span class="level-item">26 minutes lesen (Über 3908 Wörter)</span></div></div><h1 class="title is-3 is-size-4-mobile">chapter10-词性标注</h1><div class="content"><ul>
+<li><p>词性分类 clossed class, open Classes</p>
+</li>
+<li><p>标记集 Tagset</p>
+</li>
+<li><p>HMM tagging: 生成模型 $p(t_i|w_i)=p(w_i|t_i)p(t_i|t_{i-1})$ 有viterbi算法和greedy算法～</p>
+</li>
+<li><p>MEMM: 判别模型 $p(t_i|w_i,t_{i-1},…f;w)$ 也有Viterbi和greedy两种算法，更新参数w～</p>
+</li>
+<li><p>双向模型 CRF，chapter20讲</p>
+</li>
+</ul>
+<span id="more"></span>
+
+
+
+<p><strong>前言：</strong> 词性标注（parts-of-speech）<strong>又称 (pos, word classes, or syntactic categories)</strong> 分为8类： noun, verb, pronoun, preposition, adverb, conjunction, participle, and article.（名词，动词，代词，介词，副词，连词，分词和文章。）</p>
+<p>词性标注在寻找命名实体（named entities）和其他一些 <strong>信息提取(information extraction)</strong> 的工作中是很重要的特征。词性标注也会影响形态词缀(morphological affixes)，从而影响词干(stemming)的信息检索;在语音识别中对语音的生成也有很重要的作用，比如CONtent是名词，而conTENT是形容词。</p>
+<h3 id="Mostly-English-Word-Classes"><a href="#Mostly-English-Word-Classes" class="headerlink" title="(Mostly) English Word Classes"></a>(Mostly) English Word Classes</h3><p>传统上，词类根据形态和语法功能来分类：</p>
+<ul>
+<li><p>distributional properties 分布特征:单词出现在相似的环境中；</p>
+</li>
+<li><p>morphological properties 形态特征：单词的词缀具有相似的功能。</p>
+</li>
+</ul>
+<p>词类可分为两大类：<strong>封闭类 closed class</strong> types 和 <strong>开放类 open class</strong> type. 封闭类：<strong>prepositions 介词</strong>，function words， like，of，it,…. 一般都很短，而且频率高;开放类：<strong>nouns, verbs,adjectives, and adverbs</strong></p>
+<ul>
+<li><strong>noun 名词:</strong> 专有名词(Proper nouns)和普通名词（common nouns）。专有名词一般不受冠词限制，且一地个字母要大写。普通名词又分为可数名词（count nouns）和不可数名词（mass nouns）. 当某种东西能在概念上按照同质来分组时，就使用物质名词，这样的词是不可数的。（Mass nouns are used when something is conceptualized as a homogeneous group）.</li>
+</ul>
+<ul>
+<li><strong>verb 动词：</strong> 用来表示动作或过程。动词有若干形态，(non-third-person-sg非第三人称单数 (eat), third-person-sg第三人称单数 (eats), 进行时progressive (eating), 过去分词past participle (eaten)).</li>
+</ul>
+<ul>
+<li><strong>adjectives 形容词：</strong> 描述性质和质量的单词。</li>
+</ul>
+<ul>
+<li><strong>adverbs 副词：</strong> 无论是从语义上还是形态上，都比较杂。通常用来修饰动词，也可以用来修饰其他副词或是动词短语。<strong>方位副词和地点副词 Directional adverbs or locative adverbs</strong>， <strong>程度副词 degree adverbs</strong> (extremely, very, somewhat); <strong>方式副词 manner adverbs</strong> (slowly, slinkily, delicately); <strong>时间副词 temporal adverbs</strong>  (yesterday, Monday).</li>
+</ul>
+<p>封闭类：</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pop1.png"></p>
+<ul>
+<li><p><strong>preposition 介词:</strong> 出现在名词短语之前，从语义上讲，他们是表示关系的。</p>
+</li>
+<li><p><strong>particle 小品词：</strong> 与介词或副词相似，经常和动词结合，形成动词短语。</p>
+</li>
+<li><p><strong>determiner 限定词:</strong> 其中包括 <strong>article 冠词</strong>，a,an,the. 其他的限定词，比如 this,that</p>
+</li>
+<li><p><strong>conjunction 连词：</strong> 连接两个短语、分句或句子。</p>
+</li>
+<li><p><strong>pronoun 代词：</strong> 简短地援引某些名词短语、实体或事件的一种形式。</p>
+</li>
+<li><p><strong>auxiliary 助动词：</strong> 包括系动词be,两个动词do, have,以及情态动词。</p>
+</li>
+<li><p>英语中还有很多 叹词(oh,ah,hey,man,alas),否定词(no,not),礼貌标志词(please,thank you). 是否把这些词放在一起,取决于标记的目的。</p>
+</li>
+</ul>
+<h3 id="The-Penn-Treebank-Part-of-Speech-Tagset-标记集"><a href="#The-Penn-Treebank-Part-of-Speech-Tagset-标记集" class="headerlink" title="The Penn Treebank Part-of-Speech Tagset 标记集"></a>The Penn Treebank Part-of-Speech Tagset 标记集</h3><p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pop2.png"></p>
+<p>Peen Treebank标记集是Brown语料库原有的87个标记集中挑选出来的。还有两个比较大的标记集 C5,C7.</p>
+<h3 id="词性标注"><a href="#词性标注" class="headerlink" title="词性标注"></a>词性标注</h3><p>词性标注(pos tagging)与计算机语言的 <strong>tokenization （词形还原？分词）</strong> 过程是一致的，但词性标注具有更多的歧义性。在Brown语料库中，只有11.5%的英语词型(word type)是具有歧义的,40%以上的词例(word token)有歧义的。</p>
+<p>chapter2中几个容易混淆的概念：</p>
+<ul>
+<li><p>词型 word type 不包括重复词，</p>
+</li>
+<li><p>词例 word token 包括重复词。</p>
+</li>
+<li><p>lemma 是词意，am is are是同一个单词be</p>
+</li>
+<li><p>Wordform 是词的形状。</p>
+</li>
+</ul>
+<p>词性标注是歧义消解（disambiguation）的一个重要方面，大多数的标注算法分为两类：基于规则的标注算法(rule-based tagger)，一类是随机标注算法(stochastic tagger).</p>
+<h4 id="HMM-Part-of-Speech-Tagging"><a href="#HMM-Part-of-Speech-Tagging" class="headerlink" title="HMM Part-of-Speech Tagging"></a>HMM Part-of-Speech Tagging</h4><p>基于隐马尔可夫的词性标注，语料库是观察序列，part-of-speech是隐藏状态,对于Peen Treebank标记集有45中隐藏状态。因为训练数据是有人工标注的，所以我们的目标是，根据已知的观察序列和对应的隐藏状态，可以根据极大似然估计或者相对频率计算出状态转移矩阵和发射矩阵的参数～</p>
+<p>所以词性标注的问题和预测问题是一样的～可以使用viterbi算法，对带标注的序列进行标注～</p>
+<h5 id="The-basic-equation-of-HMM-Tagging"><a href="#The-basic-equation-of-HMM-Tagging" class="headerlink" title="The basic equation of HMM Tagging"></a>The basic equation of HMM Tagging</h5><p>HMM decoding:求概率最大的tagging序列</p>
+<p>$$\hat t_1^n = argmax_{t_1^n}P(t_1^n|w_1^n)$$</p>
+<p>使用bayes公式：</p>
+<p>$$\hat t_1^n=argmax_{t_1^n}\dfrac{P(w_1^n|t_1^n)P(t_1^n)}{P(w_1^n)}$$</p>
+<p>目的是让观察序列的似然概率最大化～因此观察序列对于任何隐藏序列都是一样的～故可以直接去掉分母：</p>
+<p>$$\hat t_1^n=argmax_{t_1^n}P(w_1^n|t_1^n)P(t_1^n)$$</p>
+<p>根据概率图模型中，一个word的生成只取决于其对应的tag，而与其他word和word无关，也就是条件独立可得：</p>
+<p>$$P(w_1^n|t_1^n)\approx \prod_{i=1}^nP(w_i|t_i)$$</p>
+<p>根据bigram假设：</p>
+<p>$$P(t_1^n)\approx \prod_{i=1}^nP(t_i|t_{i-1})$$</p>
+<p>联立可得：</p>
+<p>$$\hat t_1^n = argmax_{t_1^n}P(t_1^n|w_1^n)\approx argmaxmax_{t_1^n}\prod_{i=1}^nP(w_i|t_i)P(t_i|t_{i-1})\tag{10.8}$$</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos3.png"></p>
+<h5 id="Estimating-probabilities-概率估计"><a href="#Estimating-probabilities-概率估计" class="headerlink" title="Estimating probabilities 概率估计"></a>Estimating probabilities 概率估计</h5><p>在HMM tagging中，概率估计是直接通过对训练语料库中进行计数得到的。</p>
+<p><strong>状态转移概率 transition probabilities:</strong> $P(t_i|t_{i-1})$,shape=(45,45)</p>
+<p>$$P(t_i|t_{i-1})=\dfrac{C(t_{i-1},t_i)}{C(t_{i-1})}$$</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos4.png"></p>
+<p><strong>发射概率 emission probabilities:</strong> $P(w_i|t_i)$,shape=(45, V)</p>
+<p>$$P(w_i|t_i)=\dfrac{C(t_i,w_i)}{C(t_i)}$$</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos5.png"></p>
+<h5 id="Working-through-an-example"><a href="#Working-through-an-example" class="headerlink" title="Working through an example"></a>Working through an example</h5><p>举个栗子</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos6.png"></p>
+<p>其中状态转移概率和发射概率依据已经标记好的语料库WSJ corpus计算得到，其对应的状态转移矩阵A和发射矩阵B：</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos7.png"></p>
+<p>那么对应的可能的状态序列如下图，加粗的黑色路径是概率最大的状态序列。</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos8.png"></p>
+<h4 id="Viterbi算法"><a href="#Viterbi算法" class="headerlink" title="Viterbi算法"></a>Viterbi算法</h4><p>先回顾下隐马尔科夫模型中的viterbi算法：</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos9.png"></p>
+<p>这是在给定模型 $\lambda=(A,B)$ 的情况下，寻找状态序列使得观察序列的似然概率最大～</p>
+<p>矩阵 viterbi [N+2,T], 第一行和第二行是 states 0 和 $q_F$</p>
+<p>从state 1 开始：</p>
+<p>$$v_t(j)=\max_{i=1}^Nv_{t-1}(i)a_{ij}b_j(o_t)$$</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos10.png"></p>
+<p>可以看到，行代表的是[start, NNP, MD,…, DT, end]^T,总共 N+2 中状态。 列代表的是时间步 [1,2,3…,t],因为t=0时刻，肯定是start状态，没有emission. 从第一列 t=1 到 第二列 t=2，每一步都是前一步的N种状态转移到当前状态的max.</p>
+<h4 id="Extending-the-HMM-Algorithm-to-Trigrams"><a href="#Extending-the-HMM-Algorithm-to-Trigrams" class="headerlink" title="Extending the HMM Algorithm to Trigrams"></a>Extending the HMM Algorithm to Trigrams</h4><p>$$P(t_1^n)\approx \prod_{i=1}^nP(t_i|t_{i-1})$$</p>
+<p>改为：</p>
+<p>$$P(t_1^n)\approx \prod_{i=1}^nP(t_i|t_{i-1},t_{t-2})$$</p>
+<p>每一步的计算复杂度，从N变成 $N^2$.</p>
+<p>本书上写的，当前 state-of-art 的HMM 标注算法是 A statistical part-of-speech tagger. In ANLP 2000, Seattle. 论文作者让标注者在每句话结尾处加上 end-of-sequence marker for $t_{n+1}$. 这里的n表示序列长度。</p>
+<p>$$\hat t_1^n = argmax_{t_1^n}P(t_1^n|w_1^n)\approx argmaxmax_{t_1^n}[\prod_{i=1}^nP(w_i|t_i)P(t_i|t_{i-1},t_{i-2})]P(t_{n+1}|t_n)$$</p>
+<p>其中，转移概率可以通过语料库计数得到：</p>
+<p>$$P(t_i|t_{i-1},t_{i-2})=\dfrac{C(t_{i-2},t_{i-1},t_i)}{C(t_{i-2},t_{i-1})}$$</p>
+<p>但是在测试集中，很可能遇到状态序列（也就是tag序列） $t_{i-2},t_{i-1},t_i$ 在训练集中从未出现过，也就是其概率为zeros，这样就无法对测试集中的序列进行标注了。也就是语言模型中提到的zeros情况～比如图10.7中，某个时间步没有可选择的隐藏状态tag</p>
+<p>同样，我们也可以使用插值法～</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos11.png"></p>
+<p>其中 $\lambda$ 的计算可以用 <strong>deleted interpolation</strong></p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos12.png"></p>
+<p>不太理解。。。</p>
+<h4 id="Unknown-Words"><a href="#Unknown-Words" class="headerlink" title="Unknown Words"></a>Unknown Words</h4><p>Samuelsson (1993) and Brants (2000)根据形态（morphology）来判断unknown word的可能状态. 比如 -s 通常是复数名词NNS, -ed通常是过去时态VBN, -able通常是形容词 JJ….</p>
+<p>$$P(t_i|l_{n-i+1}…l_n)$$</p>
+<p>这个概率也是可以通过语料库中相对频率计算得到～</p>
+<p>他们使用尽量短的后缀（shorter and shorter suffixes）应用回退smoothing方法来估计unknow word的可能状态，但要尽量避免其状态为 closed class,比如介词 prepositions,可以将unknow word的状态tag选择从频率 $\le 10$ 中选择，或者只从open classes 中选择可能的tag.</p>
+<p><a target="_blank" rel="noopener" href="http://www.coli.uni-saarland.de/publikationen/softcopies/Brants:2000:TSP.pdf">Brants(2000)</a> 还额外使用了首字母的特征信息，将公式(10.21)可改写为：</p>
+<p>$$P(t_i,c_i|t_{i-1},c_{i-1},t_{i-2},c_{i-2})$$</p>
+<p>这样语料库中标记集就包括首字母大写和小写两种版本，其对应的标记集tagset就增大为2倍。</p>
+<p>state-of-art HMM tagging也就是论文<a target="_blank" rel="noopener" href="http://www.coli.uni-saarland.de/publikationen/softcopies/Brants:2000:TSP.pdf">Brants(2000)</a> 的准确率达到 96.7% 在使用Penn Treebank标记集。</p>
+<h3 id="Maximum-Entropy-Markov-Models"><a href="#Maximum-Entropy-Markov-Models" class="headerlink" title="Maximum Entropy Markov Models"></a>Maximum Entropy Markov Models</h3><p>最大熵隐马尔可夫模型，是依据logistic回归的，所以它是判别模型 <strong>discriminative sequence model</strong>, 而HMM是生成模型 <strong>generative sequence model</strong>.</p>
+<ul>
+<li><p>sequence of words: W = $w_1^n$</p>
+</li>
+<li><p>sequence of tags: T = $t_1^n$</p>
+</li>
+</ul>
+<p>那么HMM模型的P(T|W)是依据bayes规则和最大似然P(w|T)得到的：</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos13.png"></p>
+<p>而在最大熵隐马尔科夫模型，直接计算后验概率 posterior P(T|W).</p>
+<p>$$\hat T = argmax_TP(T|W) = argmax_T\prod_iP(t_i|w_i,t_i-1)$$</p>
+<p>对比HMM和MEMM，HMM计算是在tag的条件下观察序列似然最大， MEMM计算是在观察序列的条件下tag序列似然最大～显然在tag已经标注好的训练集里，判别模型是完全可行的，也许会是更好的～</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos14.png"></p>
+<h4 id="Features-in-a-MEMM"><a href="#Features-in-a-MEMM" class="headerlink" title="Features in a MEMM"></a>Features in a MEMM</h4><p>在HMM中，我们得到下一个tag的概率只依赖与前一个或两个tag，以及当前的word，如果想考虑更多的特征，比如首字母capitalization，后缀suffix，那样计算复杂度会增加很多。</p>
+<p>相比之下，MEMM可以考虑更多的特征：</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos15.png"></p>
+<p>MEMM可以依赖的特征可以是 word，neighboring words, previous tags, and various tags, and various combinations. 可使用 <strong>features templates</strong> 来表示：</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos16.png"></p>
+<p>对于之前的例子：</p>
+<p>Janet/NNP will/MD back/VB the/DT bill/NN</p>
+<p>当 $w_i$ 是 back 时，对应的特征模板 <strong>features templates</strong>,也就是 know-words feature:</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos17.png"></p>
+<p>除此之外，还有当前词 $w_i$ 的拼写和形状特征，这些特征对于处理 unknow word 很有必要～</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos18.png"></p>
+<p>那么根据上述规则，单词 well-dressed 的 word shape 特征就是：</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos19.png"></p>
+<p>这样一来，特征就很多很多了，通常需要进行一定的cutoff.</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos20.png"></p>
+<p>其中 $w_{i-l}^{i+l}$ 表示考虑当前词前后 l 个单词， $t_{i-k}^{i-1}$ 表示考虑前k个tags.</p>
+<h4 id="Decoding-and-Training-MEMMs-训练MEMMs"><a href="#Decoding-and-Training-MEMMs-训练MEMMs" class="headerlink" title="Decoding and Training MEMMs 训练MEMMs"></a>Decoding and Training MEMMs 训练MEMMs</h4><p>在MEMMs中，每一步都是一个local classifer，然后make a hard decision,选择概率最大的词。。。以此类推。因此，这是贪心greedy算法～</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos21.png"></p>
+<p>虽然这样使用greedy的方法，得到的准确率也还不错～</p>
+<h4 id="Viterbi算法-1"><a href="#Viterbi算法-1" class="headerlink" title="Viterbi算法"></a>Viterbi算法</h4><p>原始Viterbi：</p>
+<p>$$v_t(j) = max_{i=1}^Nv_{t-1}(i)a_{ij}b_j(o_t)$$</p>
+<p>HMM tagging:</p>
+<p>$$v_t(j) = max_{i=1}^Nv_{t-1}P(s_j|s_i)P(o_t|s_j)$$</p>
+<p>MEMM:</p>
+<p>$$v_t(j) = max_{i=1}^Nv_{t-1}P(s_j|s_i,o_t)$$</p>
+<p>书上对如何训练参数一笔带过了，我自己总结如下：</p>
+<ul>
+<li><p>初始化转移矩阵和发射矩阵参数，设为w</p>
+</li>
+<li><p>根据Viterbi算法填写矩阵 $N\times T$, 也就是每一个网格用概率 $P(t_i|w_{i-1}^{i+l},t_{i-k}^{i-1})$, 并保留 backpointers</p>
+</li>
+<li><p>比较tag路径与真实路径，然后反向传播，更新参数权重w, 注意有正则化L1,L2</p>
+</li>
+</ul>
+<p>要更深入的理解MEMM，需要和HMM tagging对比更容易理解～～</p>
+<p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos22.jpg"></p>
+<ul>
+<li>HMM是生成模型，它是在求已知 $t_i$ 条件下生成 $w_i$ 的概率 $P(w_i|t_i)$,这根据语料库中的频率是可以计算得到的；然后后验概率 $P(t_i|t_{i-1})$ 也是可以通过频率计算得到的～ 知道似然概率和发射概率后根据bayes公式就可以预测了P(T|W)～</li>
+</ul>
+<ul>
+<li>MEMM是判别模型，它是直接求 P(T|W),显然是tag生成word，而不是word生成tag，因此无法直接通过频率，但我们将它分解为每一个时间步计算 $P(t_i|w_i,t_{i-1},…)（各种特征），每一个特征有对应的权重w,然后根据最大熵原理，也就是公式（10.29）所示，从前一个tag $t_{i-1}$ 有N中状态，到下一个tag $t_i$, 是max的过程，但整个过程不是greedy的（这需要好好理解，其实也就是Viterbi一样的。。），然后根据backpoints得到的tag序列与真实tag序列对比，不断更新权重参数w！</li>
+</ul>
+<h3 id="Bidirectionality"><a href="#Bidirectionality" class="headerlink" title="Bidirectionality"></a>Bidirectionality</h3><p>这里举了个例子来阐述双向的重要性。</p>
+<p>will/NN to/TO fight/VB</p>
+<p>通常 to 都是接在名词NN后面，而不会是情态动词 MD 后面，这里的will也应该是 NN。 但是在 $P(t_{will}|&lt; s &gt;)$， $t_{will}$ 更倾向于是情态动词 MD，而且 $P(TO|t_{will},to)$ 的概率接近于1,无论 $t_{will}$ 是啥，所以这时候 $t_{will}$ 就会错误的标注为 MD.</p>
+<p>这样的错误叫 <strong>label bias or observation bias</strong>, 所以我们需要双向～ <strong>条件随机场 Conditional Random Field or CRF</strong> 就是这样的～</p>
+<p>任何sequence model都可以是双向的。比如，对于tagging，可以在第一遍 left to right, 而从二遍开始就可以双向了～</p>
+<p><strong>SVMTool system</strong> 就是这样的，不过它在每一个时间步使用的不是最大熵分类器，而是SVM分类器，然后用Viterbi算法或者是greedy应用到整个sequence model～</p>
+<h3 id="Part-of-Speech-Tagging-for-Other-Languages"><a href="#Part-of-Speech-Tagging-for-Other-Languages" class="headerlink" title="Part-of-Speech Tagging for Other Languages"></a>Part-of-Speech Tagging for Other Languages</h3><p>中文的分词可以和标注一起进行～</p>
+<p>中文的未登录词问题～</p>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p><img src="/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/pos23.png"></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>chapter10-词性标注</p><p><a href="http://www.panxiaoxie.cn/2018/04/17/chapter10-词性标注/">http://www.panxiaoxie.cn/2018/04/17/chapter10-词性标注/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-04-17</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NLP/">NLP</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Gefällt Ihnen der Artikel? Unterstützen Sie den Autor mit</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Kauf mir einen Kaffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/04/19/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">chapter11-上下文无关语法CFG</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/04/17/chapter8-%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%92%8C%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/"><span class="level-item">chapter8-神经网络和自然语言模型</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Kommentare</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Your name"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Your name</p><p class="is-size-6 is-block">Your title</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Your location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Seiten</p><a href="/archives"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Kategorien</p><a href="/categories"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">8</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Folgen</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Kategorien</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Letzte Einträge</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archive</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Abonnieren Sie Updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Abonnieren"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Zurück nach oben" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern.",
+          dismiss: "Verstanden!",
+          allow: "Cookies zulassen",
+          deny: "Ablehnen",
+          link: "Mehr erfahren",
+          policy: "Cookie-Richtlinie",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Tippen Sie etwas..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Tippen Sie etwas...","untitled":"(Ohne Titel)","posts":"Seiten","pages":"Pages","categories":"Kategorien","tags":"Tags"});
+        });</script></body></html>

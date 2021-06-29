@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>chapter11-上下文无关语法CFG - 潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="潘小榭"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="潘小榭"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="上下文无关语法 CFG，又叫短语结构语法  英语语法中的各种规则：  句子级的结构，分4种  名词短语，中心词，以及围绕中心词的前后修饰语  动词短语  并列关系    Treebanks：经过剖析后的语料库，包含了句法syntatic信息和语义semantic信息  Treebanks as Grammars  Heads and Head Finding    语法等价与范式  Lexica"><meta property="og:type" content="blog"><meta property="og:title" content="chapter11-上下文无关语法CFG"><meta property="og:url" content="http://www.panxiaoxie.cn/2018/04/19/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/"><meta property="og:site_name" content="潘小榭"><meta property="og:description" content="上下文无关语法 CFG，又叫短语结构语法  英语语法中的各种规则：  句子级的结构，分4种  名词短语，中心词，以及围绕中心词的前后修饰语  动词短语  并列关系    Treebanks：经过剖析后的语料库，包含了句法syntatic信息和语义semantic信息  Treebanks as Grammars  Heads and Head Finding    语法等价与范式  Lexica"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg1.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg2.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg3.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg4.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg5.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg6.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg29.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg7.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg8.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg9.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg10.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg11.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg12.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg13.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg14.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg15.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg16.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg17.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg18.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg19.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg20.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg21.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg22.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg23.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg24.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg25.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg30.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg31.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg26.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg27.png"><meta property="og:image" content="http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg28.png"><meta property="article:published_time" content="2018-04-19T04:37:19.000Z"><meta property="article:modified_time" content="2021-06-29T05:19:29.404Z"><meta property="article:author" content="Xie Pan"><meta property="article:tag" content="NLP"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg1.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn/2018/04/19/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/"},"headline":"chapter11-上下文无关语法CFG","image":["http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg1.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg2.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg3.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg4.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg5.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg6.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg29.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg7.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg8.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg9.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg10.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg11.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg12.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg13.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg14.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg15.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg16.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg17.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg18.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg19.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg20.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg21.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg22.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg23.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg24.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg25.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg30.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg31.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg26.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg27.png","http://www.panxiaoxie.cn/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg28.png"],"datePublished":"2018-04-19T04:37:19.000Z","dateModified":"2021-06-29T05:19:29.404Z","author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/logo.svg"}},"description":"上下文无关语法 CFG，又叫短语结构语法  英语语法中的各种规则：  句子级的结构，分4种  名词短语，中心词，以及围绕中心词的前后修饰语  动词短语  并列关系    Treebanks：经过剖析后的语料库，包含了句法syntatic信息和语义semantic信息  Treebanks as Grammars  Heads and Head Finding    语法等价与范式  Lexica"}</script><link rel="canonical" href="http://www.panxiaoxie.cn/2018/04/19/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2018-04-19T04:37:19.000Z" title="2018/4/19 下午12:37:19">2018-04-19</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2021-06-29T05:19:29.404Z" title="2021/6/29 下午1:19:29">2021-06-29</time></span><span class="level-item"><a class="link-muted" href="/categories/NLP/">NLP</a></span><span class="level-item">17 minutes lesen (Über 2548 Wörter)</span></div></div><h1 class="title is-3 is-size-4-mobile">chapter11-上下文无关语法CFG</h1><div class="content"><ul>
+<li><p>上下文无关语法 CFG，又叫短语结构语法</p>
+</li>
+<li><p>英语语法中的各种规则：</p>
+<ul>
+<li><p>句子级的结构，分4种</p>
+</li>
+<li><p>名词短语，中心词，以及围绕中心词的前后修饰语</p>
+</li>
+<li><p>动词短语</p>
+</li>
+<li><p>并列关系</p>
+</li>
+</ul>
+</li>
+<li><p>Treebanks：经过剖析后的语料库，包含了句法syntatic信息和语义semantic信息</p>
+<ul>
+<li><p>Treebanks as Grammars</p>
+</li>
+<li><p>Heads and Head Finding</p>
+</li>
+</ul>
+</li>
+<li><p>语法等价与范式</p>
+</li>
+<li><p>Lexicalized Grammars 词汇语法</p>
+</li>
+</ul>
+<span id="more"></span>
+
+
+
+
+
+<p><strong>前言：</strong> 上下文无关语法 <strong>context-free gramma.</strong>  上下文无关文法是许多自然语言句法形式化模型的支柱.</p>
+<h3 id="Constituency-组成性"><a href="#Constituency-组成性" class="headerlink" title="Constituency 组成性"></a>Constituency 组成性</h3><p>何为组成性（constituency）：groups of words behaving as a single units, or constituents.</p>
+<p>以名词短语(noun phrase)为例:</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg1.png"></p>
+<p>一个明显的证据是名词短语通常在动词 verb 之前。</p>
+<h3 id="Context-Free-Grammars-上下文无关语法"><a href="#Context-Free-Grammars-上下文无关语法" class="headerlink" title="Context-Free Grammars 上下文无关语法"></a>Context-Free Grammars 上下文无关语法</h3><p>上下文无关语法 <strong>Context-Free Grammar, or CFG</strong>, 又叫短语结构语法 <strong>Phrase-Structure Grammars</strong>, 其形式化方法等价于 <strong>Backus-Naur Form, or BNF.</strong></p>
+<p>一个上下文无关语法，由规则 rules 或 产生式 productions ,以及单词和符号的一个词表 lexicon.</p>
+<p>举例：</p>
+<p>一个名词短语（NP or noun phrase）可以由一个专有名词(ProperNoun)组成或者是一个限定词(Det)后接一个名词性成分（Nominal）,而一个名词性成分又可以是一个或多个名词。</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg2.png"></p>
+<p><strong>parse tree 剖析树</strong></p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg3.png"></p>
+<ul>
+<li>NP是树的根，也就是 CFG 定义的形式语言的初始符号 start symbol, 用 S 表示，通常可以解释为 “句子”，所以由 S 推导出来的符号串的集合就是句子的集合。</li>
+</ul>
+<ul>
+<li>a, fight 这样的单词是终极符号 terminal symbol, 词表是引入终极符号的规则的集合</li>
+</ul>
+<ul>
+<li>表示终极符号的聚类或概括的符号称为非终极符号 non-ternimal symbol,比如箭头左边的 NP.Det, Noun….</li>
+</ul>
+<p>用 “|” 表示非终极符号的展开方式：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg4.png"></p>
+<p>语法规则，用 $L_0$ 表示～</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg5.png"></p>
+<p>剖析树也可以用更为简洁的方式表示：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg6.png"></p>
+<h4 id="Formal-Definition-of-Context-Free-Grammar-上下文无关语法的形式定义"><a href="#Formal-Definition-of-Context-Free-Grammar-上下文无关语法的形式定义" class="headerlink" title="Formal Definition of Context-Free Grammar 上下文无关语法的形式定义"></a>Formal Definition of Context-Free Grammar 上下文无关语法的形式定义</h4><p>诸如 $L_0$ 的CFG定义了一个形式语言，在chapter2 中讲过，形式语言是符号串的集合。使用形式语言来模拟自然语言的语法称为 “生成语法（generative grammar）”.</p>
+<p>一个上下文无关语法有四个参数（也称为四元组，4-tuple）：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg29.png"></p>
+<ul>
+<li><p>非终极符号的集合 N</p>
+</li>
+<li><p>终极符号的集合 $\Sigma$</p>
+</li>
+<li><p>生成式的集合 R， 每个生成式的形式为 $A\rightarrow \beta$,其中 A 是非终极符号， $\alpha$ 是由符号串的无限集 $(\Sigma \bigcup N)* $ 的符号构成的符号串</p>
+</li>
+</ul>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg7.png"></p>
+<p>把单词的符号串映射到剖析树的问题称为 <strong>Syntactic parsing 句法分析</strong>. 在chapter12中会讲到～</p>
+<h3 id="Some-Grammar-Rules-for-English"><a href="#Some-Grammar-Rules-for-English" class="headerlink" title="Some Grammar Rules for English"></a>Some Grammar Rules for English</h3><p>本书中关于英语短语结构只是点到为止，需要了解更多可以看 [Huddleston, R. and Pullum, G. K. (2002). The Cambridge Grammar of the English Language. Cambridge University Press.]</p>
+<h4 id="Sentence-Level-Constructions-句子级的结构"><a href="#Sentence-Level-Constructions-句子级的结构" class="headerlink" title="Sentence-Level Constructions 句子级的结构"></a>Sentence-Level Constructions 句子级的结构</h4><p>除了上文中介绍的陈述句，还有4中比较常见和重要的结构：<strong>declaratives 陈述式结构, imperatives 命令式结构, yes-no questions yes-no疑问式结构, and wh-questions 疑问式结构</strong>.</p>
+<ol>
+<li>imperatives 命令式结构</li>
+</ol>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg8.png"></p>
+<p>动词短语开头，没有主语。</p>
+<ol start="2">
+<li>yes-no questions yes-no疑问式结构</li>
+</ol>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg9.png"></p>
+<p>助动词开头，后面跟一个主语NP，再跟一个VP.</p>
+<ol start="3">
+<li>wh-questions 疑问式结构</li>
+</ol>
+<p>比较复杂，有两种情况：</p>
+<ul>
+<li>wh主语疑问式（wh-subject-question）结构，主语疑问式结构与陈述句结构相同</li>
+</ul>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg10.png"></p>
+<ul>
+<li>wh非主语疑问式（wh-non-subject-question）结构，wh短语不是句子的主语</li>
+</ul>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg11.png"></p>
+<p>类似wh-non-subject-question 的结构我们称为 <strong>long-distance dependencies</strong>,因为 wh-NP 远离在语义上和它相关的谓词 have.</p>
+<h4 id="The-Noun-Phrase-名词短语"><a href="#The-Noun-Phrase-名词短语" class="headerlink" title="The Noun Phrase 名词短语"></a>The Noun Phrase 名词短语</h4><p>关于名词短语主要有： pronouns代词， proper nouns专有名词，和NP $\rightarrow det\ Nominal$. 接下来的部分主要介绍最后一种结构 <strong>NP $\rightarrow det\ Nominal$</strong>. 在名词短语中，包括一个中心词 head, 围绕中心词的有 前修饰语(prehead modifier) 和 后修饰语(post-head modifier).</p>
+<ol>
+<li>The Determiner 限定词，出现在中心词之前</li>
+</ol>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg12.png"></p>
+<ol start="2">
+<li>The Nominal</li>
+</ol>
+<p>$$Nominal \rightarrow Noun$$</p>
+<p><strong>Before the Head Noun:</strong></p>
+<p><strong>cardinal numbers 基数词, ordinal numbers 序数词, quantifiers 数量修饰语, and adjectives</strong></p>
+<p><strong>after the Head Noun:</strong> postmodifiers</p>
+<p>主要分为三类：</p>
+<ul>
+<li><p>介词短语</p>
+</li>
+<li><p>非限定从句</p>
+</li>
+<li><p>关系从句</p>
+</li>
+</ul>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg13.png"></p>
+<ol>
+<li><strong>介词短语 prepositional phrases</strong></li>
+</ol>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg14.png"></p>
+<ol start="2">
+<li><strong>非限定从句 non-finite postmodifiers</strong>，有三种： 动名词gerundive (-ing), -ed, and infinitive forms.</li>
+</ol>
+<p>（1）<strong>动名词 gerundive (-ing)</strong></p>
+<p>列举一些例子：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg15.png"></p>
+<p>其对应的形式语言：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg16.png"></p>
+<p>（2）<strong>infinitives不定式 and -ed形式</strong></p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg17.png"></p>
+<ol start="3">
+<li><strong>关系从句(postnominal relative clause)</strong>, 准确的说是 <strong>限制性关系从句(restrictive relative clause)</strong>, 通常用关系代词 <strong>relative pronoun</strong> 开头.</li>
+</ol>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg18.png"></p>
+<p><strong>before the Noun Phrase:</strong> 在NPs之前的词，通常叫 <strong>predeterminers</strong>, 最常见的就是 all.</p>
+<p><strong>复杂的名词短语的剖析树举例</strong></p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg19.png"></p>
+<h4 id="The-Verb-Phrase-动词短语"><a href="#The-Verb-Phrase-动词短语" class="headerlink" title="The Verb Phrase 动词短语"></a>The Verb Phrase 动词短语</h4><p>比较简单的动词短语的结构：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg20.png"></p>
+<p>除此之外还有更复杂的，在动词后嵌入完整的句子,这样的成分叫做句子补语 <strong>sentential complements</strong></p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg21.png"></p>
+<p>在VP后潜在的成分可能是另一个VP。动词可以与不同类型的补语相容，但不是每个动词都与每个动词短语相容。比如 <strong>及物动词(transitive)</strong> 和 <strong>非及物动词(intransitive)</strong> 之分。</p>
+<p>将动词 <strong>次范畴化(subcategorize)</strong>, 也就是按照 NP或其他补语 再分类。动词的这些可能的补语的集合称为该动词的 <strong>次范畴化框架（subcategorize frame）</strong>。</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg22.png"></p>
+<h4 id="Coordination-并列关系"><a href="#Coordination-并列关系" class="headerlink" title="Coordination 并列关系"></a>Coordination 并列关系</h4><p><strong>conjunctions:</strong> and, or and but.</p>
+<p>NP $\rightarrow$ NP and NP</p>
+<p>Nominal $\rightarrow$ Nominal and Nominal</p>
+<p>VP $\rightarrow$ VP and VP</p>
+<p>S $\rightarrow$ S and S</p>
+<h3 id="Treebanks"><a href="#Treebanks" class="headerlink" title="Treebanks"></a>Treebanks</h3><p>何为Treebanks:</p>
+<blockquote>
+<p>a corpus where every sentence in the collection is paired with a corresponding parse， Such a syntactically annotated corpus is called a <strong>treebank</strong></p>
+</blockquote>
+<p>一个语料库中所有的sentences都有其对应的剖析树。</p>
+<blockquote>
+<p><strong>Penn Treebank</strong> project (whose POS tagset we introduced in Chapter 10) has produced treebanks from the Brown, Switchboard, ATIS, and Wall Street Journal corpora of English, as well as treebanks in Arabic and Chinese.</p>
+</blockquote>
+<p>Penn Treebank 是一个treebank，其语料库来自于 Brown等。。</p>
+<h4 id="Treebanks-as-Grammars"><a href="#Treebanks-as-Grammars" class="headerlink" title="Treebanks as Grammars"></a>Treebanks as Grammars</h4><blockquote>
+<p>Viewed as a large grammar in this way, the Penn Treebank III Wall Street Journal corpus, which contains about 1 million words, also has about 1 million non-lexical rule tokens, consisting of about <strong>17,500 distinct rule types.</strong></p>
+</blockquote>
+<h4 id="Heads-and-Head-Finding"><a href="#Heads-and-Head-Finding" class="headerlink" title="Heads and Head Finding"></a>Heads and Head Finding</h4><p>每一个组成成分constituent，也就是树中的一个节点都有一个词汇头部 <strong>（lexical head）</strong>.</p>
+<p>为什么需要head？ 暂时还不太懂，学过后面的内容应该就能理解了吧～</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg23.png"></p>
+<p>举个栗子：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg24.png"></p>
+<p>每个非终极non-terminal符号，也就是非叶节点都有一个head.</p>
+<p>那么怎么找每个节点对应的head呢？</p>
+<blockquote>
+<p>Instead of specifying head rules in the grammar itself, heads are <strong>identified dynamically in the context of trees for specific sentences</strong>. In other words, once a sentence is parsed, the resulting tree is walked to decorate each node with the</p>
+</blockquote>
+<p>appropriate head.</p>
+<p>也就是说，没有具体的规则，根据具体的句子动态的定义对应的head，这些规则也都是 hand-written rules.</p>
+<p>以NP中的head为例：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg25.png"></p>
+<h3 id="Grammar-Equivalence-and-Normal-Form-语法等价与范式"><a href="#Grammar-Equivalence-and-Normal-Form-语法等价与范式" class="headerlink" title="Grammar Equivalence and Normal Form 语法等价与范式"></a>Grammar Equivalence and Normal Form 语法等价与范式</h3><ol>
+<li>强等价 strong equivalence 和 弱等价 weak equivalence</li>
+</ol>
+<ul>
+<li><p>如果两个语法生成相同的符号串集合，而且对每个句子都指派相同的短语结构(只改变终极符号)，这样的两个语法是强等价</p>
+</li>
+<li><p>如果生成的符号串集合相同，但是不给每个句子指派相同的短语结构，就是弱等价，其实就是对同一个句子，理解不同～</p>
+</li>
+</ul>
+<p>举个栗子：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg30.png"></p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg31.png"></p>
+<ol start="2">
+<li>一个上下文无关语法CFG是自由的，并且它的每个生成式的形式都是 $A\rightarrow B C$ 或 $A \rightarrow a$, 也就是说，每个规则 rule的右边要么是两个非终极符号，要么是一个终极符号，那么这个CFG就是 <strong>Chomsky normal form</strong>.</li>
+</ol>
+<p>任何一个CFG都可以写成弱等价的Chomsky范式语法。</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg26.png"></p>
+<p>举个栗子：</p>
+<p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg27.png"></p>
+<p>VBD是动词的过去式，</p>
+<h3 id="Lexicalized-Grammars-词汇语法"><a href="#Lexicalized-Grammars-词汇语法" class="headerlink" title="Lexicalized Grammars 词汇语法"></a>Lexicalized Grammars 词汇语法</h3><p>可以看到，CFG过分强调短语结构，而忽视了词汇的作用，也就是单词的语义。但这样的短语结构都太复杂和笨重(cumbersome)了，而且 <strong>语法冗余，难以管理和脆弱（redundant,hard to manage, and brittle）</strong>。为了解决这样的问题，需要更好的利用lexicon。</p>
+<p>接下来介绍其中的一种方法： **Combinatory Categorial Grammar，CCG ***,考虑到 <strong>句法 syntactic</strong> 和 <strong>语义 semantic</strong> 的高度 <strong>词汇化lexicalized</strong> 的方法.</p>
+<p>下一章会详细讲到词汇化～</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="/chapter11-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/eg28.png"></p>
+<p>参考：</p>
+<ul>
+<li><p>Speech and language Processing，Chapter11</p>
+</li>
+<li><p>Natural Language Processing, Michael Collins, Columbia University</p>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p>chapter11-上下文无关语法CFG</p><p><a href="http://www.panxiaoxie.cn/2018/04/19/chapter11-上下文无关文法/">http://www.panxiaoxie.cn/2018/04/19/chapter11-上下文无关文法/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Xie Pan</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2018-04-19</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-06-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/NLP/">NLP</a></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Gefällt Ihnen der Artikel? Unterstützen Sie den Autor mit</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Kauf mir einen Kaffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2018/04/20/chapter12-%E5%8F%A5%E6%B3%95%E5%88%86%E6%9E%90/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">chapter12-句法分析</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2018/04/17/chapter10-%E8%AF%8D%E6%80%A7%E6%A0%87%E6%B3%A8/"><span class="level-item">chapter10-词性标注</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Kommentare</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Your name"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Your name</p><p class="is-size-6 is-block">Your title</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Your location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Seiten</p><a href="/archives"><p class="title">32</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Kategorien</p><a href="/categories"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">8</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ppoffice" target="_blank" rel="noopener">Folgen</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ppoffice"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Dribbble" href="https://dribbble.com"><i class="fab fa-dribbble"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Kategorien</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Letzte Einträge</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-05-05T02:03:16.000Z">2021-05-05</time></p><p class="title"><a href="/2021/05/05/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-contrastive-learning/">论文笔记-contrastive learning</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:07:08.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-video-transformer/">论文笔记-video transformer</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-29T01:05:10.000Z">2021-04-29</time></p><p class="title"><a href="/2021/04/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-dynamic-convolution-and-involution/">论文笔记-dynamic convolution and involution</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-16T07:48:48.000Z">2021-04-16</time></p><p class="title"><a href="/2021/04/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-unlikelihood-training/">论文笔记-unlikelihood training</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2021-04-12T08:16:35.000Z">2021-04-12</time></p><p class="title"><a href="/2021/04/12/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Deformable-DETR/">论文笔记-DETR and Deformable DETR</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archive</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/12/"><span class="level-start"><span class="level-item">December 2018</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/06/"><span class="level-start"><span class="level-item">June 2018</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/05/"><span class="level-start"><span class="level-item">May 2018</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2018/04/"><span class="level-start"><span class="level-item">April 2018</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CSAPP/"><span class="tag">CSAPP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">13</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ai-challenger/"><span class="tag">ai challenger</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/contrastive-learning/"><span class="tag">contrastive learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/cs224d/"><span class="tag">cs224d</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/language-model/"><span class="tag">language model</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vision-transformer/"><span class="tag">vision transformer</span><span class="tag">2</span></a></div></div></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">Abonnieren Sie Updates</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="Abonnieren"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("default");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Zurück nach oben" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern.",
+          dismiss: "Verstanden!",
+          allow: "Cookies zulassen",
+          deny: "Ablehnen",
+          link: "Mehr erfahren",
+          policy: "Cookie-Richtlinie",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Tippen Sie etwas..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Tippen Sie etwas...","untitled":"(Ohne Titel)","posts":"Seiten","pages":"Pages","categories":"Kategorien","tags":"Tags"});
+        });</script></body></html>
