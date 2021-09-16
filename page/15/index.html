@@ -1,5 +1,98 @@
 <!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="black"><meta name="application-name" content="panxiaoxie"><meta name="msapplication-TileImage" content="/img/avatar.png"><meta name="msapplication-TileColor" content="black"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="panxiaoxie"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="panxiaoxie"><meta property="og:url" content="https://github.com/PanXiebit"><meta property="og:site_name" content="panxiaoxie"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://www.qt86.com/cache/1625298592_187938.png"><meta property="article:author" content="panxiaoxie"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://www.qt86.com/cache/1625298592_187938.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/panxiaoxie.png"}},"description":null}</script><link rel="icon" href="/img/avatar.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于我</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-10-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-08-07T01:28:38.000Z" title="2018/8/7 上午9:28:38">2018-08-07</time>发表</span><span class="level-item"><time dateTime="2021-01-27T08:44:33.537Z" title="2021/1/27 下午4:44:33">2021-01-27</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/">文本分类</a></span><span class="level-item">43 分钟读完 (大约6494个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E4%B8%AD%E6%96%87%E6%96%87%E6%9C%AC%E9%A2%84%E5%A4%84%E7%90%86/">机器学习-中文文本预处理</a></h1><div class="content"><h3 id="中文文本挖掘预处理特点"><a href="#中文文本挖掘预处理特点" class="headerlink" title="中文文本挖掘预处理特点"></a>中文文本挖掘预处理特点</h3><p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/pinard/p/6744056.html">https://www.cnblogs.com/pinard/p/6744056.html</a></p>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="black"><meta name="application-name" content="panxiaoxie"><meta name="msapplication-TileImage" content="/img/avatar.png"><meta name="msapplication-TileColor" content="black"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="panxiaoxie"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="panxiaoxie"><meta property="og:url" content="https://github.com/PanXiebit"><meta property="og:site_name" content="panxiaoxie"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://www.qt86.com/cache/1625298592_187938.png"><meta property="article:author" content="panxiaoxie"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://www.qt86.com/cache/1625298592_187938.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/panxiaoxie.png"}},"description":null}</script><link rel="icon" href="/img/avatar.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于我</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-10-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-08-07T01:28:38.000Z" title="2018/8/7 上午9:28:38">2018-08-07</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.200Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/ML/">ML</a></span><span class="level-item">19 分钟读完 (大约2853个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/">机器学习-常用指标总结</a></h1><div class="content"><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/maybe2030/p/5375175.html#_label0">http://www.cnblogs.com/maybe2030/p/5375175.html#_label0</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://alexkong.net/2013/06/introduction-to-auc-and-roc/">http://alexkong.net/2013/06/introduction-to-auc-and-roc/</a></p>
+</li>
+</ul>
+<h2 id="精确率-Precision-召回率-Recall-和-F1-值"><a href="#精确率-Precision-召回率-Recall-和-F1-值" class="headerlink" title="精确率 Precision, 召回率 Recall 和 F1 值"></a>精确率 Precision, 召回率 Recall 和 F1 值</h2><p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb10.png"></p>
+<p>对于数据不均衡时，使用accuracy是不准确的。</p>
+<p>举个栗子：</p>
+<p>a million tweet: 999,900条不是关于pie的，只有100条是关于pie的</p>
+<p>对于一个stupid分类器，他认为所有的tweet都是跟pie无关的，那么它的准确率是99.99%！但这个分类器显然不是我们想要的，因而accuracy不是一个好的metric，当它目标是rare，或是complete unbalanced.</p>
+<p>引入另外两个指标：</p>
+<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb11.png"></p>
+<ul>
+<li><strong>精度 precision:</strong> 是检索出来的条目（比如：文档、网页等）有多少是准确的。精度是检索出相关文档数与检索出的文档总数的比率，衡量的是检索系统的查准率。  </li>
+</ul>
+<ul>
+<li><strong>召回 call：</strong> 召回率是指检索出的相关文档数和文档库中所有的相关文档数的比率，衡量的是检索系统的查全率.</li>
+</ul>
+<p><strong>需要先确定一个正分类：</strong> 这里需要检索出来的是与 pie 无关的，也就是与 pie 无关的是正分类。那么精度就是分类器检测出来的正分类中 gold pos 所占的比例，那么 precision = 0/(0+0)</p>
+<p>这里需要检索的是与 pie 无关的，检索出来的 true pos 占样本中 gold pos 的比例，那么 recall = 0/(100+0) = 0.</p>
+<p>总结下来，precision 和 recall 都是以 true pos 作为分子，precision 是以分类器预测出来的 pos(true pos + false neg) 作为分母，所以是差准率. recall 则是以总的 gold pos(true pos + false neg) 作为分母，所以是查全率。</p>
+<p>当然希望检索结果Precision越高越好，同时Recall也越高越好，但事实上这两者在某些情况下有矛盾的。比如极端情况下，我们只搜索出了一个结果，且是准确的，那么Precision就是100%，但是Recall就很低；而如果我们把所有结果都返回，那么比如Recall是100%，但是Precision就会很低。因此在不同的场合中需要自己判断希望Precision比较高或是Recall比较高。如果是做实验研究，可以绘制Precision-Recall曲线来帮助分析。</p>
+<p><strong>Ｆ-measure</strong>  </p>
+<p>$$F_{\beta}=\dfrac{(\beta^2+1)PR}{\beta^2P+R}$$</p>
+<p>当 $\beta&gt;1$时，Recall的比重更大;当 $\beta&lt;1$时，precision的比重更大。使用最多的是 $\beta=1$,也就是 $F_{\beta=1}, F_1$. $\beta$ 的的取值取决于实际应用。</p>
+<p>$$F_1 = \dfrac{2PR}{P+R}$$</p>
+<p>Ｆ-measure 是 precision 和 recall 的 **加权调和平均值(weighted harmonic mean)**。</p>
+<p>调和平均值是倒数的算术平均值的倒数。</p>
+<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb12.png"></p>
+<p>为什么要使用调和平均值呢？因为它是一个更 <strong>保守的度量(conservative metric)</strong>. 相比直接计算 P 和 R 的平均值， F-measure的值更看重两者中的较小值。</p>
+<h2 id="ROC曲线和AUC"><a href="#ROC曲线和AUC" class="headerlink" title="ROC曲线和AUC"></a>ROC曲线和AUC</h2><p>考虑一个二分问题，即将实例分成正类（positive）或负类（negative）。</p>
+<ul>
+<li><p><strong>TPR, 真正类率(true positive rate ,TPR),：</strong> 如果一个实例是正类并且也被 预测成正类，即为真正类（True positive），真正类率是指分类器所识别出来的 正实例占所有正实例的比例。就是 Recall 吧～  TPR = TP / (TP + FN)  </p>
+</li>
+<li><p><strong>FPR, 负正类率：</strong> 分类器错认为正类的负实例占所有负实例的比例，FPR = FP / (FP + TN)  </p>
+</li>
+<li><p><strong>TNR， 真负类率：</strong> 分类器认为负类的负实例占所有负实例的比例，也就是负类的 Recall 吧～ TNR = TN /(FP + TN) = 1 - FPR</p>
+</li>
+</ul>
+<h3 id="为什么要引入-ROC-曲线"><a href="#为什么要引入-ROC-曲线" class="headerlink" title="为什么要引入 ROC 曲线"></a>为什么要引入 ROC 曲线</h3><ul>
+<li>Motivation1：在一个二分类模型中，对于所得到的连续结果，假设已确定一个阀值，比如说 0.6，大于这个值的实例划归为正类，小于这个值则划到负类中。如果减小阀值，减到0.5，固然能识别出更多的正类，也就是提高了识别出的正例占所有正例 的比类，即TPR,但同时也将更多的负实例当作了正实例，即提高了FPR。为了形象化这一变化，引入ROC，ROC曲线可以用于评价一个分类器。</li>
+</ul>
+<ul>
+<li>Motivation2：在类不平衡的情况下,如正样本90个,负样本10个,直接把所有样本分类为正样本,得到识别率为90%。但这显然是没有意义的。单纯根据Precision和Recall来衡量算法的优劣已经不能表征这种病态问题。</li>
+</ul>
+<h3 id="ROC-曲线"><a href="#ROC-曲线" class="headerlink" title="ROC 曲线"></a>ROC 曲线</h3><p>前面已经说道，对于数据不均衡的情况下，precision 和 recall 不足以表征这类问题，就比如上面的例子中，把找出不关于 pie 的 tweet看作是正类，那么它的 精度和召回率 都很高。所以引入 ROC</p>
+<p>因为我们要关注的是正类，所以关注指标是 真正类率 TPR 和 负正类率 FPR，真正类率越高越好，负正类率越低越好。但显然这两者之间是矛盾的，与分类器的阈值有关，ROC 就是用来表征阈值与 TPR 和 FPR 之间的关系曲线。</p>
+<p>ROC（Receiver Operating Characteristic）翻译为“接受者操作曲线”。曲线由两个变量1-specificity 和 Sensitivity绘制. 1-specificity=FPR，即负正类率。Sensitivity即是真正类率，TPR(True positive rate),反映了正类覆盖程度。</p>
+<blockquote>
+<p>为了更好地理解ROC曲线，我们使用具体的实例来说明：  </p>
+</blockquote>
+<p>如在医学诊断中,判断有病的样本。那么尽量把有病的揪出来是主要任务,也就是第一个指标TPR,要越高越好。而把没病的样本误诊为有病的,也就是第二个指标FPR,要越低越好。  </p>
+<p>不难发现,这两个指标之间是相互制约的。如果某个医生对于有病的症状比较敏感,稍微的小症状都判断为有病,那么他的第一个指标应该会很高,但是第二个指标也就相应地变高。最极端的情况下,他把所有的样本都看做有病,那么第一个指标达到1,第二个指标也为1。</p>
+<p>我们以FPR为横轴,TPR为纵轴,得到如下ROC空间。  </p>
+<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb8.png"></p>
+<p>参考链接中 ROC 曲线的解释: <a target="_blank" rel="noopener" href="http://www.cnblogs.com/maybe2030/p/5375175.html#_label0">http://www.cnblogs.com/maybe2030/p/5375175.html#_label0</a></p>
+<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb9.png"></p>
+<p>上面的图表示，分类器对于 pos 和 neg 的分别是有个阈值的，阈值很高，也就是 A 处，显然它的 TPR 不会很高，阈值越低，TPR 越高。 但是阈值很低的话，预测为正类的负实例也就越多， FPR 也会越高。</p>
+<p>曲线距离左上角越近,证明分类器效果越好。我们用一个标量 AUC 来量化这个分类效果。</p>
+<h3 id="怎么得到-ROC-曲线"><a href="#怎么得到-ROC-曲线" class="headerlink" title="怎么得到 ROC 曲线"></a>怎么得到 ROC 曲线</h3><p>我们知道对一个二值分类器，其预测出来的正类的 score 是一个概率。当一个样本为正类的概率大于 threshold时，我们判别它为正类。所以不同的 threshold，其对应的 TPR 和 FPR 的值也就不一样，这样就得到了 ROC 曲线。</p>
+<p>详细可参考：<a target="_blank" rel="noopener" href="http://alexkong.net/2013/06/introduction-to-auc-and-roc/">ROC和AUC介绍以及如何计算AUC</a>  非常清楚！！！</p>
+<h3 id="AUC"><a href="#AUC" class="headerlink" title="AUC"></a>AUC</h3><p>AUC值为ROC曲线所覆盖的区域面积,显然,AUC越大,分类器分类效果越好。</p>
+<ul>
+<li><p>AUC = 1，是完美分类器，采用这个预测模型时，不管设定什么阈值都能得出完美预测。绝大多数预测的场合，不存在完美分类器。  </p>
+</li>
+<li><p>0.5 &lt; AUC &lt; 1，优于随机猜测。这个分类器（模型）妥善设定阈值的话，能有预测价值。  </p>
+</li>
+<li><p>AUC = 0.5，跟随机猜测一样（例：丢铜板），模型没有预测价值。  </p>
+</li>
+<li><p>AUC &lt; 0.5，比随机猜测还差；但只要总是反预测而行，就优于随机猜测。  </p>
+</li>
+</ul>
+<p>AUC的物理意义：假设分类器的输出是样本属于正类的socre（置信度），则AUC的物理意义为，任取一对（正、负）样本，正样本的score大于负样本的score的概率。</p>
+<h3 id="怎么计算-AUC"><a href="#怎么计算-AUC" class="headerlink" title="怎么计算 AUC"></a>怎么计算 AUC</h3><p>AUC（Area Under Curve）被定义为ROC曲线下的面积，显然这个面积的数值不会大于1。又由于ROC曲线一般都处于y=x这条直线的上方，所以AUC的取值范围在0.5和1之间。使用AUC值作为评价标准是因为很多时候ROC曲线并不能清晰的说明哪个分类器的效果更好，而作为一个数值，对应AUC更大的分类器效果更好。</p>
+<p>代码实现： <a target="_blank" rel="noopener" href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html">sklearn.metrics.roc_auc_score</a></p>
+<h3 id="置信度和置信区间"><a href="#置信度和置信区间" class="headerlink" title="置信度和置信区间"></a>置信度和置信区间</h3><p>这里好像跟置信度和置信区间没啥关系。。。但是了解下也没事</p>
+<h4 id="置信区间"><a href="#置信区间" class="headerlink" title="置信区间"></a>置信区间</h4><p>再来理解置信度，首先要理解 95%置信区间 和 置信度。</p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/26419030">知乎：95%置信区间</a> 我的理解就是，首先总体均值是固定的，但只有上帝知道。我们就要用样本去估计总体均值。一次次抽样会得到很多样本均值，但是我们无法判断哪个均值最好，最接近总体均值。于是，我们构造区间来看这个区间是否含有总体均值。</p>
+<p>怎么构造区间：  </p>
+<p>通过一次次抽样得到的样本均值：  </p>
+<p>$$M=\dfrac{X_1 + X_2+…+X_n}{n}$$</p>
+<p>根据大数定律：  </p>
+<p>$$M\sim N(\mu,\dfrac{\sigma^2}{n})$$</p>
+<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb7.jpg"></p>
+<p>通过查表 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/yanjunhelloworld/p/4844741.html">标准正太分布表</a>可知，这样可以计算出置信区间，（如果方差为止，则用样本方差代替）</p>
+<p>我们以 $1.96\dfrac{\sigma }{\sqrt{n}}$ 为半径做区间，就构造出了 $95%$  置信区间。按这样去构造的100个区间，其中大约会有95个会包含 $\mu$ ：</p>
+<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb6.gif"></p>
+<p>那么，只有一个问题了，我们不知道、并且永远都不会知道真实的 $\mu$  是多少:</p>
+<p>我们就只有用 $\hat{\mu }$ 来代替 $\mu$ ：</p>
+<p>$$P(\hat \mu-1.96\dfrac{\sigma}{n}\le M\le\hat \mu+1.96\dfrac{\sigma}{n}) = 0.95$$</p>
+<p>这样可以得到置信区间了。如果抽样100次，对应也就有100个置信区间，那么其中含有总体均值的概率约为 95%.</p>
+<h4 id="置信度"><a href="#置信度" class="headerlink" title="置信度"></a>置信度</h4><p>样本数目不变的情况下，做一百次试验，有95个置信区间包含了总体真值。置信度为95%</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-08-07T01:28:38.000Z" title="2018/8/7 上午9:28:38">2018-08-07</time>发表</span><span class="level-item"><time dateTime="2021-01-27T08:44:33.537Z" title="2021/1/27 下午4:44:33">2021-01-27</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/">文本分类</a></span><span class="level-item">43 分钟读完 (大约6494个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E4%B8%AD%E6%96%87%E6%96%87%E6%9C%AC%E9%A2%84%E5%A4%84%E7%90%86/">机器学习-中文文本预处理</a></h1><div class="content"><h3 id="中文文本挖掘预处理特点"><a href="#中文文本挖掘预处理特点" class="headerlink" title="中文文本挖掘预处理特点"></a>中文文本挖掘预处理特点</h3><p>参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/pinard/p/6744056.html">https://www.cnblogs.com/pinard/p/6744056.html</a></p>
 <p>首先我们看看中文文本挖掘预处理和英文文本挖掘预处理相比的一些特殊点。  </p>
 <p>首先，中文文本是没有像英文的单词空格那样隔开的，因此不能直接像英文一样可以直接用最简单的空格和标点符号完成分词。所以一般我们需要用分词算法来完成分词，在<a target="_blank" rel="noopener" href="http://www.cnblogs.com/pinard/p/6677078.html">文本挖掘的分词原理</a>中，我们已经讲到了中文的分词原理，这里就不多说。</p>
 <p>第二，中文的编码不是utf8，而是unicode。这样会导致在分词的时候，和英文相比，我们要处理编码的问题。</p>
@@ -362,99 +455,6 @@ Prefix dict has been built succesfully.
 <p><strong>还的好好理解下 TF-IDF 是怎么实现的！</strong></p>
 <h3 id="建立分析模型"><a href="#建立分析模型" class="headerlink" title="建立分析模型"></a>建立分析模型</h3><p>有了每段文本的TF-IDF的特征向量，我们就可以利用这些数据建立分类模型，或者聚类模型了，或者进行主题模型的分析。比如我们上面的两段文本，就可以是两个训练样本了。此时的分类聚类模型和之前讲的非自然语言处理的数据分析没有什么两样。因此对应的算法都可以直接使用。而 <strong>主题模型</strong> 是自然语言处理比较特殊的一块，这个我们后面再单独讲。</p>
 <h3 id="中文文本挖掘预处理总结"><a href="#中文文本挖掘预处理总结" class="headerlink" title="中文文本挖掘预处理总结"></a>中文文本挖掘预处理总结</h3><p>上面我们对中文文本挖掘预处理的过程做了一个总结，希望可以帮助到大家。需要注意的是这个流程主要针对一些常用的文本挖掘，并使用了词袋模型，对于某一些自然语言处理的需求则流程需要修改。比如我们涉及到词上下文关系的一些需求，此时不能使用词袋模型。而有时候我们对于特征的处理有自己的特殊需求，因此这个流程仅供自然语言处理入门者参考。</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-08-07T01:28:38.000Z" title="2018/8/7 上午9:28:38">2018-08-07</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.200Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/ML/">ML</a></span><span class="level-item">19 分钟读完 (大约2853个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/">机器学习-常用指标总结</a></h1><div class="content"><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/maybe2030/p/5375175.html#_label0">http://www.cnblogs.com/maybe2030/p/5375175.html#_label0</a></p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="http://alexkong.net/2013/06/introduction-to-auc-and-roc/">http://alexkong.net/2013/06/introduction-to-auc-and-roc/</a></p>
-</li>
-</ul>
-<h2 id="精确率-Precision-召回率-Recall-和-F1-值"><a href="#精确率-Precision-召回率-Recall-和-F1-值" class="headerlink" title="精确率 Precision, 召回率 Recall 和 F1 值"></a>精确率 Precision, 召回率 Recall 和 F1 值</h2><p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb10.png"></p>
-<p>对于数据不均衡时，使用accuracy是不准确的。</p>
-<p>举个栗子：</p>
-<p>a million tweet: 999,900条不是关于pie的，只有100条是关于pie的</p>
-<p>对于一个stupid分类器，他认为所有的tweet都是跟pie无关的，那么它的准确率是99.99%！但这个分类器显然不是我们想要的，因而accuracy不是一个好的metric，当它目标是rare，或是complete unbalanced.</p>
-<p>引入另外两个指标：</p>
-<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb11.png"></p>
-<ul>
-<li><strong>精度 precision:</strong> 是检索出来的条目（比如：文档、网页等）有多少是准确的。精度是检索出相关文档数与检索出的文档总数的比率，衡量的是检索系统的查准率。  </li>
-</ul>
-<ul>
-<li><strong>召回 call：</strong> 召回率是指检索出的相关文档数和文档库中所有的相关文档数的比率，衡量的是检索系统的查全率.</li>
-</ul>
-<p><strong>需要先确定一个正分类：</strong> 这里需要检索出来的是与 pie 无关的，也就是与 pie 无关的是正分类。那么精度就是分类器检测出来的正分类中 gold pos 所占的比例，那么 precision = 0/(0+0)</p>
-<p>这里需要检索的是与 pie 无关的，检索出来的 true pos 占样本中 gold pos 的比例，那么 recall = 0/(100+0) = 0.</p>
-<p>总结下来，precision 和 recall 都是以 true pos 作为分子，precision 是以分类器预测出来的 pos(true pos + false neg) 作为分母，所以是差准率. recall 则是以总的 gold pos(true pos + false neg) 作为分母，所以是查全率。</p>
-<p>当然希望检索结果Precision越高越好，同时Recall也越高越好，但事实上这两者在某些情况下有矛盾的。比如极端情况下，我们只搜索出了一个结果，且是准确的，那么Precision就是100%，但是Recall就很低；而如果我们把所有结果都返回，那么比如Recall是100%，但是Precision就会很低。因此在不同的场合中需要自己判断希望Precision比较高或是Recall比较高。如果是做实验研究，可以绘制Precision-Recall曲线来帮助分析。</p>
-<p><strong>Ｆ-measure</strong>  </p>
-<p>$$F_{\beta}=\dfrac{(\beta^2+1)PR}{\beta^2P+R}$$</p>
-<p>当 $\beta&gt;1$时，Recall的比重更大;当 $\beta&lt;1$时，precision的比重更大。使用最多的是 $\beta=1$,也就是 $F_{\beta=1}, F_1$. $\beta$ 的的取值取决于实际应用。</p>
-<p>$$F_1 = \dfrac{2PR}{P+R}$$</p>
-<p>Ｆ-measure 是 precision 和 recall 的 **加权调和平均值(weighted harmonic mean)**。</p>
-<p>调和平均值是倒数的算术平均值的倒数。</p>
-<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb12.png"></p>
-<p>为什么要使用调和平均值呢？因为它是一个更 <strong>保守的度量(conservative metric)</strong>. 相比直接计算 P 和 R 的平均值， F-measure的值更看重两者中的较小值。</p>
-<h2 id="ROC曲线和AUC"><a href="#ROC曲线和AUC" class="headerlink" title="ROC曲线和AUC"></a>ROC曲线和AUC</h2><p>考虑一个二分问题，即将实例分成正类（positive）或负类（negative）。</p>
-<ul>
-<li><p><strong>TPR, 真正类率(true positive rate ,TPR),：</strong> 如果一个实例是正类并且也被 预测成正类，即为真正类（True positive），真正类率是指分类器所识别出来的 正实例占所有正实例的比例。就是 Recall 吧～  TPR = TP / (TP + FN)  </p>
-</li>
-<li><p><strong>FPR, 负正类率：</strong> 分类器错认为正类的负实例占所有负实例的比例，FPR = FP / (FP + TN)  </p>
-</li>
-<li><p><strong>TNR， 真负类率：</strong> 分类器认为负类的负实例占所有负实例的比例，也就是负类的 Recall 吧～ TNR = TN /(FP + TN) = 1 - FPR</p>
-</li>
-</ul>
-<h3 id="为什么要引入-ROC-曲线"><a href="#为什么要引入-ROC-曲线" class="headerlink" title="为什么要引入 ROC 曲线"></a>为什么要引入 ROC 曲线</h3><ul>
-<li>Motivation1：在一个二分类模型中，对于所得到的连续结果，假设已确定一个阀值，比如说 0.6，大于这个值的实例划归为正类，小于这个值则划到负类中。如果减小阀值，减到0.5，固然能识别出更多的正类，也就是提高了识别出的正例占所有正例 的比类，即TPR,但同时也将更多的负实例当作了正实例，即提高了FPR。为了形象化这一变化，引入ROC，ROC曲线可以用于评价一个分类器。</li>
-</ul>
-<ul>
-<li>Motivation2：在类不平衡的情况下,如正样本90个,负样本10个,直接把所有样本分类为正样本,得到识别率为90%。但这显然是没有意义的。单纯根据Precision和Recall来衡量算法的优劣已经不能表征这种病态问题。</li>
-</ul>
-<h3 id="ROC-曲线"><a href="#ROC-曲线" class="headerlink" title="ROC 曲线"></a>ROC 曲线</h3><p>前面已经说道，对于数据不均衡的情况下，precision 和 recall 不足以表征这类问题，就比如上面的例子中，把找出不关于 pie 的 tweet看作是正类，那么它的 精度和召回率 都很高。所以引入 ROC</p>
-<p>因为我们要关注的是正类，所以关注指标是 真正类率 TPR 和 负正类率 FPR，真正类率越高越好，负正类率越低越好。但显然这两者之间是矛盾的，与分类器的阈值有关，ROC 就是用来表征阈值与 TPR 和 FPR 之间的关系曲线。</p>
-<p>ROC（Receiver Operating Characteristic）翻译为“接受者操作曲线”。曲线由两个变量1-specificity 和 Sensitivity绘制. 1-specificity=FPR，即负正类率。Sensitivity即是真正类率，TPR(True positive rate),反映了正类覆盖程度。</p>
-<blockquote>
-<p>为了更好地理解ROC曲线，我们使用具体的实例来说明：  </p>
-</blockquote>
-<p>如在医学诊断中,判断有病的样本。那么尽量把有病的揪出来是主要任务,也就是第一个指标TPR,要越高越好。而把没病的样本误诊为有病的,也就是第二个指标FPR,要越低越好。  </p>
-<p>不难发现,这两个指标之间是相互制约的。如果某个医生对于有病的症状比较敏感,稍微的小症状都判断为有病,那么他的第一个指标应该会很高,但是第二个指标也就相应地变高。最极端的情况下,他把所有的样本都看做有病,那么第一个指标达到1,第二个指标也为1。</p>
-<p>我们以FPR为横轴,TPR为纵轴,得到如下ROC空间。  </p>
-<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb8.png"></p>
-<p>参考链接中 ROC 曲线的解释: <a target="_blank" rel="noopener" href="http://www.cnblogs.com/maybe2030/p/5375175.html#_label0">http://www.cnblogs.com/maybe2030/p/5375175.html#_label0</a></p>
-<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb9.png"></p>
-<p>上面的图表示，分类器对于 pos 和 neg 的分别是有个阈值的，阈值很高，也就是 A 处，显然它的 TPR 不会很高，阈值越低，TPR 越高。 但是阈值很低的话，预测为正类的负实例也就越多， FPR 也会越高。</p>
-<p>曲线距离左上角越近,证明分类器效果越好。我们用一个标量 AUC 来量化这个分类效果。</p>
-<h3 id="怎么得到-ROC-曲线"><a href="#怎么得到-ROC-曲线" class="headerlink" title="怎么得到 ROC 曲线"></a>怎么得到 ROC 曲线</h3><p>我们知道对一个二值分类器，其预测出来的正类的 score 是一个概率。当一个样本为正类的概率大于 threshold时，我们判别它为正类。所以不同的 threshold，其对应的 TPR 和 FPR 的值也就不一样，这样就得到了 ROC 曲线。</p>
-<p>详细可参考：<a target="_blank" rel="noopener" href="http://alexkong.net/2013/06/introduction-to-auc-and-roc/">ROC和AUC介绍以及如何计算AUC</a>  非常清楚！！！</p>
-<h3 id="AUC"><a href="#AUC" class="headerlink" title="AUC"></a>AUC</h3><p>AUC值为ROC曲线所覆盖的区域面积,显然,AUC越大,分类器分类效果越好。</p>
-<ul>
-<li><p>AUC = 1，是完美分类器，采用这个预测模型时，不管设定什么阈值都能得出完美预测。绝大多数预测的场合，不存在完美分类器。  </p>
-</li>
-<li><p>0.5 &lt; AUC &lt; 1，优于随机猜测。这个分类器（模型）妥善设定阈值的话，能有预测价值。  </p>
-</li>
-<li><p>AUC = 0.5，跟随机猜测一样（例：丢铜板），模型没有预测价值。  </p>
-</li>
-<li><p>AUC &lt; 0.5，比随机猜测还差；但只要总是反预测而行，就优于随机猜测。  </p>
-</li>
-</ul>
-<p>AUC的物理意义：假设分类器的输出是样本属于正类的socre（置信度），则AUC的物理意义为，任取一对（正、负）样本，正样本的score大于负样本的score的概率。</p>
-<h3 id="怎么计算-AUC"><a href="#怎么计算-AUC" class="headerlink" title="怎么计算 AUC"></a>怎么计算 AUC</h3><p>AUC（Area Under Curve）被定义为ROC曲线下的面积，显然这个面积的数值不会大于1。又由于ROC曲线一般都处于y=x这条直线的上方，所以AUC的取值范围在0.5和1之间。使用AUC值作为评价标准是因为很多时候ROC曲线并不能清晰的说明哪个分类器的效果更好，而作为一个数值，对应AUC更大的分类器效果更好。</p>
-<p>代码实现： <a target="_blank" rel="noopener" href="http://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html">sklearn.metrics.roc_auc_score</a></p>
-<h3 id="置信度和置信区间"><a href="#置信度和置信区间" class="headerlink" title="置信度和置信区间"></a>置信度和置信区间</h3><p>这里好像跟置信度和置信区间没啥关系。。。但是了解下也没事</p>
-<h4 id="置信区间"><a href="#置信区间" class="headerlink" title="置信区间"></a>置信区间</h4><p>再来理解置信度，首先要理解 95%置信区间 和 置信度。</p>
-<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/26419030">知乎：95%置信区间</a> 我的理解就是，首先总体均值是固定的，但只有上帝知道。我们就要用样本去估计总体均值。一次次抽样会得到很多样本均值，但是我们无法判断哪个均值最好，最接近总体均值。于是，我们构造区间来看这个区间是否含有总体均值。</p>
-<p>怎么构造区间：  </p>
-<p>通过一次次抽样得到的样本均值：  </p>
-<p>$$M=\dfrac{X_1 + X_2+…+X_n}{n}$$</p>
-<p>根据大数定律：  </p>
-<p>$$M\sim N(\mu,\dfrac{\sigma^2}{n})$$</p>
-<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb7.jpg"></p>
-<p>通过查表 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/yanjunhelloworld/p/4844741.html">标准正太分布表</a>可知，这样可以计算出置信区间，（如果方差为止，则用样本方差代替）</p>
-<p>我们以 $1.96\dfrac{\sigma }{\sqrt{n}}$ 为半径做区间，就构造出了 $95%$  置信区间。按这样去构造的100个区间，其中大约会有95个会包含 $\mu$ ：</p>
-<p><img src="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E6%80%BB%E7%BB%93/nb6.gif"></p>
-<p>那么，只有一个问题了，我们不知道、并且永远都不会知道真实的 $\mu$  是多少:</p>
-<p>我们就只有用 $\hat{\mu }$ 来代替 $\mu$ ：</p>
-<p>$$P(\hat \mu-1.96\dfrac{\sigma}{n}\le M\le\hat \mu+1.96\dfrac{\sigma}{n}) = 0.95$$</p>
-<p>这样可以得到置信区间了。如果抽样100次，对应也就有100个置信区间，那么其中含有总体均值的概率约为 95%.</p>
-<h4 id="置信度"><a href="#置信度" class="headerlink" title="置信度"></a>置信度</h4><p>样本数目不变的情况下，做一百次试验，有95个置信区间包含了总体真值。置信度为95%</p>
 </div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-08-07T01:28:38.000Z" title="2018/8/7 上午9:28:38">2018-08-07</time>发表</span><span class="level-item"><time dateTime="2021-01-27T08:44:33.634Z" title="2021/1/27 下午4:44:33">2021-01-27</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/">文本分类</a></span><span class="level-item">34 分钟读完 (大约5038个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/08/07/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E8%8B%B1%E6%96%87%E6%96%87%E6%9C%AC%E9%A2%84%E5%A4%84%E7%90%86/">机器学习-英文文本预处理</a></h1><div class="content"><h3 id="转载自：http-www-cnblogs-com-pinard-p-6756534-html"><a href="#转载自：http-www-cnblogs-com-pinard-p-6756534-html" class="headerlink" title="转载自：http://www.cnblogs.com/pinard/p/6756534.html"></a>转载自：<a target="_blank" rel="noopener" href="http://www.cnblogs.com/pinard/p/6756534.html">http://www.cnblogs.com/pinard/p/6756534.html</a></h3><h2 id="英文文本挖掘预处理特点"><a href="#英文文本挖掘预处理特点" class="headerlink" title="英文文本挖掘预处理特点"></a>英文文本挖掘预处理特点</h2><p>英文文本的预处理方法和中文的有部分区别。首先，英文文本挖掘预处理一般可以不做分词（特殊需求除外），而中文预处理分词是必不可少的一步。第二点，大部分英文文本都是uft-8的编码，这样在大多数时候处理的时候不用考虑编码转换的问题，而中文文本处理必须要处理unicode的编码问题。</p>
 <p>而英文文本的预处理也有自己特殊的地方，第三点就是拼写问题，很多时候，我们的预处理要包括拼写检查，比如“Helo World”这样的错误，我们不能在分析的时候讲错纠错。所以需要在预处理前加以纠正。第四点就是词干提取(stemming)和词形还原(lemmatization)。这个东西主要是英文有单数，复数和各种时态，导致一个词会有不同的形式。比如“countries”和”country”，”wolf”和”wolves”，我们期望是有一个词。</p>
 <h2 id="英文文本挖掘预处理一：数据收集"><a href="#英文文本挖掘预处理一：数据收集" class="headerlink" title="英文文本挖掘预处理一：数据收集"></a>英文文本挖掘预处理一：数据收集</h2><p>这部分英文和中文类似。获取方法一般有两种：使用别人做好的语料库和自己用爬虫去在网上去爬自己的语料数据。</p>
