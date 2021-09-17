@@ -1,5 +1,307 @@
 <!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="black"><meta name="application-name" content="panxiaoxie"><meta name="msapplication-TileImage" content="/img/avatar.png"><meta name="msapplication-TileColor" content="black"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="panxiaoxie"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="panxiaoxie"><meta property="og:url" content="https://github.com/PanXiebit"><meta property="og:site_name" content="panxiaoxie"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://www.qt86.com/cache/1625298592_187938.png"><meta property="article:author" content="panxiaoxie"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://www.qt86.com/cache/1625298592_187938.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/panxiaoxie.png"}},"description":null}</script><link rel="icon" href="/img/avatar.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于我</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-10-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-11-04T03:04:35.000Z" title="2018/11/4 上午11:04:35">2018-11-04</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:09.158Z" title="2021/6/29 下午4:12:09">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/">text matching</a></span><span class="level-item">24 分钟读完 (大约3533个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/11/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Multi-cast-Attention-Networks/">论文笔记-Multi-cast Attention Networks</a></h1><div class="content"><p>paper: [Multi-Cast Attention Networks for Retrieval-based Question</p>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="black"><meta name="application-name" content="panxiaoxie"><meta name="msapplication-TileImage" content="/img/avatar.png"><meta name="msapplication-TileColor" content="black"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="panxiaoxie"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="panxiaoxie"><meta property="og:url" content="https://github.com/PanXiebit"><meta property="og:site_name" content="panxiaoxie"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://www.qt86.com/cache/1625298592_187938.png"><meta property="article:author" content="panxiaoxie"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://www.qt86.com/cache/1625298592_187938.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/panxiaoxie.png"}},"description":null}</script><link rel="icon" href="/img/avatar.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于我</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-10-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-11-27T12:04:32.000Z" title="2018/11/27 下午8:04:32">2018-11-27</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.522Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/">DL</a></span><span class="level-item">25 分钟读完 (大约3787个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">深度学习-优化算法</a></h1><div class="content"><p>paper: <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1609.04747.pdf">An overview of gradient descent optimization algorithms</a></p>
+<h2 id="Gradient-descent-variants"><a href="#Gradient-descent-variants" class="headerlink" title="Gradient descent variants"></a>Gradient descent variants</h2><h3 id="Batch-gradient-descent"><a href="#Batch-gradient-descent" class="headerlink" title="Batch gradient descent"></a>Batch gradient descent</h3><p>computes the gradient of the cost function to the parameters $\theta$ for the entire training dataset.</p>
+<p>$$\theta= \theta - \delta_{\theta}J(\theta)$$</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">for i in range ( nb_epochs ):</span><br><span class="line"></span><br><span class="line">  params_grad = evaluate_gradient ( loss_function , data , params )</span><br><span class="line"></span><br><span class="line">  params = params - learning_rate * params_grad</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>Batch gradient descent is guaranteed to converge to the global minimum for convex error surfaces and to a local minimum for non-convex surfaces.</p>
+<h3 id="Stochastic-gradient-descent"><a href="#Stochastic-gradient-descent" class="headerlink" title="Stochastic gradient descent"></a>Stochastic gradient descent</h3><p>Stochastic gradient descent (SGD) in contrast performs a parameter update for each training example x(i) and label y(i):</p>
+<p>$$\theta= \theta - \delta_{\theta}J(\theta; x^{(i)}; y^{(i)})$$</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">for i in range ( nb_epochs ):</span><br><span class="line"></span><br><span class="line">  np. random . shuffle ( data )</span><br><span class="line"></span><br><span class="line">  for example in data :</span><br><span class="line"></span><br><span class="line">    params_grad = evaluate_gradient ( loss_function , example , params )</span><br><span class="line"></span><br><span class="line">    params = params - learning_rate * params_grad</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>Batch gradient descent performs redundant computations for large datasets, as it recomputes gradients for similar examples before each parameter update. SGD does away with this redundancy by performing one update at a time. It is therefore usually much faster and can also be used to learn</p>
+<p>online. SGD performs frequent updates with a high variance that cause the objective function to fluctuate heavily.  </p>
+<p>批梯度下降的计算过于冗余，它在每一次参数更新之前的计算过程中会计算很多相似的样本。随机梯度下降则是每一次参数更新计算一个样本，因此更新速度会很快，并且可以在线学习。但是用于更新的梯度的方差会很大，导致 loss 曲线波动很大。</p>
+<p>While batch gradient descent converges to the minimum of the basin the parameters are placed in, SGD’s fluctuation, on the one hand, enables it to jump to new and potentially better local minima. On the other hand, this ultimately</p>
+<p>complicates convergence to the exact minimum, as SGD will keep overshooting. However, it has been shown that when we slowly decrease the learning rate, SGD shows the same convergence behaviour as batch gradient descent, almost</p>
+<p>certainly converging to a local or the global minimum for non-convex and convex optimization respectively.  </p>
+<p>批梯度下降收敛到的最小值与相应的参数关系很大（也就是说跟权重的初始化会有很大影响）。而 SGD 由于loss波动很大，更有效的跳出局部最优区域，从而获得更好的局部最优值。但另一方面，这也会使得 SGD 难以收敛。实验表明，缓慢的降低学习率， SGD 和 BatchGD 能获得同样的局部最优解。</p>
+<h3 id="Mini-batch-gradient-descent"><a href="#Mini-batch-gradient-descent" class="headerlink" title="Mini-batch gradient descent"></a>Mini-batch gradient descent</h3><p>Mini-batch gradient descent finally takes the best of both worlds and performs an update for every mini-batch of n training examples.</p>
+<p>$$\theta= \theta - \delta_{\theta}J(\theta; x^{(i+n)}; y^{(i+n)})$$</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">for i in range ( nb_epochs ):</span><br><span class="line"></span><br><span class="line">  np. random . shuffle ( data )</span><br><span class="line"></span><br><span class="line">  for batch in get_batches (data , batch_size =50):</span><br><span class="line"></span><br><span class="line">    params_grad = evaluate_gradient ( loss_function , batch , params )</span><br><span class="line"></span><br><span class="line">    params = params - learning_rate * params_grad</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>reduces the variance of the parameter updates, which can lead to more stable convergence;  </li>
+</ul>
+<p>减小参数更新的方差，使得收敛更稳定。</p>
+<ul>
+<li>can make use of highly optimized matrix optimizations common to state-of-the-art deep learning libraries that make computing the gradient mini-batch very efficient.  </li>
+</ul>
+<p>能非常好的利用矩阵优化的方式来加速计算，这在各种深度学习框架里面都很常见。</p>
+<h2 id="Challenges"><a href="#Challenges" class="headerlink" title="Challenges"></a>Challenges</h2><ul>
+<li>Choosing a proper learning rate.  </li>
+</ul>
+<p>选择合适的学习率。</p>
+<ul>
+<li>Learning rate schedules.  try to adjust the learning rate during training by e.g. annealing, i.e. reducing the learning rate according to a pre-defined schedule or when the change in objective between epochs falls below a threshold. These schedules and thresholds, however, have to be defined in advance and are thus unable to adapt to a dataset’s characteristics.  </li>
+</ul>
+<p>学习率计划。在训练过程中调整学习率，譬如退火，预先定义好的计划，当一个 epoch 结束后，目标函数（loss） 减小的值低于某个阈值时，可以调整学习率。  </p>
+<ul>
+<li>the same learning rate applies to all parameter updates. If our data is sparse and our features have very different frequencies, we might not want to update all of them to the same extent, but perform a larger update for rarely occurring</li>
+</ul>
+<p>features.  </p>
+<p>对所有的参数使用相同的学习率。如果你的数据是稀疏的，并且不同的特征的频率有很大的不同，这个时候我们并不希望对所有的参数使用相同的学习率，而是对更罕见的特征执行更大的学习率。</p>
+<ul>
+<li>Another key challenge of minimizing highly non-convex error functions common for neural networks is avoiding getting trapped in their numerous suboptimal local minima.  Dauphin et al. [5] argue that the difficulty arises in fact not from local minima but from saddle points, i.e. points where one dimension slopes up and another slopes down. These saddle points are usually surrounded by a plateau of the same error, which makes it notoriously hard for SGD to escape, as the gradient is close to zero in all dimensions.  </li>
+</ul>
+<p>对于非凸损失函数的优化问题，需要避免陷入其众多的次优局部极小值。Dauphin et al. [5] 则认为， 相比局部极小值，鞍点的是更难解决的问题。鞍点是一个维度上升，一个维度下降。详细的关于鞍点以及 SGD 如何逃离鞍点可参考：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/29490637">知乎：如何逃离鞍点</a> .</p>
+<h2 id="Gradient-descent-optimization-algorithms"><a href="#Gradient-descent-optimization-algorithms" class="headerlink" title="Gradient descent optimization algorithms"></a>Gradient descent optimization algorithms</h2><p>Momentum [17] is a method that helps accelerate SGD in the relevant direction and dampens oscillations as can be seen in Figure 2b. It does this by padding a fraction $gamma$ of the update vector of the past time step to the current</p>
+<p>update vector.</p>
+<h3 id="Momentum"><a href="#Momentum" class="headerlink" title="Momentum"></a>Momentum</h3><p>paper: [Neural networks :</p>
+<p>the official journal of the International Neural Network Society]()</p>
+<p><img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/sgd01.png"></p>
+<p>without Momentum:</p>
+<p>$$\theta += -lr * \nabla_{\theta}J(\theta)$$</p>
+<p>with Momentum:</p>
+<p>$$v_t=\gamma v_{t-1}+\eta \nabla_{\theta}J(\theta)$$</p>
+<p>$$\theta=\theta-v_t$$</p>
+<p>动量梯度下降的理解：</p>
+<p>The momentum term increases for dimensions whose gradients point in the same directions and reduces updates for dimensions whose gradients change directions.  </p>
+<p>如上图中垂直方向的梯度方向是一致的，那么它的动量会累积，并在这个方向的速度越来越大。而在某个水平方向，其梯度方向总是变化，那么它的速度会减小，也就是在这个方向的波动幅度会得到抑制。</p>
+<p>其实就是把梯度看做加速度，参数的更新量看做速度。速度表示一个step更新的大小。加速度总是朝着一个方向，速度必然越来越快。加速度方向总是变化，速度就会相对较小。</p>
+<p>$\gamma$ 看做摩擦系数， 通常设置为 0.9。$\eta$ 是学习率。</p>
+<h3 id="Nesterov-accelerate-gradient-NAG"><a href="#Nesterov-accelerate-gradient-NAG" class="headerlink" title="Nesterov accelerate gradient(NAG)"></a>Nesterov accelerate gradient(NAG)</h3><p>paper: [Yurii Nesterov. A method for unconstrained convex minimization problem</p>
+<p>with the rate of convergence o(1/k2).]()</p>
+<p>We would like to have a smarter ball, a ball that has a notion of where it is going so that it knows to slow down before the hill slopes up again. Nesterov accelerated gradient (NAG) [14] is a way to give our momentum term this kind of prescience.  </p>
+<p>如果采用 momentum，在接近目标函数最优值时，由于速度在垂直方向是一直增加的，所以速度会很大，这个时候就会越过最小值，然后还得绕回来，增加了训练时间。所以我们需要参数的更新具有先见之明，知道在接近最优解时，降低参数更新的速度大小。</p>
+<p>$$v_t=\gamma v_{t-1}+\eta \nabla_{\theta}J(\theta-\gamma v_{t-1})$$</p>
+<p>$$\theta=\theta-v_t$$</p>
+<p>在 momentum 中，我们用速度 $\gamma v_{t-1}$ 来更新参数。 事实上在接近局部最优解时，目标函数对于 $\theta$ 的梯度会越来越小，甚至接近于 0. 也就是说，尽管速度在增加，但是速度增加的程度越来越小。我们可以通过速度增加的程度来判断是否要接近局部最优解了。$\nabla_{\theta}J(\theta-\gamma v_{t-1})$ 就表示速度变化的程度，代替一直为正的 $\nabla_{\theta}J(\theta)$，在接近局部最优解时，这个值应该是负的，相应的参数更新的速度也会减小.</p>
+<p>在代码实现时，对于 $J(\theta-\gamma v_{t-1})$ 的梯度计算不是很方便，可以令：</p>
+<p>$$\phi = \theta-\gamma v_{t-1}$$</p>
+<p>然后进行计算，具体可参考 tensorflow 或 pytorch 中代码。</p>
+<h3 id="Adagrad"><a href="#Adagrad" class="headerlink" title="Adagrad"></a>Adagrad</h3><p>paper: [Adaptive Subgradient Methods for Online Learning</p>
+<p>and Stochastic Optimization]()</p>
+<p>Adagrad [8] is an algorithm for gradient-based optimization that does just this: It adapts the learning rate to the parameters, performing larger updates for infrequent and smaller updates for frequent parameters. For this reason, it is well-suited for dealing with sparse data.  </p>
+<p>对于不同的参数，自适应的调整对应的梯度大小。对低频参数或特征，使其更新的梯度较大，对高频的参数或特征，使其更新的梯度较小。比如在训练 Glove 词向量时，低频词在某一步迭代中可能并没有参与 loss 的计算，所以更新的会相对较慢，所以需要人为的增大它的梯度。</p>
+<p>不同的时间步 t,不同的参数 i 对应的梯度：</p>
+<p>$$g_{t,i}=\nabla_{\theta_t}J(\theta_t,i)$$</p>
+<p>$$\theta_{t+1,i}=\theta_{t,i}-\eta \cdot g_{t,i}$$</p>
+<p>$$\theta_{t+1,i}=\theta_{t,i}-\dfrac{\eta}{\sqrt G_{t,ii}+\epsilon} g_{t,i}$$</p>
+<p>$G_{t,ii}$ 是对角矩阵，对角元素是对应的梯度大小。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cache += dx**2</span><br><span class="line"></span><br><span class="line">x += -lr * dx/(np.sqrt(cache) + 1e-7)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="RMSprop"><a href="#RMSprop" class="headerlink" title="RMSprop"></a>RMSprop</h3><p><a href>Geoff Hinton Lecture 6e</a></p>
+<p>Adagrad 中随着 cache 的累积，最后的梯度会变为 0，RMSprop 在此基础上进行了改进，给了 cache 一个衰减率，相当于值考虑了最近时刻的梯度值，而很早之前的梯度值经过衰减后影响很小。</p>
+<p>$$E[g^2]_ t=0.9E[g^2]_ {t-1}+0.1g^2_t$$</p>
+<p>$$\theta_{t+1}=\theta_t-\dfrac{\eta}{E[g^2]_ t+\epsilon}g_t$$</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cache = decay_rate*cache + (1-decay_rate)*dx**2</span><br><span class="line"></span><br><span class="line">x += -lr * dx/(np.sqrt(cache) + 1e-7)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用指数衰减的形式来保存 cache 能有效的节省内存，只需要记录当前的梯度值即可，而不用保存所有的梯度值。</p>
+<h3 id="Adam-Adaptive-Moment-Estimation"><a href="#Adam-Adaptive-Moment-Estimation" class="headerlink" title="Adam(Adaptive Moment Estimation)"></a>Adam(Adaptive Moment Estimation)</h3><p><a href>Adam: a Method for Stochastic Optimization.</a></p>
+<p>In addition to storing an exponentially decaying average of past squared gradients $v_t$ like Adadelta and RMSprop, Adam also keeps an exponentially decaying average of past gradients $m_t$, similar to momentum:</p>
+<p>similar like momentum:  </p>
+<p>$$m_t=\beta_1m_{t-1}+(1-\beta_1)g_t$$</p>
+<p>similar like autograd/RMSprop:  </p>
+<p>$$v_t=\beta_2v_{t-1}+(1-\beta_2)g_t^2$$</p>
+<p>$m_t$ and $v_t$ are estimates of the first moment (the mean) and the second moment (the uncentered variance) of the gradients respectively, hence the name of the method. As $m_t$ and $v_t$ are initialized as vectors of 0’s, the authors of Adam observe that they are biased towards zero, especially during the initial time steps, and especially when the decay rates are small (i.e. β1 and β2 are close to 1). They counteract these biases by computing bias-corrected first and second moment estimates:</p>
+<p>$$\hat m_t=\dfrac{m_t}{1-\beta^t_1}$$</p>
+<p>$$\hat v_t=\dfrac{v_t}{1-\beta^t_2}$$</p>
+<p>They then use these to update the parameters just as we have seen in Adadelta and RMSprop, which</p>
+<p>yields the Adam update rule:</p>
+<p>$$\theta_{t+1}=\theta_t-\dfrac{\eta}{\sqrt{\hat a}+ \epsilon}{\hat m_t}$$</p>
+<ul>
+<li><p>$m_t$ 是类似于 Momentum 中参数更新量，是梯度的函数. $\beta_1$ 是摩擦系数，一般设为 0.9.  </p>
+</li>
+<li><p>$v_t$ 是类似于 RMSprop 中的 cache，用来自适应的改变不同参数的梯度大小。  </p>
+</li>
+<li><p>$\beta_2$ 是 cache 的衰减系数，一般设为 0.999.</p>
+</li>
+</ul>
+<h3 id="AdaMax"><a href="#AdaMax" class="headerlink" title="AdaMax"></a>AdaMax</h3><p><a href>Adam: a Method for Stochastic Optimization.</a></p>
+<p>在 Adam 中, 用来归一化梯度的因子 $v_t$ 与过去的梯度(包含在 $v_{t-1}$ 中)以及当前的梯度 $|g_t|^2$ 的 l2 范式成反比。</p>
+<p>$$v_t=\beta_2v_{t-1}+(1-\beta_2)g_t^2$$</p>
+<p>可以将其泛化到 $l_p$ 范式。同样的 $\beta_2$ 变为 $\beta_2^p$.</p>
+<p>Norms for large p values generally become numerically unstable, which is why $l_1$ and $l_2$ norms are most common in practice. However, $l_{\infty}$ also generally exhibits stable behavior. For this reason, the authors propose AdaMax [10] and show that $v_t$ with $l_{\infty}$ converges to the following more stable value. To avoid confusion with Adam, we use ut to denote the infinity norm-constrained $v_t$:</p>
+<p>$$\mu_t=\beta_2^{\infty}v_{t-1}+(1-\beta_2^{\infty})|g_t|^{\infty}$$</p>
+<p>$$=max(\beta_2\cdot v_{t-1}, |g_t|)$$</p>
+<p>然后用 $\mu_t$ 代替 Adam 中的 $\sqrt(v_t)+\epsilon$:</p>
+<p>$$\theta_{t+1}=\theta_t-\dfrac{\eta}{\mu_t}{\hat m_t}$$</p>
+<p>Note that as $\mu_t$ relies on the max operation, it is not as suggestible to bias towards zero as $m_t$ and $v_t$ in Adam, which is why we do not need to compute a bias correction for ut. Good default values are again:</p>
+<p>$$\eta = 0.002, \beta_1 = 0.9, \beta_2 = 0.999.$$</p>
+<h2 id="Visualization-of-algorithms"><a href="#Visualization-of-algorithms" class="headerlink" title="Visualization of algorithms"></a>Visualization of algorithms</h2><p><img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/opt2.gif"></p>
+<blockquote>
+<p>we see the path they took on the contours of a loss surface (the Beale function). All started at the same point and took different paths to reach the minimum. Note that Adagrad, Adadelta, and RMSprop headed off immediately in the right direction and converged similarly fast, while Momentum and NAG were led off-track, evoking the image of a ball rolling down the hill. NAG, however, was able to correct its course sooner due to its increased responsiveness by looking ahead and headed to the minimum.  </p>
+</blockquote>
+<p>如果目标函数是 Beale 这种类型的函数，自适应优化算法能更直接的收敛到最小值。而 Momentum 和 NAG 则偏离了轨道，就像球从山上滚下一样，刹不住车。但是 NAG 因为对未来具有一定的预见性，所以能更早的纠正从而提高其响应能力。</p>
+<p><img src="/2018/11/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/opt1.gif"></p>
+<blockquote>
+<p>shows the behaviour of the algorithms at a saddle point, i.e. a point where one dimension has a positive slope, while the other dimension has a negative slope, which pose a difficulty for SGD as we mentioned before. Notice here that SGD, Momentum, and NAG find it difficulty to break symmetry, although the latter two eventually manage to escape the saddle point, while Adagrad, RMSprop, and Adadelta quickly head down the negative slope, with Adadelta leading the charge.  </p>
+</blockquote>
+<p>各种优化算法鞍点的表现。 Momentum, SGD, NAG 很难打破平衡，而自适应性的算法 Adadelta, RMSprop, Adadelta 能很快的逃离鞍点。</p>
+<h2 id="example"><a href="#example" class="headerlink" title="example"></a>example</h2><h3 id="model"><a href="#model" class="headerlink" title="model"></a>model</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestNet</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="built_in">super</span>(TestNet, self).__init__()</span><br><span class="line"></span><br><span class="line">        self.linear1 = nn.Linear(<span class="number">10</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">        self.linear2 = nn.Linear(<span class="number">5</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        self.loss = nn.BCELoss()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x, label</span>):</span></span><br><span class="line"></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        x: [batch, 10]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        label: [batch]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        out = self.linear2(self.linear1(x)).squeeze()</span><br><span class="line"></span><br><span class="line">        loss = self.loss(out, label)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> out, loss</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">model = TestNet()</span><br><span class="line"></span><br><span class="line">model</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>TestNet(
+
+  (linear1): Linear(in_features=10, out_features=5, bias=True)
+
+  (linear2): Linear(in_features=5, out_features=1, bias=True)
+
+  (loss): BCELoss()
+
+)
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">list</span>(model.named_parameters())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>[(&#39;linear1.weight&#39;, Parameter containing:
+
+  tensor([[ 0.2901, -0.0022, -0.1515, -0.1064, -0.0475, -0.0324,  0.0404,  0.0266,
+
+           -0.2358, -0.0433],
+
+          [-0.1588, -0.1917,  0.0995,  0.0651, -0.2948, -0.1830,  0.2356,  0.1060,
+
+            0.2172, -0.0367],
+
+          [-0.0173,  0.2129,  0.3123,  0.0663,  0.2633, -0.2838,  0.3019, -0.2087,
+
+           -0.0886,  0.0515],
+
+          [ 0.1641, -0.2123, -0.0759,  0.1198,  0.0408, -0.0212,  0.3117, -0.2534,
+
+           -0.1196, -0.3154],
+
+          [ 0.2187,  0.1547, -0.0653, -0.2246, -0.0137,  0.2676,  0.1777,  0.0536,
+
+           -0.3124,  0.2147]], requires_grad=True)),
+
+ (&#39;linear1.bias&#39;, Parameter containing:
+
+  tensor([ 0.1216,  0.2846, -0.2002, -0.1236,  0.2806], requires_grad=True)),
+
+ (&#39;linear2.weight&#39;, Parameter containing:
+
+  tensor([[-0.1652,  0.3056,  0.0749, -0.3633,  0.0692]], requires_grad=True)),
+
+ (&#39;linear2.bias&#39;, Parameter containing:
+
+  tensor([0.0450], requires_grad=True))]
+</code></pre>
+<h3 id="add-model-parameters-to-optimizer"><a href="#add-model-parameters-to-optimizer" class="headerlink" title="add model parameters to optimizer"></a>add model parameters to optimizer</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> torch.optim <span class="keyword">as</span> optim</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># parameters = model.parameters()</span></span><br><span class="line"></span><br><span class="line">parameters_filters = <span class="built_in">filter</span>(<span class="keyword">lambda</span> p: p.requires_grad, model.parameters())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">optimizer = optim.Adam(</span><br><span class="line"></span><br><span class="line">    params=parameters_filters,</span><br><span class="line"></span><br><span class="line">    lr=<span class="number">0.001</span>,</span><br><span class="line"></span><br><span class="line">    betas=(<span class="number">0.8</span>, <span class="number">0.999</span>),</span><br><span class="line"></span><br><span class="line">    eps=<span class="number">1e-8</span>,</span><br><span class="line"></span><br><span class="line">    weight_decay=<span class="number">3e-7</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">optimizer.state_dict</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<pre><code>&lt;bound method Optimizer.state_dict of Adam (
+
+Parameter Group 0
+
+    amsgrad: False
+
+    betas: (0.8, 0.999)
+
+    eps: 1e-08
+
+    lr: 0.001
+
+    weight_decay: 3e-07
+
+)&gt;
+</code></pre>
+<h3 id="不同的模块设置不同的参数"><a href="#不同的模块设置不同的参数" class="headerlink" title="不同的模块设置不同的参数"></a>不同的模块设置不同的参数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">parameters = [&#123;<span class="string">&quot;params&quot;</span>: model.linear1.parameters()&#125;,</span><br><span class="line"></span><br><span class="line">             &#123;<span class="string">&quot;params&quot;</span>:model.linear2.parameters(), <span class="string">&quot;lr&quot;</span>: <span class="number">3e-4</span>&#125;]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">optimizer2 = optim.Adam(</span><br><span class="line"></span><br><span class="line">    params=parameters,</span><br><span class="line"></span><br><span class="line">    lr=<span class="number">0.001</span>,</span><br><span class="line"></span><br><span class="line">    betas=(<span class="number">0.8</span>, <span class="number">0.999</span>),</span><br><span class="line"></span><br><span class="line">    eps=<span class="number">1e-8</span>,</span><br><span class="line"></span><br><span class="line">    weight_decay=<span class="number">3e-7</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">optimizer2.state_dict</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<pre><code>&lt;bound method Optimizer.state_dict of Adam (
+
+Parameter Group 0
+
+    amsgrad: False
+
+    betas: (0.8, 0.999)
+
+    eps: 1e-08
+
+    lr: 0.001
+
+    weight_decay: 3e-07
+
+
+
+Parameter Group 1
+
+    amsgrad: False
+
+    betas: (0.8, 0.999)
+
+    eps: 1e-08
+
+    lr: 0.0003
+
+    weight_decay: 3e-07
+
+)&gt;
+</code></pre>
+<h3 id="zero-grad"><a href="#zero-grad" class="headerlink" title="zero_grad"></a>zero_grad</h3><p>在进行反向传播之前，如果不需要梯度累加的话，必须要用zero_grad()清空梯度。具体的方法是遍历self.param_groups中全部参数，根据grad属性做清除。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">zero_grad</span>(<span class="params">self</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="string">r&quot;&quot;&quot;Clears the gradients of all optimized :class:`torch.Tensor` s.&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> group <span class="keyword">in</span> self.param_groups:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> p <span class="keyword">in</span> group[<span class="string">&#x27;params&#x27;</span>]:</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> p.grad <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line"></span><br><span class="line">                p.grad.detach_()</span><br><span class="line"></span><br><span class="line">                p.grad.zero_()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">group_parameters = [&#123;<span class="string">&quot;params&quot;</span>: model.linear1.parameters()&#125;,</span><br><span class="line"></span><br><span class="line">             &#123;<span class="string">&quot;params&quot;</span>:model.linear2.parameters(), <span class="string">&quot;lr&quot;</span>: <span class="number">3e-4</span>&#125;]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">x = torch.randn(<span class="number">2</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">label = torch.Tensor([<span class="number">1</span>,<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">out, loss = model(x, label)</span><br><span class="line"></span><br><span class="line">loss.backward()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">optimizer2.zero_grad()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">for</span> group <span class="keyword">in</span> group_parameters:</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> p <span class="keyword">in</span> group[<span class="string">&quot;params&quot;</span>]:</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> p.grad <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line"></span><br><span class="line">            p.grad.detach_()</span><br><span class="line"></span><br><span class="line">            p.grad.zero_()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>这里并没有使用 backward() 所以暂时不存在梯度。</p>
+<p>在反向传播 backward() 计算出梯度之后，就可以调用step()实现参数更新。不过在 Optimizer 类中，step()函数内部是空的，并且用raise NotImplementError 来作为提醒。后面会根据具体的优化器来分析step()的实现思路。</p>
+<h3 id="辅助类lr-scheduler"><a href="#辅助类lr-scheduler" class="headerlink" title="辅助类lr_scheduler"></a>辅助类lr_scheduler</h3><p>lr_scheduler用于在训练过程中根据轮次灵活调控学习率。调整学习率的方法有很多种，但是其使用方法是大致相同的：用一个Schedule把原始Optimizer装饰上，然后再输入一些相关参数，然后用这个Schedule做step()。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># lambda1 = lambda epoch: epoch // 30</span></span><br><span class="line"></span><br><span class="line">lambda1 = <span class="keyword">lambda</span> epoch: <span class="number">0.95</span> ** epoch</span><br><span class="line"></span><br><span class="line">scheduler = optim.lr_scheduler.LambdaLR(optimizer, lr_lambda=lambda1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">scheduler.step()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="warm-up-scheduler"><a href="#warm-up-scheduler" class="headerlink" title="warm up scheduler"></a>warm up scheduler</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line">parameters = <span class="built_in">filter</span>(<span class="keyword">lambda</span> p: p.requires_grad, model.parameters())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">lr_warm_up_num = <span class="number">1000</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">optimizer = optim.Adam(</span><br><span class="line"></span><br><span class="line">    params=parameters,</span><br><span class="line"></span><br><span class="line">    lr=<span class="number">0.001</span>,</span><br><span class="line"></span><br><span class="line">    betas=(<span class="number">0.8</span>, <span class="number">0.999</span>),</span><br><span class="line"></span><br><span class="line">    eps=<span class="number">1e-8</span>,</span><br><span class="line"></span><br><span class="line">    weight_decay=<span class="number">3e-7</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cr = <span class="number">1.0</span> / math.log(lr_warm_up_num)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">scheduler = optim.lr_scheduler.LambdaLR(</span><br><span class="line"></span><br><span class="line">    optimizer,</span><br><span class="line"></span><br><span class="line">    lr_lambda=<span class="keyword">lambda</span> ee: cr * math.log(ee + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ee &lt; lr_warm_up_num <span class="keyword">else</span> <span class="number">1</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-11-04T03:04:35.000Z" title="2018/11/4 上午11:04:35">2018-11-04</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:09.158Z" title="2021/6/29 下午4:12:09">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/">text matching</a></span><span class="level-item">24 分钟读完 (大约3533个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/11/04/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Multi-cast-Attention-Networks/">论文笔记-Multi-cast Attention Networks</a></h1><div class="content"><p>paper: [Multi-Cast Attention Networks for Retrieval-based Question</p>
 <p>Answering and Response Prediction](<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1806.00778">https://arxiv.org/abs/1806.00778</a>)</p>
 <h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><blockquote>
 <p>Our approach performs a series of soft attention</p>
@@ -439,139 +741,7 @@
 </blockquote>
 <p>layer. The context insensitive type representation uses 2048 character n-gram convolutional filters followed by two highway layers and a linear projection down to a 512 representation.</p>
 <p>具体模型还是得看代码。</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2018-09-22T10:56:03.000Z" title="2018/9/22 下午6:56:03">2018-09-22</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.200Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/">MRC and QA</a></span><span class="level-item">12 分钟读完 (大约1777个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/">论文笔记-QANet</a></h1><div class="content"><p>paper:</p>
-<p> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1804.09541">combining local convolution with local self-attention for reading comprehension</a></p>
-<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><blockquote>
-<p>Its encoder consists exclusively of convolution and self-attention, where convolution models local interactions and self-attention models global interactions. On the SQuAD dataset, our model is 3x to 13x faster in training and 4x to 9x faster in inference, while achieving equivalent accuracy to recurrent models.   </p>
-</blockquote>
-<p> encoder 编码方式仅仅由 卷积 和 自注意力 机制构成，没了 rnn 速度就是快。</p>
-<blockquote>
-<p>The key motivation behind the design of our model is the following: convolution captures the local structure of the text, while the self-attention learns the global interaction between each pair of words.  </p>
-</blockquote>
-<p> 这篇论文最主要的创新点：使用 CNN 来捕捉文本结构的局部信息，使用 self-attention 来学习全局中每两个词之间的交互信息，使得其能耦合上下文信息。相比 RNN，attention 能够有效的解决长期依赖问题。只是相比少了词序信息。说到底，也是一种 contextualize 的 encoder 方式。</p>
-<blockquote>
-<p>we propose a complementary data augmentation technique to enhance the training data. This technique paraphrases the examples by translating the original sentences from English to another language and then back to English, which not only enhances the number of training instances but also diversifies the phrasing.  </p>
-</blockquote>
-<p>使用了一种数据增强的方式，先将源语言转换成另一种语言，然后再翻译回英语。这样能有效增加训练样本，同时也丰富了短语的多样性。</p>
-<h2 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h2><p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa01.png"></p>
-<p>模型分为5部分:  </p>
-<ul>
-<li><p>an embedding layer  </p>
-</li>
-<li><p>an embedding encoder layer  </p>
-</li>
-<li><p>a context-query attention layer  </p>
-</li>
-<li><p>a model encoder layer  </p>
-</li>
-<li><p>an output layer.</p>
-</li>
-</ul>
-<blockquote>
-<p>the combination of convolutions and self-attention is novel, and is significantly better than self-attention alone and gives 2.7 F1 gain in our experiments. The use of convolutions also allows us to take advantage of common regularization methods in ConvNets such as stochastic depth (layer dropout) (Huang et al., 2016), which gives an additional gain of 0.2 F1 in our experiments.  </p>
-</blockquote>
-<p>CNN 和 self-attention 的结合比单独的 self-attention 效果要好。同时使用了 CNN 之后能够使用常用的正则化方式 dropout, 这也能带来一点增益。</p>
-<h3 id="Input-embedding-layer"><a href="#Input-embedding-layer" class="headerlink" title="Input embedding layer"></a>Input embedding layer</h3><blockquote>
-<p>obtain the embedding of each word w by concatenating its word embedding and character embedding.</p>
-</blockquote>
-<p>由词向量和字符向量拼接而成。其中词向量采用预训练的词向量 Glove，并且不可训练，fixed. 只有 OOV (out of vocabulary) 是可训练的，用来映射所有不在词表内的词。</p>
-<blockquote>
-<p>Each character is represented as a trainable vector of dimension p2 = 200, meaning each word can be viewed as the concatenation of the embedding vectors for each of its characters. The length of each word is either truncated or padded to 16. We take maximum value of each row of this matrix to get a fixed-size vector representation of each word.  </p>
-</blockquote>
-<p>字符向量的处理。每个字母是可训练的，对应的维度是 200 维。然后每个词都 truncated 或者 padded 成16个字母，保证每个词的向量维度是一样大小。  </p>
-<p>所以一个词的向量维度是 $300+200=500$.</p>
-<h3 id="Embedding-encoding-layer"><a href="#Embedding-encoding-layer" class="headerlink" title="Embedding encoding layer"></a>Embedding encoding layer</h3><blockquote>
-<p>The encoder layer is a stack of the following basic building block: [convolution-layer × # + self-attention-layer + feed-forward-layer]</p>
-</blockquote>
-<p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa02.png"></p>
-<p>其中：  </p>
-<ul>
-<li>convolution: 使用 <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1610.02357">depthwise separable convolutions</a> 而不是用传统的 convolution，因为作者发现 <strong>it is memory efficient and has better generalization.</strong> 怎么理解这个，还得看原 paper. The kernel size is 7, the number of filters is d = 128.</li>
-</ul>
-<ul>
-<li>self-attention: the multi-head attention mechanism <a target="_blank" rel="noopener" href="https://panxiaoxie.cn/2018/06/02/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Attention-Is-All-You-Need/">论文笔记, Attention Is All You Need</a></li>
-</ul>
-<blockquote>
-<p>Each of these basic operations (conv/self-attention/ffn) is placed inside a residual block, shown lower-right in Figure 1. For an input x and a given operation f, the output is f(layernorm(x))+x.  </p>
-</blockquote>
-<p>在 cnn/self-attention/ffn 层都有 layer normalization.</p>
-<h4 id="为什么要用-CNN："><a href="#为什么要用-CNN：" class="headerlink" title="为什么要用 CNN："></a>为什么要用 CNN：</h4><p>用来获取局部信息 k-gram features</p>
-<p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa03.png"></p>
-<p>相信看了这个图能对 QANet 中的 cnn 怎么实现的更清楚了。上图中每个卷积核的尺寸分别是 [2, embed_size], [3, embed_size], [3, embed_size]. padding参数 使用的是 “SAME”. 得到 3 个 [1, sequence_len]，然后拼接起来, 得到最终结果 [filters_num, sequence_len].</p>
-<p>在 QANet 的实现中，kernel_size 都设置为7, num_filters=128.</p>
-<h4 id="为什么要用-self-attention"><a href="#为什么要用-self-attention" class="headerlink" title="为什么要用 self-attention"></a>为什么要用 self-attention</h4><p>用来获取全局信息。</p>
-<p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa04.png"></p>
-<p>上图中的这种方式显然不太好，复杂度高且效果不好。于是有了 self-attention.</p>
-<p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa05.png"></p>
-<p>矩阵内部向量之间作內积，并通过 softmax 得到其他词对于 “The” 这个词的权重大小（权重比例与相似度成正比，这里看似不太合理 similarity == match??，但实际上效果很不错，可能跟词向量的训练有关）。</p>
-<p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa06.png"></p>
-<p>然后将对应的权重大小 $[w_1,w_2,w_3,w_4,w_5]$ 与对应的词相乘，累和得到蕴含了上下文信息的 contextualized “The”.</p>
-<p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa07.png">  </p>
-<p>并且，这是可以并行化的。大大加速了训练速度。</p>
-<h3 id="Context-Query-Attention-Layer"><a href="#Context-Query-Attention-Layer" class="headerlink" title="Context-Query Attention Layer"></a>Context-Query Attention Layer</h3><p>跟 BIDAF 是一样的。来，不看笔记把公式过一遍。  </p>
-<p>content: $C={c_1, c_2,…,c_n}$   </p>
-<p>query: $Q={q_1,q_2,…q_m}$.</p>
-<p>所以 embeded 之后，   </p>
-<ul>
-<li><p>content: [batch, content_n, embed_size]    </p>
-</li>
-<li><p>query: [batch, query_m, embed_size]  </p>
-</li>
-</ul>
-<p>做矩阵相乘得到相似矩阵 similarity matrix $S\in R^{n\times m}$:    </p>
-<p>sim_matrix: [batch, content_n, query_m]</p>
-<blockquote>
-<p>The similarity function used here is the trilinear function (Seo et al., 2016). $f(q,c)=W_0[q,c,q\circ c]$.  </p>
-</blockquote>
-<p>相似矩阵的计算可以不是直接矩阵相乘，而是加个前馈神经网络。毕竟 similarity 不一定等于 match.</p>
-<h4 id="content-to-query"><a href="#content-to-query" class="headerlink" title="content-to-query"></a>content-to-query</h4><p>对 S 每一行 row 做 softmax 得到对应的概率，得到权重矩阵 $\tilde S\in R^{n\times m}$, shape = [batch, content_n, query_m].</p>
-<p>然后与 query $Q^T$ [batch, query_m, embed_size] 矩阵相乘得到编码了 query 信息的 content:  </p>
-<p>$A = \tilde SQ^T$, shape = [batch, content_n, embed_size]</p>
-<h4 id="query-to-content"><a href="#query-to-content" class="headerlink" title="query_to_content"></a>query_to_content</h4><blockquote>
-<p>Empirically, we find that, the DCN attention can provide a little benefit over simply applying context-to-query attention, so we adopt this strategy.  </p>
-</blockquote>
-<p>这里没有采用 BiDAF 里面的方法，而是采用 DCN 中的方式，利用了 $\tilde S$.</p>
-<p>对 S 每一列 column 做 softmax 得到矩阵 $\overline S$, shape = [batch, content_n, query_n].</p>
-<p>然后矩阵相乘得到 $B=\tilde S \overline S^T C^T$.  </p>
-<p>$\tilde S$.shape=[batch, content_n, query_m]  </p>
-<p>$\overline S^T$.shape=[batch, query_m, content_n]  </p>
-<p>$C^T$.shape=[batch, query_m, embed_size]  </p>
-<p>所以最后 B.shape=[batch, content_n, embed_size]</p>
-<h3 id="Model-Encoder-Layer"><a href="#Model-Encoder-Layer" class="headerlink" title="Model Encoder Layer"></a>Model Encoder Layer</h3><p>同 BiDAF 一样输入是 $[c,a,c\circ a,c\circ b]$， 其中 a, b 分别是 attention matrix A，B 的行向量。不过不同的是，这里不同 bi-LSTM，而是类似于 encoder 模块的 [conv + self-attention + ffn]. 其中 conv 层数是 2, 总的 blocks 是7.</p>
-<h3 id="Ouput-layer"><a href="#Ouput-layer" class="headerlink" title="Ouput layer"></a>Ouput layer</h3><p>$$p^1=softmax(W_1[M_0;M_1]), p^2=softmax(W_2[M_0;M_2])$$</p>
-<p>其中 $W_1, w_2$ 是可训练的参数矩阵，$M_0, M_1, M_2$ 如图所示。</p>
-<p>然后计算交叉熵损失函数：  </p>
-<p>$$L(\theta)=-\dfrac{1}{N}\sum_i^N[log(p^1_{y^1})+log(p^2_{y^2})]$$</p>
-<h3 id="QANet-哪里好，好在哪儿？"><a href="#QANet-哪里好，好在哪儿？" class="headerlink" title="QANet 哪里好，好在哪儿？"></a>QANet 哪里好，好在哪儿？</h3><p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa08.png"></p>
-<ul>
-<li><p>separable conv 不仅参数量少，速度快，还效果好。将 sep 变成传统 cnn, F1 值减小 0.7.  </p>
-</li>
-<li><p>去掉 CNN， F1值减小 2.7.  </p>
-</li>
-<li><p>去掉 self-attention, F1值减小 1.3.</p>
-</li>
-</ul>
-<p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa09.png">  </p>
-<ul>
-<li><p>layer normalization  </p>
-</li>
-<li><p>residual connections  </p>
-</li>
-<li><p>L2 regularization  </p>
-</li>
-</ul>
-<p><img src="/2018/09/22/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-QANet/qa10.png"></p>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
-<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1611.01604">Dynamic Coattention Networks For Question Answering</a>  </p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1610.02357">Xception: Deep Learning with Depthwise Separable Convolutions</a>  </p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a>  </p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://thinklab.com/content/2940784">qanet_talk_v1.pdf</a></p>
-</li>
-</ul>
-</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/12/">上一页</a></div><div class="pagination-next"><a href="/page/14/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/12/">12</a></li><li><a class="pagination-link is-current" href="/page/13/">13</a></li><li><a class="pagination-link" href="/page/14/">14</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/24/">24</a></li></ul></nav></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="panxiaoxie"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">panxiaoxie</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">116</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">39</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">36</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/PanXiebit" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Email" href="/ftdpanxie@gmail.com"><i class="fa fa-envelope"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="ftdpanxie@gmail.com" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">email</span></span><span class="level-right"><span class="level-item tag">ftdpanxie@gmail.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/generation/"><span class="level-start"><span class="level-item">generation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/leetcode/"><span class="level-start"><span class="level-item">leetcode</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/sign-language-recognition/"><span class="level-start"><span class="level-item">sign language recognition</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">40</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Transformer/"><span class="level-start"><span class="level-item">Transformer</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/computer-vision/"><span class="level-start"><span class="level-item">computer vision</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/constrast-learning/"><span class="level-start"><span class="level-item">constrast learning</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/vision-language/"><span class="level-start"><span class="level-item">vision-language</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/12/">上一页</a></div><div class="pagination-next"><a href="/page/14/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/12/">12</a></li><li><a class="pagination-link is-current" href="/page/13/">13</a></li><li><a class="pagination-link" href="/page/14/">14</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/24/">24</a></li></ul></nav></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="panxiaoxie"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">panxiaoxie</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">117</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">39</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">36</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/PanXiebit" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Email" href="/ftdpanxie@gmail.com"><i class="fa fa-envelope"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="ftdpanxie@gmail.com" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">email</span></span><span class="level-right"><span class="level-item tag">ftdpanxie@gmail.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/generation/"><span class="level-start"><span class="level-item">generation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/leetcode/"><span class="level-start"><span class="level-item">leetcode</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/sign-language-recognition/"><span class="level-start"><span class="level-item">sign language recognition</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">40</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Transformer/"><span class="level-start"><span class="level-item">Transformer</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/computer-vision/"><span class="level-start"><span class="level-item">computer vision</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/constrast-learning/"><span class="level-start"><span class="level-item">constrast learning</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/vision-language/"><span class="level-start"><span class="level-item">vision-language</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
                     clipboard: true,
