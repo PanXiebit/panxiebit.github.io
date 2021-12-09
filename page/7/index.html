@@ -1,5 +1,331 @@
 <!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="black"><meta name="application-name" content="panxiaoxie"><meta name="msapplication-TileImage" content="/img/avatar.png"><meta name="msapplication-TileColor" content="black"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="panxiaoxie"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="panxiaoxie"><meta property="og:url" content="https://github.com/PanXiebit"><meta property="og:site_name" content="panxiaoxie"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://www.qt86.com/cache/1625298592_187938.png"><meta property="article:author" content="panxiaoxie"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://www.qt86.com/cache/1625298592_187938.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/panxiaoxie.png"}},"description":null}</script><link rel="icon" href="/img/avatar.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于我</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-10-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-02-28T03:00:35.000Z" title="2019/2/28 上午11:00:35">2019-02-28</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:09.141Z" title="2021/6/29 下午4:12:09">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/transfer-learning/">transfer learning</a></span><span class="level-item">23 分钟读完 (大约3449个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/02/28/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-0-NLP%20classification%20with%20transfer%20learning%20and%20weak%20supervision/">迁移学习系列-0-NLP classification with transfer learning and weak supervision</a></h1><div class="content"><p>paper:  </p>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>潘小榭</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="black"><meta name="application-name" content="panxiaoxie"><meta name="msapplication-TileImage" content="/img/avatar.png"><meta name="msapplication-TileColor" content="black"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="panxiaoxie"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="panxiaoxie"><meta property="og:url" content="https://github.com/PanXiebit"><meta property="og:site_name" content="panxiaoxie"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://www.qt86.com/cache/1625298592_187938.png"><meta property="article:author" content="panxiaoxie"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://www.qt86.com/cache/1625298592_187938.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.panxiaoxie.cn"},"headline":"潘小榭","image":["http://www.panxiaoxie.cn/img/og_image.png"],"author":{"@type":"Person","name":"Xie Pan"},"publisher":{"@type":"Organization","name":"潘小榭","logo":{"@type":"ImageObject","url":"http://www.panxiaoxie.cn/img/panxiaoxie.png"}},"description":null}</script><link rel="icon" href="/img/avatar.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于我</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-10-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-03-08T07:43:02.000Z" title="2019/3/8 下午3:43:02">2019-03-08</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.200Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/transfer-learning/">transfer learning</a></span><span class="level-item">10 分钟读完 (大约1516个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/03/08/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-3-%E7%8E%8B%E6%99%8B%E4%B8%9C%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E6%89%8B%E5%86%8C%E9%98%85%E8%AF%BB/">迁移学习系列-3-王晋东迁移学习手册阅读</a></h1><div class="content"><h3 id="迁移学习的定义"><a href="#迁移学习的定义" class="headerlink" title="迁移学习的定义"></a>迁移学习的定义</h3><p>迁移学习，是指利用数据、任务、或模型之间的相似性，将在旧领域学习过的模型，应用于新领域的一种学习过程。</p>
+<p>综述文章：</p>
+<p>A survey on transfer learning [Pan and Yang, 2010]</p>
+<h3 id="为什么要学习迁移学习？"><a href="#为什么要学习迁移学习？" class="headerlink" title="为什么要学习迁移学习？"></a>为什么要学习迁移学习？</h3><ol>
+<li><p>缺少数据标注</p>
+</li>
+<li><p>缺少足够算力</p>
+</li>
+<li><p>普适化模型与个性化需求之间的矛盾</p>
+</li>
+<li><p>特定应用需求</p>
+</li>
+</ol>
+<p>迁移学习如何解决这些问题：</p>
+<ol>
+<li><p>大数据与少标注：迁移数据标注</p>
+</li>
+<li><p>大数据与弱计算：模型迁移</p>
+</li>
+<li><p>普适化模型与个性化需求：自适应学习</p>
+</li>
+<li><p>特定应用的需求：相似领域知识迁移（比如cross-lingual）</p>
+</li>
+</ol>
+<p><img src="/2019/03/08/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-3-%E7%8E%8B%E6%99%8B%E4%B8%9C%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E6%89%8B%E5%86%8C%E9%98%85%E8%AF%BB/01.png"></p>
+<p>迁移学习与传统机器学习的区别：</p>
+<p><img src="/2019/03/08/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-3-%E7%8E%8B%E6%99%8B%E4%B8%9C%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E6%89%8B%E5%86%8C%E9%98%85%E8%AF%BB/02.png"></p>
+<p>迁移学习与领域自适应的区别：  </p>
+<p>领域自适应问题是迁移学习的研究内容之一，它侧重于解决特征空间一致、类别空间一致，仅特征分布不一致的问题。而迁移学习也可以解决上述内容不一致的情况。</p>
+<h3 id="迁移学习的常用分类"><a href="#迁移学习的常用分类" class="headerlink" title="迁移学习的常用分类"></a>迁移学习的常用分类</h3><p><img src="/2019/03/08/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-3-%E7%8E%8B%E6%99%8B%E4%B8%9C%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E6%89%8B%E5%86%8C%E9%98%85%E8%AF%BB/04.png"></p>
+<h4 id="按照目标域标签分类"><a href="#按照目标域标签分类" class="headerlink" title="按照目标域标签分类"></a>按照目标域标签分类</h4><ol>
+<li><p>监督迁移学习 (Supervised Transfer Learning)   </p>
+</li>
+<li><p>半监督迁移学习 (Semi-Supervised Transfer Learning)   </p>
+</li>
+<li><p>无监督迁移学习 (Unsupervised Transfer Learning)</p>
+</li>
+</ol>
+<h4 id="按照学习方法分类"><a href="#按照学习方法分类" class="headerlink" title="按照学习方法分类"></a>按照学习方法分类</h4><ul>
+<li><p>基于实例的迁移学习方法 (Instance based Transfer Learning)：</p>
+</li>
+<li><p>基于特征的迁移学习方法 (Feature based Transfer Learning)  </p>
+</li>
+<li><p>基于模型的迁移学习方法 (Model based Transfer Learning)  </p>
+</li>
+<li><p>基于关系的迁移学习方法 (Relation based Transfer Learning)</p>
+</li>
+</ul>
+<p>基于实例的迁移，简单来说就是通过权重重用，对源域和目标域的样例进行迁移。就是说直接对不同的样本赋予不同权重，比如说相似的样本，我就给它高权重，这样我就完成了 迁移，非常简单非常非常直接。</p>
+<p>基于特征的迁移，就是更进一步对特征进行变换。意思是说，假设源域和目标域的特征 原来不在一个空间，或者说它们在原来那个空间上不相似，那我们就想办法把它们变换到一个空间里面，那这些特征不就相似了？这个思路也非常直接。这个方法是用得非常多的，一 直在研究，目前是感觉是研究最热的。</p>
+<p>基于模型的迁移，就是说构建参数共享的模型。这个主要就是在神经网络里面用的特别多，因为神经网络的结构可以直接进行迁移。比如说神经网络最经典的 <strong>finetune</strong> 就是模型参数迁移的很好的体现。</p>
+<p>基于关系的迁移，这个方法用的比较少，这个主要就是说挖掘和利用关系进行类比迁移。比如老师上课、学生听课就可以类比为公司开会的场景。这个就是一种关系的迁移。</p>
+<h4 id="按照特征分类"><a href="#按照特征分类" class="headerlink" title="按照特征分类"></a>按照特征分类</h4><ul>
+<li><p>同构迁移学习 (Homogeneous Transfer Learning)  </p>
+</li>
+<li><p>异构迁移学习 (Heterogeneous Transfer Learning)  </p>
+</li>
+</ul>
+<p>这也是一种很直观的方式：如果特征语义和维度都相同，那么就是同构；反之，如果特征完全不相同，那么就是异构。举个例子来说，不同图片的迁移，就可以认为是同构；而图片到文本的迁移，则是异构的。</p>
+<h4 id="按离线与在线形式分"><a href="#按离线与在线形式分" class="headerlink" title="按离线与在线形式分"></a>按离线与在线形式分</h4><ul>
+<li><p>离线迁移学习 (Offline Transfer Learning)  </p>
+</li>
+<li><p>在线迁移学习 (Online Transfer Learning)</p>
+</li>
+</ul>
+<h3 id="迁移学习的应用"><a href="#迁移学习的应用" class="headerlink" title="迁移学习的应用"></a>迁移学习的应用</h3><p><img src="/2019/03/08/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-3-%E7%8E%8B%E6%99%8B%E4%B8%9C%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E6%89%8B%E5%86%8C%E9%98%85%E8%AF%BB/05.png"></p>
+<h4 id="计算机视觉"><a href="#计算机视觉" class="headerlink" title="计算机视觉"></a>计算机视觉</h4><p>在 CV 领域，迁移学习主要是方法是领域自适应 domain adaption. 侧重于解决特征空间一致、类别空间一致，仅特征分布不一致的问题。</p>
+<p><img src="/2019/03/08/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-3-%E7%8E%8B%E6%99%8B%E4%B8%9C%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E6%89%8B%E5%86%8C%E9%98%85%E8%AF%BB/06.png"></p>
+<p>个人理解：在图像上，即使类别差别很大，但是在特征空间上仍然是一致的，或者说有很多相似之处。比如人和狗，从轮廓、颜色、五官等等特征都是具有可迁移性的。再比如人和桌子，也是具有相似特征的。</p>
+<p>那么问题是，特征空间完全一致吗？不一致的部分呢？</p>
+<h4 id="文本分类"><a href="#文本分类" class="headerlink" title="文本分类"></a>文本分类</h4><p>由于文本数据有其领域特殊性，因此，在一个领域上训练的分类器，不能直接拿来作用到另一个领域上。这就需要用到迁移学习。例如，在电影评论文本数据集上训练好的分类器，不能直接用于图书评论的预测。这就需要进行迁移学习。图 11是一个由电子产品评论 迁移到 DVD 评论的迁移学习任务。</p>
+<p><img src="/2019/03/08/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-3-%E7%8E%8B%E6%99%8B%E4%B8%9C%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E6%89%8B%E5%86%8C%E9%98%85%E8%AF%BB/07.png"></p>
+<p>那么问题来了，这种从一个domain 迁移到另一个 domain，到底改变了什么？比如同样一个词，在 电子产品中对应的 vector 经过迁移后（finetune?），发生了怎样的变化，这个可以可视化嘛？</p>
+<h4 id="时间序列"><a href="#时间序列" class="headerlink" title="时间序列"></a>时间序列</h4><ul>
+<li><p>行为识别(Activity Recognition)  </p>
+</li>
+<li><p>室内定位 (Indoor Location)  </p>
+</li>
+</ul>
+<h4 id="医疗健康"><a href="#医疗健康" class="headerlink" title="医疗健康"></a>医疗健康</h4><p>不同于其他领域，医疗领域研究的难点问题是，无法获取足够有效的医疗数据。在这一领域，迁移学习同样也变得越来越重要。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-03-06T08:44:52.000Z" title="2019/3/6 下午4:44:52">2019-03-06</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.522Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/DRL/">DRL</a></span><span class="level-item">5 分钟读完 (大约739个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/03/06/UCL-DRL-03-planning-by-DP/">UCL-DRL-03-planning by DP</a></h1><div class="content"><h1 id="Planning-by-Dynamic-Programming"><a href="#Planning-by-Dynamic-Programming" class="headerlink" title="Planning by Dynamic Programming"></a>Planning by Dynamic Programming</h1><h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>what is dynamic programming?</p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/01.png"></p>
+<p>动态规划是一种方法/思想，将复杂问题分解成子问题，并解决子问题。</p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/02.png"></p>
+<p>DP 是具有以下两种特质的问题常用的解决方法：  </p>
+<ul>
+<li><p>具有可优化的子结构</p>
+<ul>
+<li>优化问题可以分解成子问题  </li>
+</ul>
+</li>
+<li><p>重叠子问题</p>
+<ul>
+<li><p>子问题重复出现很多次  </p>
+</li>
+<li><p>子问题的solution可以被缓存和reuse</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>马尔可夫决策过程就具有这两种特质：  </p>
+<ul>
+<li><p>Bellman 公式给出了迭代分解的方式  </p>
+</li>
+<li><p>value funvtion 用来存储和再利用子solutions</p>
+</li>
+</ul>
+<p>Bellman 公式的含义分为两部分，第一部分是目前的一步是最优的行为，第二部分是余下来的其他步骤也是最优的行为。</p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/03.png"></p>
+<p>动态规划需要的输入：  </p>
+<ul>
+<li><p>MDP $&lt;S,A,P,R,\gamma&gt;$ and policy $\pi$  </p>
+</li>
+<li><p>or MDP $&lt;S,P^{\pi},R^{\pi},\gamma&gt;$</p>
+</li>
+</ul>
+<p>输出： value function $v_{\pi}$</p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/04.png"></p>
+<p>DP 适用的一些场景。比较熟悉的 sequence alignment, shortest path algorithms, viterbi algorithm.  </p>
+<h2 id="Policy-evaluation"><a href="#Policy-evaluation" class="headerlink" title="Policy evaluation"></a>Policy evaluation</h2><h3 id="Iterative-policy-evaluation"><a href="#Iterative-policy-evaluation" class="headerlink" title="Iterative policy evaluation"></a>Iterative policy evaluation</h3><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/05.png"></p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/06.png"></p>
+<p>$v_{k+1}(s)=\sum_{a\in A}\pi(a|s)(R_s^a+\gamma\sum_{s’\in S}P^a_{ss’}v_k(s’))$</p>
+<h3 id="example"><a href="#example" class="headerlink" title="example"></a>example</h3><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/07.png"></p>
+<ul>
+<li><p>方块中任意一个状态到另一个状态的 reward 是 -1.  </p>
+</li>
+<li><p>每迭代一步有 north, east, south, weat 4种选择。</p>
+</li>
+</ul>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/08.png"></p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/09.png"></p>
+<ul>
+<li>k=0. 初始状态下，所有的方块累计的 reward 都是 0. 所以在这个状态下是 random policy.</li>
+</ul>
+<ul>
+<li>k=1, 迭代一步之后，除了 terminal squares, 其他的 reward 都是 1. 如果采用 greedy policy，就能确定部分路径了。</li>
+</ul>
+<ul>
+<li>k=2, 在 random policy 策略下，我们来看下 1.75 怎么得到的：</li>
+</ul>
+<p>$$1+(1+1+1)/4=1.75$$</p>
+<ul>
+<li>k=3, 在 random policy 策略下，我们来看 2.4, 2.9 怎么得到的：</li>
+</ul>
+<p>$$(1+2.7+3+3)/4=2.425$$</p>
+<p>$$(2.7+3+3+3)/4=2.925$$</p>
+<p>这里的 k 是迭代的次数，并不是时间.</p>
+<h3 id="policy-iteration"><a href="#policy-iteration" class="headerlink" title="policy iteration"></a>policy iteration</h3><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/10.png"></p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/11.png"></p>
+<p>迭代方式：  </p>
+<ul>
+<li><p>policy evaluation  </p>
+</li>
+<li><p>policy improvement: greedy</p>
+</li>
+</ul>
+<h3 id="policy-improvement"><a href="#policy-improvement" class="headerlink" title="policy improvement"></a>policy improvement</h3><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/12.png"></p>
+<p>$$v_{\pi}(s)=E[R_{t+1}+\gamma R_{t+2}+….|S_t=s]$$</p>
+<p>improve the policy by acting greedily.</p>
+<p>当前最优 policy:</p>
+<p> $${\pi}^{‘}(s)=greedy(v_{\pi})=argmax_{a\in A}q_{\pi}(s,a)$$</p>
+<p>$q_{\pi}(s,a)$ 是 action-value function.</p>
+<p>这页ppt中最后的公式实际证明了：采用 greedy policy 至少能保证 $v_{\pi^{‘}}\ge v_{\pi}(s)$.</p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/13.png"></p>
+<h3 id="modified-policy-iteration"><a href="#modified-policy-iteration" class="headerlink" title="modified policy iteration"></a>modified policy iteration</h3><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/14.png"></p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/15.png"></p>
+<h2 id="value-iteration"><a href="#value-iteration" class="headerlink" title="value iteration"></a>value iteration</h2><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/16.png"></p>
+<p>优化的定理：  </p>
+<p>任何优化策略都可以分解成两部分：  </p>
+<ul>
+<li><p>最优化的 action A  </p>
+</li>
+<li><p>后继状态 S’ 下的最优化策略 policy  </p>
+</li>
+</ul>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/17.png"></p>
+<p>example:</p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/18.png"></p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/19.png"></p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/20.png"></p>
+<h2 id="summary-of-DP-algorithms"><a href="#summary-of-DP-algorithms" class="headerlink" title="summary of DP algorithms"></a>summary of DP algorithms</h2><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/21.png"></p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/22.png"></p>
+<p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/23.png"></p>
+<h3 id="In-Place-Dynamic-Programming"><a href="#In-Place-Dynamic-Programming" class="headerlink" title="In-Place Dynamic Programming"></a>In-Place Dynamic Programming</h3><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/25.png"></p>
+<h3 id="Prioritised-Sweeping"><a href="#Prioritised-Sweeping" class="headerlink" title="Prioritised Sweeping"></a>Prioritised Sweeping</h3><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/26.png"></p>
+<h3 id="Real-Time-Dynamic-Programming"><a href="#Real-Time-Dynamic-Programming" class="headerlink" title="Real-Time Dynamic Programming"></a>Real-Time Dynamic Programming</h3><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/27.png"></p>
+<h2 id="Extensions-to-dynamic-programming"><a href="#Extensions-to-dynamic-programming" class="headerlink" title="Extensions to dynamic programming"></a>Extensions to dynamic programming</h2><p><img src="/2019/03/06/UCL-DRL-03-planning-by-DP/24.png"></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-03-06T07:37:28.000Z" title="2019/3/6 下午3:37:28">2019-03-06</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.522Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/transfer-learning/">transfer learning</a></span><span class="level-item">4 分钟读完 (大约584个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/03/06/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-2-Combining-semi-supervised-learning-with-transfer-learning/">迁移学习系列-2-Combining semi-supervised learning with transfer learning</a></h1><div class="content"><h2 id="paper"><a href="#paper" class="headerlink" title="paper"></a>paper</h2><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1804.09530">Strong Baselines for Neural Semi-Supervised Learning under Domain Shift</a></p>
+<h3 id="motivation"><a href="#motivation" class="headerlink" title="motivation"></a>motivation</h3><p>这篇paper的工作就是提出了一个经典方法实现的strong baseline.他的motivation就是前面很多研究比如基于deep learning的，对比的经典算法都很weak，或者是在专有的数据集上跑（容易过拟合）。</p>
+<p>对比的三种传统方法， self-traning, tritraining, tri-training with disagreement</p>
+<h3 id="self-training"><a href="#self-training" class="headerlink" title="self-training:"></a>self-training:</h3><ol>
+<li><p>使用有标签的数据，训练一个模型  </p>
+</li>
+<li><p>用这个模型去预测无标签的数据，得到对应样本属于某一类别的概率  </p>
+</li>
+<li><p>选择一个阈值，大于这个阈值的样本，可以打上伪标签。但是通常来说，阈值不太好确定，所以可以使用相对阈值，也就是选取概率相对较高的 top N.  </p>
+</li>
+</ol>
+<p>模型的缺点在于：如果预测错了某些样本，那么错误会累积并放大。  </p>
+<p><img src="/2019/03/06/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-2-Combining-semi-supervised-learning-with-transfer-learning/01.png"></p>
+<h3 id="tri-training"><a href="#tri-training" class="headerlink" title="tri-training:"></a>tri-training:</h3><ol>
+<li><p>使用有标签的数据，训练三个模型 m1, m2, m3  </p>
+</li>
+<li><p>使用 bootstrapping 的方法，sample部分无标签的数据，然后使用三个模型进行预测，当 m1 预测样本属于某一类的概率低时，而 m2, m3 预测样本属于这一类的概率高时，将这个样本打上伪标签，加入到 m1 的训练集中去  </p>
+</li>
+<li><p>迭代这个过程，直到分类器不在变化，可以同时更新三个分类器？  </p>
+</li>
+</ol>
+<p>motivation：模型应该增强它相对较弱的地方。其实也就是 ensamble 的 sense.  </p>
+<p>缺点：计算量太大， 耗费时间和空间  </p>
+<p><img src="/2019/03/06/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-2-Combining-semi-supervised-learning-with-transfer-learning/02.png"></p>
+<h3 id="multi-task-tritraining"><a href="#multi-task-tritraining" class="headerlink" title="multi-task tritraining:"></a>multi-task tritraining:</h3><ol>
+<li><p>多任务训练，这里的任务其实可以看作是一致的，底层 encoder 层参数共享，softmax层，也就是 decoder 层参数不一致。  </p>
+</li>
+<li><p>要尽可能让 m1, m2 具有差异性 diversity，加上了正则化项  </p>
+</li>
+<li><p>模型 m3 只在伪标签数据上进行训练。其目的是让模型在 domain shift 情况下鲁棒性更强。  </p>
+</li>
+</ol>
+<p><img src="/2019/03/06/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-2-Combining-semi-supervised-learning-with-transfer-learning/03.png"></p>
+<h2 id="paper2"><a href="#paper2" class="headerlink" title="paper2"></a>paper2</h2><p><a target="_blank" rel="noopener" href="http://aclweb.org/anthology/D18-1217">Semi-Supervised Sequence Modeling with Cross-View Training (EMNLP 2018)</a></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-03-04T01:09:08.000Z" title="2019/3/4 上午9:09:08">2019-03-04</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.504Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/transfer-learning/">transfer learning</a></span><span class="level-item">10 分钟读完 (大约1552个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/">迁移学习系列 1-Neural Transfer Learning for NLP</a></h1><div class="content"><h2 id="迁移学习与监督学习的区别"><a href="#迁移学习与监督学习的区别" class="headerlink" title="迁移学习与监督学习的区别"></a>迁移学习与监督学习的区别</h2><p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/01.png"></p>
+<p>training domain 和 target domain 不一致时，需要知识迁移。  </p>
+<p>那么暂时的问题来了？  </p>
+<ul>
+<li><p>1.如何界定 domain 的范围，尤其是NLP领域。从医学文本能迁移到科幻小说吗，感觉不可以。。  </p>
+</li>
+<li><p>2.从 big domain 到 small domain 的迁移也是属于迁移学习的范畴吧？比如像 BERT 这样在超大的训练集上进行 training，然后在小的子集上 fine-tune，都能表现的很好是吗？  </p>
+</li>
+</ul>
+<h2 id="Why-transfer-learning"><a href="#Why-transfer-learning" class="headerlink" title="Why transfer learning"></a>Why transfer learning</h2><p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/02.png"></p>
+<p>目前的监督模型依旧非常脆弱，<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.07328">Jia and Liang, EMNLP 2017</a> 这篇 paper 证明了目前的 SOTA 的模型对对抗样本非常敏感。</p>
+<p>迁移学习能解决这个问题吗，疑惑？？</p>
+<blockquote>
+<p><strong>Abstract：</strong>    </p>
+</blockquote>
+<p>Standard accuracy metrics indicate that reading comprehension systems are making rapid progress, but the extent to which these systems truly understand language remains unclear. To reward systems with real language understanding abilities, we propose an adversarial evaluation scheme for the Stanford Question Answering Dataset (SQuAD). Our method tests whether systems can answer questions about paragraphs that contain adversarially inserted sentences, which are automatically generated to distract computer systems without changing the correct answer or misleading humans. In this adversarial setting, the accuracy of sixteen published models drops from an average of 75% F1 score to 36%; when the adversary is allowed to add ungrammatical sequences of words, average accuracy on four models decreases further to 7%. We hope our insights will motivate the development of new models that understand language more precisely.</p>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/03.png"></p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1711.02173">Synthetic and Natural Noise Both Break Neural Machine Translation, Belinkov and Bisk (ICLR 2018)</a> 这篇 paper 中提到基于字符级别的翻译模型能有效解决 OOV 等问题，但是却使得模型对 noise 非常敏感且脆弱。如果出现 phonetic 拼写错误，omission 省略， key swap 关键字母交换，都会导致 BLEU 值严重下降。</p>
+<blockquote>
+<p><strong>Abstract</strong>   </p>
+</blockquote>
+<p>Character-based neural machine translation (NMT) models alleviate out-of-vocabulary issues, learn morphology, and move us closer to completely end-to-end translation systems. Unfortunately, they are also very brittle and easily falter when presented with noisy data. In this paper, we confront NMT models with synthetic and natural sources of noise. We find that state-of-the-art models fail to translate even moderately noisy texts that humans have no trouble comprehending. We explore two approaches to increase model robustness: structure-invariant word representations and robust training on noisy texts. We find that a model based on a character convolutional neural network is able to simultaneously learn representations robust to multiple kinds of noise.</p>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/04.png"></p>
+<p><a target="_blank" rel="noopener" href="http://aclweb.org/anthology/N18-1170">Iyyer et al. (NAACL 2018)</a> 这篇 paper 提出了一个句法规则控制下的释义生成模型，syntactically controlled paraphrase networks (SCPNs). 然后发现这样的对抗样本很容易愚弄训练好的监督模型。</p>
+<blockquote>
+<p><strong>Abstract：</strong>     </p>
+</blockquote>
+<p>We propose syntactically controlled paraphrase networks (SCPNs) and use them to generate adversarial examples. Given a sentence and a target syntactic form (e.g., a constituency parse), SCPNs are trained to produce a paraphrase of the sentence with the desired syntax. We show it is possible to create training data for this task by first doing backtranslation at a very large scale, and then using a parser to label the syntactic transformations that naturally occur during this process. Such data allows us to train a neural encoderdecoder model with extra inputs to specify the target syntax. A combination of automated and human evaluations show that SCPNs generate paraphrases that follow their target specifications without decreasing paraphrase quality when compared to baseline (uncontrolled)paraphrase systems. Furthermore, they are more capable of generating syntactically adversarial examples that both (1) “fool” pretrained models and (2) improve the robustness of these models to syntactic variation when used to augment their training data</p>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/05.png"></p>
+<p>人工标注所有 domain 或者任何语言的数据是不可理的，因此需要 transfering knowledge from a related setting to the target setting.</p>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/06.png"></p>
+<p>NLP 很多重大的基础性的研究都可以看作是迁移学习的一种形式。  </p>
+<ul>
+<li><p>LSA  </p>
+</li>
+<li><p>Brown clusters  </p>
+</li>
+<li><p>word embedding  </p>
+</li>
+</ul>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/07.png"></p>
+<p>已有工作的局限性：  </p>
+<ul>
+<li><p>限制度太高：预设定好的相似度指标，hard 参数共享  </p>
+</li>
+<li><p>条件设定太过于具体：单一的 task  </p>
+</li>
+<li><p>baseline 太弱：缺少与传统方法的对比  </p>
+</li>
+<li><p>模型脆弱：在 out-of-domain 不work，依赖于相似的语言/任务  </p>
+</li>
+<li><p>效率低：需要大量参数，时间和样本  </p>
+</li>
+</ul>
+<h2 id="研究目标"><a href="#研究目标" class="headerlink" title="研究目标"></a>研究目标</h2><p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/08.png"></p>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/09.png"></p>
+<ul>
+<li><p>迁移学习</p>
+<ul>
+<li><p>传导式迁移学习（相同的任务，只有sourced domain有label）  </p>
+<ul>
+<li><p>领域自适应（不同的 domain）  </p>
+</li>
+<li><p>跨语言学习（不同的 language）  </p>
+</li>
+</ul>
+</li>
+<li><p>归纳式迁移学习（不同的任务， target domain 也有标签）  </p>
+<ul>
+<li><p>多任务学习  </p>
+</li>
+<li><p>序列迁移学习  </p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>大佬太强了。。。。强到爆炸啊</p>
+<h2 id="domain-adaptation"><a href="#domain-adaptation" class="headerlink" title="domain adaptation"></a>domain adaptation</h2><p>Propose two novel methods that bridge the domain discrepancy by selecting relevant and informative data for unsupervised domain adaptation.  </p>
+<p>提出两方法，替无监督的域适应选择相关的，具有信息量的数据来弥合域之间的差异。</p>
+<h3 id="Based-on-Bayesian-Optimisation"><a href="#Based-on-Bayesian-Optimisation" class="headerlink" title="Based on Bayesian Optimisation"></a>Based on Bayesian Optimisation</h3><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.05246">Learning to select data for transfer learning with Bayesian Optimization, EMNLP2017</a></p>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/10.png"></p>
+<p>还不太懂 bayesian optimisation:  </p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/29779000">https://zhuanlan.zhihu.com/p/29779000</a>  </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.jiqizhixin.com/articles/2017-08-18-5">https://www.jiqizhixin.com/articles/2017-08-18-5</a>  </p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1807.02811">A Tutorial on Bayesian Optimization</a></p>
+</li>
+</ul>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/11.png"></p>
+<h3 id="Using-semi-supervised-learning-and-multi-task-learning"><a href="#Using-semi-supervised-learning-and-multi-task-learning" class="headerlink" title="Using semi-supervised learning and multi-task learning"></a>Using semi-supervised learning and multi-task learning</h3><p><a target="_blank" rel="noopener" href="https://acl2018.org/paper/168/">Strong Baselines for Neural Semi-supervised Learning under Domain Shift, Ruder &amp; Plank, ACL 2018</a>  </p>
+<blockquote>
+<p>Novel neural models have been proposed in recent years for learning under domain shift. Most models, however, only evaluate on a single task, on proprietary datasets, or compare to weak baselines, which makes comparison of models difficult. In this paper, we re-evaluate classic general-purpose bootstrapping approaches in the context of neural networks under domain shifts vs. recent neural approaches and propose a novel multi-task tri-training method that reduces the time and space complexity of classic tri-training. Extensive experiments on two benchmarks for part-of-speech tagging and sentiment analysis are negative: while our novel method establishes a new state-of-the-art for sentiment analysis, it does not fare consistently the best. More importantly, we arrive at the somewhat surprising conclusion that classic tri-training, with some additions, outperforms the state-of-the-art for NLP. Hence classic approaches constitute an important and strong baseline.</p>
+</blockquote>
+<p>大佬的论文真的难。。太 hardcore 了。。</p>
+<h2 id="cross-lingual-Learning"><a href="#cross-lingual-Learning" class="headerlink" title="cross-lingual Learning"></a>cross-lingual Learning</h2><p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/12.png"></p>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/14.png"></p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1805.03620.pdf">On the Limitations of Unsupervised Bilingual Dictionary Induction</a>  </p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1808.09334.pdf">A Discriminative Latent-Variable Model for Bilingual Lexicon Induction</a>  </p>
+<p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/16.png"></p>
+<h2 id="multi-task-learning"><a href="#multi-task-learning" class="headerlink" title="multi-task learning"></a>multi-task learning</h2><p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/17.png"></p>
+<h2 id="sequential-transfer-learning"><a href="#sequential-transfer-learning" class="headerlink" title="sequential transfer learning"></a>sequential transfer learning</h2><p><img src="/2019/03/04/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-1-Neural-Transfer-Learning-for-NLP/18.png"></p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-02-28T03:00:35.000Z" title="2019/2/28 上午11:00:35">2019-02-28</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:09.141Z" title="2021/6/29 下午4:12:09">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/transfer-learning/">transfer learning</a></span><span class="level-item">23 分钟读完 (大约3449个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/02/28/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E7%B3%BB%E5%88%97-0-NLP%20classification%20with%20transfer%20learning%20and%20weak%20supervision/">迁移学习系列-0-NLP classification with transfer learning and weak supervision</a></h1><div class="content"><p>paper:  </p>
 <ul>
 <li><p>Building NLP Classifiers Cheaply With Transfer Learning and Weak Supervision  </p>
 </li>
@@ -80,136 +406,7 @@
 </blockquote>
 <p>ground truth using a generative model [38]. Furthermore, it also learns correlations and other statistical dependencies among sources, correcting for dependencies in labeling functions that skew the estimated accuracies [5]  </p>
 <p>Snorkel 生成训练数据的方法来自于作者的另外一篇论文：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1605.07723.pdf">Data programming: Creating large training sets, quickly, NIPS 2016</a>,不仅能给出弱监督得到的样本的置信度，还能学习得到样本之间的相关性和统计依赖。</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-02-21T11:59:39.000Z" title="2019/2/21 下午7:59:39">2019-02-21</time>发表</span><span class="level-item"><time dateTime="2021-01-27T08:44:32.990Z" title="2021/1/27 下午4:44:32">2021-01-27</time>更新</span><span class="level-item">1 分钟读完 (大约211个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/02/21/docker%E5%AD%A6%E4%B9%A0%E5%92%8C%E4%BD%BF%E7%94%A8/">docker学习和使用</a></h1><div class="content"><h3 id="docker-安装"><a href="#docker-安装" class="headerlink" title="docker 安装"></a>docker 安装</h3><h3 id="docker-tensorflow"><a href="#docker-tensorflow" class="headerlink" title="docker tensorflow"></a>docker tensorflow</h3><h3 id="docker-镜像迁移"><a href="#docker-镜像迁移" class="headerlink" title="docker 镜像迁移"></a>docker 镜像迁移</h3><p>有时候需要将镜像从一台服务器移动到另外一台服务器。可使用 nc 进行大文件传输</p>
-<h3 id="docker-文件映射"><a href="#docker-文件映射" class="headerlink" title="docker 文件映射"></a>docker 文件映射</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo docker run -itd -p <span class="number">8888</span>:<span class="number">8888</span>  -v container_path:/usr/home/wuwei7/tmp_data   image_id /<span class="built_in">bin</span>/bash</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo docker <span class="built_in">exec</span> -it container_id /<span class="built_in">bin</span>/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>-v 参数表示容器内文件与宿主机器文件映射</p>
-<h3 id="docker-驻守状态"><a href="#docker-驻守状态" class="headerlink" title="docker 驻守状态"></a>docker 驻守状态</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo docker run -itd -p <span class="number">8888</span>:<span class="number">8888</span>  -v container_path:/usr/home/wuwei7/tmp_data   image_id /<span class="built_in">bin</span>/bash</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo docker <span class="built_in">exec</span> -it container_id /<span class="built_in">bin</span>/bash</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>-itd 表示驻守状态</p>
-<p>exec 退出之后容器依然在运行</p>
-<h3 id="docker-常用命令"><a href="#docker-常用命令" class="headerlink" title="docker 常用命令"></a>docker 常用命令</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo docker ps 查看正在运行的容器</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo docker images  查看镜像</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo docker rm -rf Container_ID 删除正在运行的容器</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo docker rmi -f Image_ID  删除镜像，-f 强制删除在容器中运行的镜像</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-02-20T08:41:32.000Z" title="2019/2/20 下午4:41:32">2019-02-20</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:09.158Z" title="2021/6/29 下午4:12:09">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/">sentence embedding</a></span><span class="level-item">7 分钟读完 (大约985个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/02/20/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-sentence-embedding/">论文笔记-sentence embedding</a></h1><div class="content"><p>句子的向量表示方法主要分为两类。 一类是通过无监督的方法得到 universal sentence embedding, 另一类是基于特定的任务，有标签的情况下，通过有监督学习得到 sentence embedding.</p>
-<h2 id="supervised-learning"><a href="#supervised-learning" class="headerlink" title="supervised learning"></a>supervised learning</h2><h3 id="a-structured-self-attentive-sentence-embedding"><a href="#a-structured-self-attentive-sentence-embedding" class="headerlink" title="a structured self-attentive sentence embedding"></a>a structured self-attentive sentence embedding</h3><p>paper: <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1703.03130">A Structured Self-attentive Sentence Embedding, ICLR 2017</a></p>
-<p>传统的基于 RNN/LSTM 得到 sentence 的向量表示的方法通常是利用隐藏状态的最后一个状态，或者是所有时间步的隐藏状态，然后采用 sum/average/max pooling 的的方式得到 sentence embedding.</p>
-<p>本文使用的方法就是在 LSTM 上加上一层 attention，通过注意力机制自动选择 sentence 中的某些方面，也就是赋予 sentence 中的每一个词一个权重，然后加权求和得到一个 vector. 本文另一个创新点在于，不仅仅得到一个 vector，而是一个 matrix，用来表示一个 sentence 中的不同方面。</p>
-<h4 id="Model-Architecture"><a href="#Model-Architecture" class="headerlink" title="Model Architecture:"></a>Model Architecture:</h4><p><img src="/2019/02/20/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-sentence-embedding/01.png"></p>
-<p>模型也很简单，输入 sentence n tokens.</p>
-<p>word embedding: $S\in R^{n\times d}$, d 表示词向量维度  </p>
-<p>$$S=(w_1,w_2,…,w_n)$$</p>
-<p>bidirection-LSTM: $H\in R^{n\times 2u}$, u 表示隐藏状态维度</p>
-<p>$$H=(h_1,h_2,…,h_n)$$</p>
-<p>single self-attention: $a\in R^n$, 表示 sentence 中对应位置的权重。与 encoder 之后的 sentence 加权求和得到 attention vector $m\in R^{2u}$.</p>
-<p>$$a=softmax(w_{s2}tanh(W_{s1}H^T))$$</p>
-<p>r-dim self-attention：有 r 个上述的 attention vector，并转换成矩阵形式，$A\in R^{n\times r}$ 与 encode 之后的句子表示 H 加权求和得到 embedding matrix $M\in R^{r\times 2u}$</p>
-<p>$$A=softmax(W_{s2}tanh(W_{s1}H^T))$$</p>
-<p>$$M=AH$$</p>
-<h4 id="penalization-term"><a href="#penalization-term" class="headerlink" title="penalization term"></a>penalization term</h4><p>上面模型中使用 r 个 attention，很可能会出现冗余的情况，也就是得到的 r 个 attention vector( 论文中说的是 summation weight vectors) 可能得到的是同一个东西，所以需要 diversity.</p>
-<blockquote>
-<p>The best way to evaluate the diversity is definitely the Kullback Leibler divergence between any 2 of the summation weight vectors. However, we found that not very stable in our case. We conjecture it is because we are maximizing a set of KL divergence (instead of minimizing only one, which is the usual case), we are optimizing the annotation matrix A to have a lot of sufficiently small or even zero values at different softmax output units, and these vast amount of zeros is making the training unstable. There is another feature that KL doesn’t provide but we want, which is, we want each individual row to focus on a single aspect of semantics, so we want the probability mass in the annotation softmax output to be more focused. but with KL penalty we cant encourage that.</p>
-</blockquote>
-<p>一个最直观的方法是 Kullback Leibler divergence，也就是相对熵。因为得到的 attention vector 是一个概率分布 (distribution ), 任意两个分布差异越大，对应的相对熵越大。但是作者实验发现这种方法不稳定，原因作者推测是这里需要最大化的是多个 KL 散度的集合，并且在优化 annotation matrix A 时，在不同的softmax输出单元上有很多足够小甚至零值，而这些大量的零点使得训练不稳定. 另一方面，KL 散度不能 focus on 语义中的单个方面。</p>
-<p>针对上面这两点，作者提出了一个新的正则项：</p>
-<p>$$P=||(AA^T-I)||^2_{F}$$</p>
-<p>$AA^T$ 是协方差矩阵，对角线元素是同一向量的内积，非对角线元素不同向量的内积。将其作为惩罚项加到 original loss 上，期望得到的是不同 vector 内积越小越好（内积越小，差异越大），并且向量的模长越大越好（概率分布更集中于某一两个词）。</p>
-<p>最终得到矩阵级别的句子向量表示。</p>
-<h4 id="training"><a href="#training" class="headerlink" title="training"></a>training</h4><p>3 different datasets:  </p>
-<ul>
-<li><p>the Age dataset  </p>
-</li>
-<li><p>the Yelp dataset  </p>
-</li>
-<li><p>the Stanford Natural Language Inference (SNLI) Corpus</p>
-</li>
-</ul>
-<p>根据不同的任务有监督的训练。</p>
-<h2 id="unsupervised-learning"><a href="#unsupervised-learning" class="headerlink" title="unsupervised learning"></a>unsupervised learning</h2><h3 id="sent2vec"><a href="#sent2vec" class="headerlink" title="sent2vec"></a>sent2vec</h3><p>paper: <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1703.02507.pdf">Unsupervised Learning of Sentence Embeddings using Compositional n-Gram Features</a></p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-02-17T12:19:57.000Z" title="2019/2/17 下午8:19:57">2019-02-17</time>发表</span><span class="level-item"><time dateTime="2021-01-27T08:44:33.864Z" title="2021/1/27 下午4:44:33">2021-01-27</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a><span> / </span><a class="link-muted" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/">ESA</a></span><span class="level-item">11 分钟读完 (大约1601个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/02/17/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-Explicit-Semantic-Analysis/">论文笔记-Explicit Semantic Analysis</a></h1><div class="content"><p>paper:   </p>
-<ul>
-<li><p><a href>Computing Semantic Relatedness using Wikipedia-based Explicit Semantic Analysi, IJCAI2008</a>  </p>
-</li>
-<li><p><a href>Wikipedia-based Semantic Interpretation for Natural Language Processing</a></p>
-</li>
-</ul>
-<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><p>对于自然语言的语义表示，需要的大量的 common sense 和 world knowledge. 前人的研究使用统计的方法，例如 WordNet，仅仅只利用了有限的词典知识（lexicographic knowledge），并不能有效的利用语言本身背后的背景知识（ background knowledge）。</p>
-<p>作者提出了 Explicit Semantic Analysis (ESA)，能够对文本或单词进行可解释性的细粒度的语义表示。</p>
-<blockquote>
-<p>Our method represents meaning in a high-dimensional space of concepts derived from Wikipedia, the largest encyclopedia in existence. We explicitly represent the meaning of any text in terms of Wikipedia-based concepts.  </p>
-</blockquote>
-<p>显示的使用 wiki 中的概念（concepts）来表示任意长度的 text.  </p>
-<p>作者通过文本分类和计算自然语言的文本片段之间的相似度来验证 ESA 的有效性。由于语义表示使用的是 natural concepts，ESA 模型的可解释性非常强。</p>
-<h3 id="传统的方法："><a href="#传统的方法：" class="headerlink" title="传统的方法："></a>传统的方法：</h3><ol>
-<li>词袋模型: 将 text 看作是 unordered bags of words, 每一个单词看作是一维特征。但是这并不能解决 NLP 中的两个主要问题： 一词多义和同义词（polysemy and synonymy）。  </li>
-</ol>
-<ol start="2">
-<li>隐语义分析：Latent Semantic Analysis (LSA)</li>
-</ol>
-<blockquote>
-<p> LSA is a purely statistical technique, which leverages word co-occurrence information from a large unlabeled corpus of text. LSA does not use any explicit human-organized knowledge; rather, it “learns” its representation by applying Singular Value Decomposition (SVD) to the words-by-documents co-occurrence matrix. LSA is essentially a dimensionality reduction technique that identifies a number of most prominent dimensions in the data, which are assumed to correspond to “latent concepts”. Meanings of words and documents are then represented in the space defined by these concepts.  </p>
-</blockquote>
-<p>LSA 是一种纯粹的统计技术，它利用来自大量未标记文本语料库的单词共现信息。 LSA不使用任何明确的人类组织知识; 相反，它通过将奇异值分解（SVD）应用于逐个文档的共现矩阵来“学习”其表示。 <strong>LSA本质上是一种降维技术</strong>，它识别数据中的许多最突出的维度，假设它们对应于“潜在概念”。 然后，在这些概念定义的空间中表示单词和文档的含义。</p>
-<ol start="3">
-<li>词汇数据库，WordNet.</li>
-</ol>
-<blockquote>
-<p>However, lexical resources offer little information about the different word senses, thus making word sense disambiguation nearly impossible to achieve.Another drawback of such approaches is that creation of lexical resources requires lexicographic expertise as well as a lot of time and effort, and consequently such resources cover only a small fragment of the language lexicon. Specifically, such resources contain few proper names, neologisms, slang, and domain-specific technical terms. Furthermore, these resources have strong lexical orientation in that they predominantly contain information about individual words, but little world knowledge in general.  </p>
-</blockquote>
-<p>词汇资源几乎没有提供关于不同词义的信息，因此几乎不可能实现词义消歧。这种方法的另一个缺点是词汇资源的创建需要词典专业知识以及大量的时间和精力，因此 资源只涵盖语言词典的一小部分。 具体而言，此类资源包含很少的专有名称，新词，俚语和特定于域的技术术语。 此外，这些资源具有强烈的词汇取向，因为它们主要包含关于单个单词的信息，但总体上缺乏世界知识。</p>
-<h3 id="concept-定义"><a href="#concept-定义" class="headerlink" title="concept 定义"></a>concept 定义</h3><blockquote>
-<p>Observe that an encyclopedia consists of a large collection of articles, each of which provides a comprehensive exposition focused on a single topic. Thus, we view an encyclopedia as a collection of concepts (corresponding to articles), each accompanied with a large body of text (the article contents).  </p>
-</blockquote>
-<p>维基百科中每一个词条对应一个 concept.</p>
-<p>example:  </p>
-<p>对于文本：”Bernanke takes charge”  通过算法我们可以找到维基百科中相关的 concept:  </p>
-<p>Ben Bernanke, Federal Reserve, Chairman of the Federal Reserve, Alan Greenspan (Bernanke’s predecessor), Monetarism (an economic theory of money supply and central banking), inflation and deflation.</p>
-<p>对于文本：”Apple patents a Tablet Mac”  </p>
-<p>相关的 concept:  Apple Computer 2 , Mac OS (the Macintosh operating system) Laptop (the general name for portable computers, of which Tablet Mac is a specific example), Aqua (the GUI of Mac OS X), iPod (another prominent product by Apple), and Apple Newton (the name of Apple’s early personal digital assistant).</p>
-<p>ESA 对一个 texts 的表示是 wiki 中所有的 concept 的 weighted combination，这里为了展示方便，只列举了最相关的一些 concept.</p>
-<h2 id="ESA-explicit-semantic-analysis"><a href="#ESA-explicit-semantic-analysis" class="headerlink" title="ESA(explicit semantic analysis)"></a>ESA(explicit semantic analysis)</h2><p>通过 wiki 得到一个 basic concepts: $C_1, C_2,…, C_n$, 其中 $C_k$ 都是来源于 wiki. 表示一个通用的 n 维语义空间。</p>
-<p>然后将任意长度的文本 t 表示成与上述向量长度相同的 权重向量 $w_1, w_2,…, w_n$ 分别表示 t 与 $C_k$ 之间的相关程度。</p>
-<p>接下来两个步骤就是：  </p>
-<ol>
-<li><p>the set of basic concepts  </p>
-</li>
-<li><p>the algorithm that maps text fragments into interpretation vectors</p>
-</li>
-</ol>
-<h2 id="如何构建-concept-集合"><a href="#如何构建-concept-集合" class="headerlink" title="如何构建 concept 集合"></a>如何构建 concept 集合</h2><p>1.using Wikipedia as a Repository of Basic Concepts  </p>
-<p>维基百科词条中的内容也很关键，用来计算 concept 与输入文本中单词的相似度。</p>
-<p>2.building a semantic interpreter</p>
-<p>根据 wiki 得到基本的 concept，以及对应的文档， $d_1,..,d_n$. 构建一个 sparse 表格 T， 其中，列表示 concept，行表示文档中的单词对应的 TDIDF 值。也就是计算文档中的单词与所有文档 $\bigcup_{i=1..n}d_i$ 的频率关系。</p>
-<p>$$T[i,j]=tf(t_i, d_j)\cdot log\dfrac{n}{df_i}$$</p>
-<p>其中，Term Frequency - Inverse Document Frequency：</p>
-<p>TF 表示在文档 $d_j$ 中，单词 $t_i$ 出现的频率。</p>
-<p>$$tf(t_i, d_j)=\begin{cases}</p>
-<p>1 + log\ count(t_i, d_j), &amp;\text{if count(t_i, d_j) &gt; 0} \</p>
-<p>0, &amp;\text{otherwise}</p>
-<p>\end{cases}$$</p>
-<p>IDF 表示逆文档频率。反应一个词在不同的文档中出现的频率越大，那么它的 IDF 值应该低，比如介词“to”。而反过来如果一个词在比较少的文本中出现，那么它的 IDF 值应该高。</p>
-<p>$$IDF=log\dfrac{n}{df_i}$$</p>
-<p>$df_i=|{d_k:t_i\in d_k}|$ 表示出现该单词的文档个数，n 表示总的文档个数。</p>
-<p>正则化，cosine normalization:  </p>
-<p>$$T[i,j]\leftarrow \dfrac{T[i,j]}{\sqrt{\sum_{l=1}^r T[i,j]^2}}$$</p>
-<p>r 表示单词的总量。也就是除以所有单词对应的向量二范数之和平方。</p>
-<p>得到 table T 之后，一个单词的向量 $t_i$ 表示就是第 i 行。一个文本片段 $&lt;t_1,..,t_k&gt;$ 的向量表示是文本中所有单词的质心。</p>
-<h2 id="如何将文本片段映射成向量表示"><a href="#如何将文本片段映射成向量表示" class="headerlink" title="如何将文本片段映射成向量表示"></a>如何将文本片段映射成向量表示</h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2019-02-07T02:08:35.000Z" title="2019/2/7 上午10:08:35">2019-02-07</time>发表</span><span class="level-item"><time dateTime="2021-06-29T08:12:08.539Z" title="2021/6/29 下午4:12:08">2021-06-29</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/">数据结构与算法</a></span><span class="level-item">几秒读完 (大约78个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2019/02/07/%E9%82%93%E5%85%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%955-%E6%A0%91/">邓公数据结构与算法5-树</a></h1><div class="content"><h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><p>树：  </p>
-<ul>
-<li><p>无环连通图  </p>
-</li>
-<li><p>极小连通图  </p>
-</li>
-<li><p>极大无环图</p>
-</li>
-</ul>
-<p>任一节点 v 与根节点 r 存在唯一的路径  </p>
-<p>path(v, r) = path( r)</p>
-<p><img src="/2019/02/07/%E9%82%93%E5%85%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%955-%E6%A0%91/01.png"></p>
-<h2 id="树的表示"><a href="#树的表示" class="headerlink" title="树的表示"></a>树的表示</h2><h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><h2 id="二叉树的实现"><a href="#二叉树的实现" class="headerlink" title="二叉树的实现"></a>二叉树的实现</h2><h3 id="先序遍历"><a href="#先序遍历" class="headerlink" title="先序遍历"></a>先序遍历</h3><h3 id="中序遍历"><a href="#中序遍历" class="headerlink" title="中序遍历"></a>中序遍历</h3><h3 id="层次遍历"><a href="#层次遍历" class="headerlink" title="层次遍历"></a>层次遍历</h3><h3 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h3></div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/6/">上一页</a></div><div class="pagination-next"><a href="/page/8/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/6/">6</a></li><li><a class="pagination-link is-current" href="/page/7/">7</a></li><li><a class="pagination-link" href="/page/8/">8</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/24/">24</a></li></ul></nav></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="panxiaoxie"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">panxiaoxie</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">116</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">38</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">35</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/PanXiebit" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Email" href="/ftdpanxie@gmail.com"><i class="fa fa-envelope"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="ftdpanxie@gmail.com" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">email</span></span><span class="level-right"><span class="level-item tag">ftdpanxie@gmail.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/generation/"><span class="level-start"><span class="level-item">generation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/sign-language-recognition/"><span class="level-start"><span class="level-item">sign language recognition</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">40</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Transformer/"><span class="level-start"><span class="level-item">Transformer</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/computer-vision/"><span class="level-start"><span class="level-item">computer vision</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/constrast-learning/"><span class="level-start"><span class="level-item">constrast learning</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/vision-language/"><span class="level-start"><span class="level-item">vision-language</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/6/">上一页</a></div><div class="pagination-next"><a href="/page/8/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/6/">6</a></li><li><a class="pagination-link is-current" href="/page/7/">7</a></li><li><a class="pagination-link" href="/page/8/">8</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/24/">24</a></li></ul></nav></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="panxiaoxie"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">panxiaoxie</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>Beijing, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">120</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">40</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">37</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/PanXiebit" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/PanXiebit"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Email" href="/ftdpanxie@gmail.com"><i class="fa fa-envelope"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/PanXiebit" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">github</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="ftdpanxie@gmail.com" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">email</span></span><span class="level-right"><span class="level-item tag">ftdpanxie@gmail.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/C/"><span class="level-start"><span class="level-item">C++</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/CSAPP/"><span class="level-start"><span class="level-item">CSAPP</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/DRL/"><span class="level-start"><span class="level-item">DRL</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/GAN-RL/"><span class="level-start"><span class="level-item">GAN, RL</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/ML/"><span class="level-start"><span class="level-item">ML</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">14</span></span></a></li><li><a class="level is-mobile" href="/categories/TensorFlow/"><span class="level-start"><span class="level-item">TensorFlow</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/cs224d/"><span class="level-start"><span class="level-item">cs224d</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/categories/generation/"><span class="level-start"><span class="level-item">generation</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/generative-models/"><span class="level-start"><span class="level-item">generative models</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/interview/"><span class="level-start"><span class="level-item">interview</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/python/"><span class="level-start"><span class="level-item">python</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/pytorch/"><span class="level-start"><span class="level-item">pytorch</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/reinforcement-learning/"><span class="level-start"><span class="level-item">reinforcement learning</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/sign-language-recognition/"><span class="level-start"><span class="level-item">sign language recognition</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/transfer-learning/"><span class="level-start"><span class="level-item">transfer learning</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/transformer/"><span class="level-start"><span class="level-item">transformer</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB/"><span class="level-start"><span class="level-item">文本分类</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">论文笔记</span></span><span class="level-end"><span class="level-item tag">40</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/DL/"><span class="level-start"><span class="level-item">DL</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/ESA/"><span class="level-start"><span class="level-item">ESA</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/GAN/"><span class="level-start"><span class="level-item">GAN</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/MRC-and-QA/"><span class="level-start"><span class="level-item">MRC and QA</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Machine-Translation/"><span class="level-start"><span class="level-item">Machine Translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/NLP/"><span class="level-start"><span class="level-item">NLP</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/Transformer/"><span class="level-start"><span class="level-item">Transformer</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/capsules/"><span class="level-start"><span class="level-item">capsules</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/computer-vision/"><span class="level-start"><span class="level-item">computer vision</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/constrast-learning/"><span class="level-start"><span class="level-item">constrast learning</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/data-augmentation/"><span class="level-start"><span class="level-item">data augmentation</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/dialogue-system/"><span class="level-start"><span class="level-item">dialogue system</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/language-model/"><span class="level-start"><span class="level-item">language model</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/machine-translation/"><span class="level-start"><span class="level-item">machine translation</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/open-set-recognition/"><span class="level-start"><span class="level-item">open set recognition</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/sentence-embedding/"><span class="level-start"><span class="level-item">sentence embedding</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/text-matching/"><span class="level-start"><span class="level-item">text matching</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/vision-language/"><span class="level-start"><span class="level-item">vision-language</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/panxiaoxie.png" alt="潘小榭" height="28"></a><p class="is-size-7"><span>&copy; 2021 Xie Pan</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
                     clipboard: true,
